@@ -1,22 +1,73 @@
 {
     activeConstructions0: {
-        title: ""
-        description: ""
-        modification: 0
+        title: "No Construction is Occuring"
+        description: "People are Liking the Quiet!"
+        modification: 5
     }
     activeConstructions1: {
-        title: Active Construction
-        description: ""
+        title: "Active Construction"
+        description: "There is a lot of construction at the minute, it's too noisy to study!"
         modification: -5
     }
     activeConstructions2: {
         title: "Active Construction (x2)"
-        description: ""
+        description: "There is a lot of construction at the minute, it's too noisy to study!"
         modification: -9
     }
     activeConstructions3: {
         title: "Active Construction (x3)"
-        description: ""
+        description: "There is a lot of construction at the minute, it's too noisy to study!"
         modification: -12
     }
+    overCrowding: {
+        title: "Not Enough Accomodation"
+        description: "There are not enough accomodation buildings available, people are having to sleep in hallways!"
+        modification: -20
+    }
+    underCrowding: {
+        title: "Too Many Empty Rooms"
+        description: "There are too many accomodation buildings available, it feels like a ghost town!"
+        modification: -10
+    }
+    neutralCrowding:{
+        title: "The Level of Students per Room is Perfect!"
+        description: ""
+        modification: 5
+    }
+    underTeaching: {
+        title: "Not Enough Teaching Spaces"
+        description: "There are not enough teaching buildings available, lectures are having to happen online!"
+        modification: -5
+    }
+    overTeaching: {
+        title: "Too Many Teaching Spaces"
+        description: "There are too many teaching buildings available, students want something other than lecture halls!"
+        modification: -15
+    }
+    underRecreation: {
+        title: "Not Enough Recreation Spaces"
+        description: "There are not enough recreation buildings available, students are bored!"
+        modification: -15
+    }
+    overRecreation: {
+        title: "Too Many Recreation Spaces"
+        description: "There are too many recreation buildings available, students want those spaces used for something else!"
+        modification: -5
+    }
+    perfectBuildingLevel: {
+        title: "You have the perfect number of buildings!"
+        description: ""
+        modification: 20
+    }
+    oneOfEachBuilding:{
+        title: "The University has the minimum number of buildings to operate properly!"
+        description: ""
+        modification: 10
+    }
+    buildingMissing:{
+        title: "You're Missing a building Type!"
+        description: ""
+        modification: -5
+    }
+    
 }
