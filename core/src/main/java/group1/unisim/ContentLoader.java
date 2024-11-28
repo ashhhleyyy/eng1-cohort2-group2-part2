@@ -49,6 +49,10 @@ public class ContentLoader {
         return buildings.values();
     }
 
+    public Collection<Thought> allThoughts() {
+        return thoughts.values();
+    }
+
     public Texture getTexture(String path) {
         return (Texture)assetManager.get(path, Texture.class);
     }

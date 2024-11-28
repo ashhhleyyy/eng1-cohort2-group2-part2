@@ -14,7 +14,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
@@ -31,8 +38,14 @@ public class Main extends ApplicationAdapter {
     private final float updateTime = 1/30f; // 30 updates/second
     private boolean isPaused = true;
     private float gameTimer = 300;
+    private HashMap<String, Event> currentEvents;
 
     private Stage stage;
+
+    private boolean event1, event2, event3;
+    private int reqAcc, reqTea, reqSel, reqFoo, reqRec;
+    private int previousSecond;
+
 
     //UI
     private Stage ui;
@@ -52,6 +65,18 @@ public class Main extends ApplicationAdapter {
     public void create() {
         contentLoader = new ContentLoader();
         contentLoader.Load();
+
+        // events start at false and after being triggered are set to true.
+        currentEvents = new HashMap<>();
+        event1 = false;
+        event2 = false;
+        event3 = false;
+        reqAcc = 1;
+        reqFoo = 1;
+        reqRec = 1;
+        reqSel = 1;
+        reqTea = 1;
+        previousSecond = 300;
 
         Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
         batch = new SpriteBatch();
@@ -199,6 +224,29 @@ public class Main extends ApplicationAdapter {
             }
         }
 
+        if((Math.round(gameTimer) % 2 == 0) && (previousSecond != Math.round(gameTimer))){
+            // Thought bubble
+            String thoughtBubble = "Current Student Thoughts:\n";
+            for(Thought thought : satisfactionBar.getAllThoughts()){
+                thoughtBubble += thought.getTitle() + ": " + thought.getDescription() + "\n";
+            }
+            System.out.println(thoughtBubble);
+            previousSecond = Math.round(gameTimer);
+        }
+
+        // Event runner:
+        if (!isPaused && !event1 && gameTimer < 250){
+            runEvent();
+            event1 = true;
+        }
+        if (!isPaused && !event2 && gameTimer < 150){
+            runEvent();
+            event2 = true;
+        }
+        if (!isPaused && !event3 && gameTimer < 50){
+            runEvent();
+            event3 = true;
+        }
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -236,6 +284,7 @@ public class Main extends ApplicationAdapter {
     private void updateServiceCounts() {
         HashMap<Service, Integer> services = new HashMap<>();
         HashMap<Service, Integer> servicesUnderConstruction = new HashMap<>();
+        int constructionTotal = 0;
         for (BuildingSlot slot : buildingSlots){
             if (slot.getBuilding() == null) continue;
             for (Service service : slot.getBuilding().getServicesProvided()) {
@@ -248,6 +297,101 @@ public class Main extends ApplicationAdapter {
             services.putIfAbsent(service, 0);
             servicesUnderConstruction.putIfAbsent(service, 0);
             servicesText.get(service).setText(String.format("%d (%d)", services.get(service), servicesUnderConstruction.get(service)));
+            constructionTotal += servicesUnderConstruction.get(service);
+        }
+
+        // Calculate number of buildings needed + assign correct thoughts:
+        if(currentEvents.get("1") != null){
+            if(currentEvents.get("1").getAssociatedThought() == "underCrowding"){
+                reqAcc = 0;
+                }
+            else{
+                reqAcc = 2;
+            }
+        }
+        if(currentEvents.get("2") != null){
+            if(currentEvents.get("2").getAssociatedThought() == "underTeaching"){
+                reqTea = 2;
+            }
+            else{
+                reqTea = 0;
+            }
+        }
+        if(currentEvents.get("3") != null){
+            if(currentEvents.get("3").getAssociatedThought() == "underRecreation"){
+                reqRec = 2;
+            }
+            else{
+                reqRec = 0;
+            }
+        }
+        
+        if(reqAcc < services.get(Service.Accommodation)){
+            satisfactionBar.setThought("1", contentLoader.getThought("underCrowding"));
+        }
+        else if(reqAcc > services.get(Service.Accommodation)){
+            satisfactionBar.setThought("1", contentLoader.getThought("overCrowding"));
+        }
+        else{
+            satisfactionBar.setThought("1", contentLoader.getThought("neutralCrowding"));
+        }
+
+        if(reqTea > services.get(Service.TeachingSpace)){
+            satisfactionBar.setThought("2", contentLoader.getThought("underTeaching"));
+        }
+        else if(reqTea < services.get(Service.TeachingSpace)){
+            satisfactionBar.setThought("2", contentLoader.getThought("overTeaching"));
+        }
+        else{
+            satisfactionBar.removeThought("2");
+        }
+
+        if(reqRec > services.get(Service.Recreation)){
+            satisfactionBar.setThought("3", contentLoader.getThought("underRecreation"));
+        }
+        else if(reqRec < services.get(Service.Recreation)){
+            satisfactionBar.setThought("3", contentLoader.getThought("overRecreation"));
+        }
+        else{
+            satisfactionBar.removeThought("3");
+        }
+
+        if(reqAcc == services.get(Service.Accommodation) && reqTea == services.get(Service.TeachingSpace) && 
+           reqSel == services.get(Service.SelfStudy) && reqFoo == services.get(Service.FoodDrink) && reqRec == services.get(Service.Recreation)){
+            satisfactionBar.setThought("4", contentLoader.getThought("perfectBuildingLevel"));
+           }
+        else{
+            satisfactionBar.removeThought("4");
+        }
+
+        if(1 <= services.get(Service.Accommodation) && 1 <= services.get(Service.TeachingSpace) && 
+           1 <= services.get(Service.SelfStudy) && 1 <= services.get(Service.FoodDrink) && 1 <= services.get(Service.Recreation)){
+            satisfactionBar.setThought("5", contentLoader.getThought("oneOfEachBuilding"));
+           }
+        else{
+            satisfactionBar.removeThought("5");
+        }
+
+        if(0 == services.get(Service.Accommodation) || 0 == services.get(Service.TeachingSpace) || 
+           0 == services.get(Service.SelfStudy) || 0 == services.get(Service.FoodDrink) || 0 == services.get(Service.Recreation)){
+            satisfactionBar.setThought("6", contentLoader.getThought("buildingMissing"));
+           }
+        else{
+            satisfactionBar.removeThought("6");
+        }
+
+        // Adding construction thought to satisfaction bar:
+        if(constructionTotal == 1){
+            satisfactionBar.setThought("0", contentLoader.getThought("activeConstructions1"));
+        }
+        else if(constructionTotal == 2){
+            satisfactionBar.setThought("0", contentLoader.getThought("activeConstructions2"));
+        }
+        else if(constructionTotal > 2){
+            satisfactionBar.setThought("0", contentLoader.getThought("activeConstructions3"));
+        }
+        else{
+            satisfactionBar.setThought("0", contentLoader.getThought("activeConstructions0"));
         }
     }
 
@@ -263,6 +407,36 @@ public class Main extends ApplicationAdapter {
         for (BuildingSlot slot : buildingSlots) {
             slot.clearPreview();
         }
+    }
+
+    private void runEvent(){
+        int randNum = (int)(Math.random() * 5);
+            switch(randNum){
+                case 0:
+                System.out.println("The university is receiving an unprecedented influx of new students, we may need more accomodation!");
+                currentEvents.put("1", new Event("overCrowding", 100, "1", currentEvents));
+                break;
+                case 1:
+                System.out.println("The university is receiving far less new students than usual, we may need less accomodation!");
+                currentEvents.put("1", new Event("underCrowding", 100, "1", currentEvents));
+                break;
+                case 2:
+                System.out.println("Students are sick of prerecorded mini-lectures and want to go in person, we may need more teaching spaces!");
+                currentEvents.put("2", new Event("underTeaching", 50, "2", currentEvents));
+                break;
+                case 3:
+                System.out.println("Lecturers are on strike, we may need less teaching spaces!");
+                currentEvents.put("2", new Event("overTeaching", 50, "2", currentEvents));
+                break;
+                case 4:
+                System.out.println("Students are bored, we may need more recreation spaces!");
+                currentEvents.put("3", new Event("underRecreation", 50, "3", currentEvents));
+                break;
+                case 5:
+                System.out.println("Fresher's flu is getting around and people are staying in their dorms, we may need less recreation spaces!");
+                currentEvents.put("3", new Event("overRecreaction", 30, "3", currentEvents));
+                break;
+            }
     }
 
     @Override
