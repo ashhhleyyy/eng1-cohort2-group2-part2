@@ -47,6 +47,7 @@ public class Main extends ApplicationAdapter {
     private int reqAcc, reqTea, reqSel, reqFoo, reqRec;
     private int previousSecond;
 
+    private Label scoreNumberLabel;
 
     //UI
     private Stage ui;
@@ -194,27 +195,31 @@ public class Main extends ApplicationAdapter {
             }
         });
 
+        // creates and sets up end screen, will not be drawn until time is up
         endScreen = new Stage();
-        Label nameLabel = new Label("Name:", skin);
-        TextField nameText = new TextField("", skin);
-        Label addressLabel = new Label("Address:", skin);
-        TextField addressText = new TextField("", skin);
         Image endScreenBackground = new Image(endScreenTexture);
-        
+        Label titleLabel = new Label("TIME'S UP!!", skin);
+        titleLabel.setFontScale(4);
+        Label emptyLabel = new Label("",skin);
+        Label scoreTextLabel = new Label("You finished with a student satisfaction of: ", skin);
+        scoreNumberLabel = new Label("XX%", skin);
+        scoreNumberLabel.setFontScale(3);
+
         Table table = new Table();
+        table.defaults().height(80).center();
+        table.add(titleLabel).colspan(2);
+        table.row().height(20);
+        table.add(emptyLabel).width(370);
+        table.add(emptyLabel).width(370);
+        table.row();
+        table.add(scoreTextLabel);
+        table.add(scoreNumberLabel);
+        // table.add(test).width(740).height(440);
+
         endScreen.addActor(endScreenBackground);
-        endScreenBackground.setPosition(120,120);
+        endScreenBackground.setPosition(115,125);
         endScreen.addActor(table);
         table.setPosition(500, 360);
-        table.add(nameLabel);
-        table.add(nameText).width(100);
-        table.row();
-        table.add(addressLabel);
-        table.add(addressText).width(100);
-        
-        
-        
-
 
         ui.addActor(servicesDisplay);
         ui.addActor(buildSelect);
@@ -286,7 +291,9 @@ public class Main extends ApplicationAdapter {
         stage.act(deltaTime);
         stage.draw();
 
+        // when time is up, update contents of end screen and then draw
         if (gameTimer < 0) {
+            // scoreNumberLabel.setText(String.format("%d", Math.round(satisfactionBar.getScore())) + "%");
             endScreen.draw();
         }
 
