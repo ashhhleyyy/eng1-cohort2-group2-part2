@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -31,7 +32,7 @@ public class Main extends ApplicationAdapter {
 
     private SpriteBatch batch;
 
-    private Texture toolbar, mapTexture, settingsTexture, buildIconTexture, pauseTexture, playTexture;
+    private Texture toolbar, mapTexture, settingsTexture, buildIconTexture, pauseTexture, playTexture, endScreenTexture;
 
     private SatisfactionBar satisfactionBar;
     private float updateTimer;
@@ -40,7 +41,7 @@ public class Main extends ApplicationAdapter {
     private float gameTimer = 3; // TEMP CHANGE FOR TESTING, YELL AT ME(Yawshi) IF I FORGET TO CHANGE BACK
     private HashMap<String, Event> currentEvents;
 
-    private Stage stage;
+    private Stage stage, endScreen;
 
     private boolean event1, event2, event3;
     private int reqAcc, reqTea, reqSel, reqFoo, reqRec;
@@ -60,34 +61,36 @@ public class Main extends ApplicationAdapter {
 
     private ImageButton pauseButton;
     private Image pauseImage;
-
-    @Override
-    public void create() {
-        contentLoader = new ContentLoader();
-        contentLoader.Load();
-
-        // events start at false and after being triggered are set to true.
-        currentEvents = new HashMap<>();
-        event1 = false;
-        event2 = false;
-        event3 = false;
-        reqAcc = 1;
-        reqFoo = 1;
-        reqRec = 1;
-        reqSel = 1;
-        reqTea = 1;
-        previousSecond = 3; // TEMP CHANGE FOR TESTING, YELL AT ME (Yawshi) IF I FORGET TO CHANGE BACK
-
-        Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
-        batch = new SpriteBatch();
-
-        toolbar = new Texture("toolbar.png");
-        mapTexture = new Texture("mapTexture.png");
-        settingsTexture = new Texture("settingsIcon.png");
-        buildIconTexture = new Texture("buildIcon.png");
-        pauseTexture = new Texture("pause.png");
-        playTexture = new Texture("play.png");
-        ui = new Stage();
+    
+        @Override
+        public void create() {
+            contentLoader = new ContentLoader();
+            contentLoader.Load();
+    
+            // events start at false and after being triggered are set to true.
+            currentEvents = new HashMap<>();
+            event1 = false;
+            event2 = false;
+            event3 = false;
+            reqAcc = 1;
+            reqFoo = 1;
+            reqRec = 1;
+            reqSel = 1;
+            reqTea = 1;
+            previousSecond = 3; // TEMP CHANGE FOR TESTING, YELL AT ME (Yawshi) IF I FORGET TO CHANGE BACK
+    
+            Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+            batch = new SpriteBatch();
+    
+            toolbar = new Texture("toolbar.png");
+            mapTexture = new Texture("mapTexture.png");
+            settingsTexture = new Texture("settingsIcon.png");
+            buildIconTexture = new Texture("buildIcon.png");
+            pauseTexture = new Texture("pause.png");
+            playTexture = new Texture("play.png");
+            ui = new Stage();
+    
+            endScreenTexture = new Texture("endScreen.png");
 
         satisfactionBar = new SatisfactionBar(skin, ui);
 
@@ -191,6 +194,28 @@ public class Main extends ApplicationAdapter {
             }
         });
 
+        endScreen = new Stage();
+        Label nameLabel = new Label("Name:", skin);
+        TextField nameText = new TextField("", skin);
+        Label addressLabel = new Label("Address:", skin);
+        TextField addressText = new TextField("", skin);
+        Image endScreenBackground = new Image(endScreenTexture);
+        
+        Table table = new Table();
+        endScreen.addActor(endScreenBackground);
+        endScreenBackground.setPosition(120,120);
+        endScreen.addActor(table);
+        table.setPosition(500, 360);
+        table.add(nameLabel);
+        table.add(nameText).width(100);
+        table.row();
+        table.add(addressLabel);
+        table.add(addressText).width(100);
+        
+        
+        
+
+
         ui.addActor(servicesDisplay);
         ui.addActor(buildSelect);
         ui.addActor(buildButton);
@@ -215,7 +240,6 @@ public class Main extends ApplicationAdapter {
             if (gameTimer < 0) {
                 isPaused = true;
                 pauseImage.setDrawable(new TextureRegionDrawable(new TextureRegion(pauseTexture)));
-                stage.addActor(new EndScreen());
             }
 
             updateTimer += deltaTime;
@@ -261,6 +285,10 @@ public class Main extends ApplicationAdapter {
 
         stage.act(deltaTime);
         stage.draw();
+
+        if (gameTimer < 0) {
+            endScreen.draw();
+        }
 
         ui.act(deltaTime);
         ui.draw();
