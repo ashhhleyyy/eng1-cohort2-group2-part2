@@ -78,15 +78,15 @@ public class Main extends ApplicationAdapter {
         reqTea = 1;
         previousSecond = 300;
 
-        Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+        Skin skin = new Skin(Gdx.files.internal(Assets.UI_SKIN));
         batch = new SpriteBatch();
 
-        toolbar = new Texture("toolbar.png");
-        mapTexture = new Texture("mapTexture.png");
-        settingsTexture = new Texture("settingsIcon.png");
-        buildIconTexture = new Texture("buildIcon.png");
-        pauseTexture = new Texture("pause.png");
-        playTexture = new Texture("play.png");
+        toolbar = new Texture(Assets.TOOLBAR);
+        mapTexture = new Texture(Assets.MAP_TEXTURE);
+        settingsTexture = new Texture(Assets.SETTINGS_ICON);
+        buildIconTexture = new Texture(Assets.BUILD_ICON);
+        pauseTexture = new Texture(Assets.PAUSE);
+        playTexture = new Texture(Assets.PLAY);
         ui = new Stage();
 
         satisfactionBar = new SatisfactionBar(skin, ui);
@@ -325,7 +325,7 @@ public class Main extends ApplicationAdapter {
                 reqRec = 0;
             }
         }
-        
+
         if(reqAcc < services.get(Service.Accommodation)){
             satisfactionBar.setThought("1", contentLoader.getThought("underCrowding"));
         }
@@ -356,7 +356,7 @@ public class Main extends ApplicationAdapter {
             satisfactionBar.removeThought("3");
         }
 
-        if(reqAcc == services.get(Service.Accommodation) && reqTea == services.get(Service.TeachingSpace) && 
+        if(reqAcc == services.get(Service.Accommodation) && reqTea == services.get(Service.TeachingSpace) &&
            reqSel == services.get(Service.SelfStudy) && reqFoo == services.get(Service.FoodDrink) && reqRec == services.get(Service.Recreation)){
             satisfactionBar.setThought("4", contentLoader.getThought("perfectBuildingLevel"));
            }
@@ -364,7 +364,7 @@ public class Main extends ApplicationAdapter {
             satisfactionBar.removeThought("4");
         }
 
-        if(1 <= services.get(Service.Accommodation) && 1 <= services.get(Service.TeachingSpace) && 
+        if(1 <= services.get(Service.Accommodation) && 1 <= services.get(Service.TeachingSpace) &&
            1 <= services.get(Service.SelfStudy) && 1 <= services.get(Service.FoodDrink) && 1 <= services.get(Service.Recreation)){
             satisfactionBar.setThought("5", contentLoader.getThought("oneOfEachBuilding"));
            }
@@ -372,7 +372,7 @@ public class Main extends ApplicationAdapter {
             satisfactionBar.removeThought("5");
         }
 
-        if(0 == services.get(Service.Accommodation) || 0 == services.get(Service.TeachingSpace) || 
+        if(0 == services.get(Service.Accommodation) || 0 == services.get(Service.TeachingSpace) ||
            0 == services.get(Service.SelfStudy) || 0 == services.get(Service.FoodDrink) || 0 == services.get(Service.Recreation)){
             satisfactionBar.setThought("6", contentLoader.getThought("buildingMissing"));
            }
