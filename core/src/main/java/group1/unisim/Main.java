@@ -47,7 +47,7 @@ public class Main extends ApplicationAdapter {
     private int reqAcc, reqTea, reqSel, reqFoo, reqRec;
     private int previousSecond;
 
-    private Label scoreNumberLabel;
+    private Label scoreNumberLabel, scoreCommentLabel;
 
     //UI
     private Stage ui;
@@ -204,17 +204,33 @@ public class Main extends ApplicationAdapter {
         Label scoreTextLabel = new Label("You finished with a student satisfaction of: ", skin);
         scoreNumberLabel = new Label("XX%", skin);
         scoreNumberLabel.setFontScale(3);
+        scoreCommentLabel = new Label("You did something something-", skin);
+        Label leaderboardTitleLabel = new Label("Leaderboard", skin);
+        leaderboardTitleLabel.setFontScale(3);
+        TextField leaderboardEmbed = new TextField("placeholder", skin);
+        Label achievementsTitleLabel = new Label("Achievements", skin);
+        achievementsTitleLabel.setFontScale(3);
+        TextField achievementsEmbed = new TextField("placeholder", skin);
 
         Table table = new Table();
-        table.defaults().height(80).center();
-        table.add(titleLabel).colspan(2);
-        table.row().height(20);
+        table.defaults().center();
+        table.add(titleLabel).colspan(2).height(50);
+        table.row().height(10);
         table.add(emptyLabel).width(370);
         table.add(emptyLabel).width(370);
-        table.row();
-        table.add(scoreTextLabel);
+        table.row().height(30);
+        table.add(scoreTextLabel).right();
         table.add(scoreNumberLabel);
-        // table.add(test).width(740).height(440);
+        table.row().height(30);
+        table.add(scoreCommentLabel).colspan(2);
+        table.row().height(20);
+        table.add(emptyLabel);
+        table.row().height(50);
+        table.add(leaderboardTitleLabel);
+        table.add(achievementsTitleLabel);
+        table.row().height(220);
+        table.add(leaderboardEmbed).fill().space(10);
+        table.add(achievementsEmbed).fill().space(10);
 
         endScreen.addActor(endScreenBackground);
         endScreenBackground.setPosition(115,125);
@@ -293,7 +309,16 @@ public class Main extends ApplicationAdapter {
 
         // when time is up, update contents of end screen and then draw
         if (gameTimer < 0) {
-            // scoreNumberLabel.setText(String.format("%d", Math.round(satisfactionBar.getScore())) + "%");
+            scoreNumberLabel.setText(String.format("%d", Math.round(satisfactionBar.getScore())) + "%");
+            if (satisfactionBar.getScore() <= 30) {
+                scoreCommentLabel.setText("Everyone's quite upset...");
+            } else if (satisfactionBar.getScore() <= 60) {
+                scoreCommentLabel.setText("The university runs just fine!");
+            } else if (Math.round(satisfactionBar.getScore()) == 100) {
+                scoreCommentLabel.setText("THE BEST TO EVER DO IT!!!");
+            } else {
+                scoreCommentLabel.setText("The university runs excellently!!");
+            }
             endScreen.draw();
         }
 
