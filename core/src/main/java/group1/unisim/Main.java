@@ -63,35 +63,35 @@ public class Main extends ApplicationAdapter {
     private ImageButton pauseButton;
     private Image pauseImage;
     
-        @Override
-        public void create() {
-            contentLoader = new ContentLoader();
-            contentLoader.Load();
-    
-            // events start at false and after being triggered are set to true.
-            currentEvents = new HashMap<>();
-            event1 = false;
-            event2 = false;
-            event3 = false;
-            reqAcc = 1;
-            reqFoo = 1;
-            reqRec = 1;
-            reqSel = 1;
-            reqTea = 1;
-            previousSecond = 300;
-    
-            Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
-            batch = new SpriteBatch();
-    
-            toolbar = new Texture("toolbar.png");
-            mapTexture = new Texture("mapTexture.png");
-            settingsTexture = new Texture("settingsIcon.png");
-            buildIconTexture = new Texture("buildIcon.png");
-            pauseTexture = new Texture("pause.png");
-            playTexture = new Texture("play.png");
-            ui = new Stage();
-    
-            endScreenTexture = new Texture("endScreen.png");
+    @Override
+    public void create() {
+        contentLoader = new ContentLoader();
+        contentLoader.Load();
+
+        // events start at false and after being triggered are set to true.
+        currentEvents = new HashMap<>();
+        event1 = false;
+        event2 = false;
+        event3 = false;
+        reqAcc = 1;
+        reqFoo = 1;
+        reqRec = 1;
+        reqSel = 1;
+        reqTea = 1;
+        previousSecond = 300;
+
+        Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+        batch = new SpriteBatch();
+
+        toolbar = new Texture("toolbar.png");
+        mapTexture = new Texture("mapTexture.png");
+        settingsTexture = new Texture("settingsIcon.png");
+        buildIconTexture = new Texture("buildIcon.png");
+        pauseTexture = new Texture("pause.png");
+        playTexture = new Texture("play.png");
+        ui = new Stage();
+
+        endScreenTexture = new Texture("endScreen.png");
 
         satisfactionBar = new SatisfactionBar(skin, ui);
 
@@ -195,47 +195,54 @@ public class Main extends ApplicationAdapter {
             }
         });
 
-        // creates and sets up end screen, will not be drawn until time is up
+        // creates and sets up background of end screen
         endScreen = new Stage();
         Image endScreenBackground = new Image(endScreenTexture);
-        Label titleLabel = new Label("TIME'S UP!!", skin);
-        titleLabel.setFontScale(4);
-        Label emptyLabel = new Label("",skin);
-        Label scoreTextLabel = new Label("You finished with a student satisfaction of: ", skin);
-        scoreNumberLabel = new Label("XX%", skin);
-        scoreNumberLabel.setFontScale(3);
-        scoreCommentLabel = new Label("You did something something-", skin);
-        Label leaderboardTitleLabel = new Label("Leaderboard", skin);
-        leaderboardTitleLabel.setFontScale(3);
-        TextField leaderboardEmbed = new TextField("placeholder", skin);
-        Label achievementsTitleLabel = new Label("Achievements", skin);
-        achievementsTitleLabel.setFontScale(3);
-        TextField achievementsEmbed = new TextField("placeholder", skin);
-
-        Table table = new Table();
-        table.defaults().center();
-        table.add(titleLabel).colspan(2).height(50);
-        table.row().height(10);
-        table.add(emptyLabel).width(370);
-        table.add(emptyLabel).width(370);
-        table.row().height(30);
-        table.add(scoreTextLabel).right();
-        table.add(scoreNumberLabel);
-        table.row().height(30);
-        table.add(scoreCommentLabel).colspan(2);
-        table.row().height(20);
-        table.add(emptyLabel);
-        table.row().height(50);
-        table.add(leaderboardTitleLabel);
-        table.add(achievementsTitleLabel);
-        table.row().height(220);
-        table.add(leaderboardEmbed).fill().space(10);
-        table.add(achievementsEmbed).fill().space(10);
-
         endScreen.addActor(endScreenBackground);
         endScreenBackground.setPosition(115,125);
+
+        // sets up the table to store contents of end screen
+        Table table = new Table();
+        table.defaults().center();
         endScreen.addActor(table);
         table.setPosition(500, 360);
+
+        Label titleLabel = new Label("TIME'S UP!!", skin);
+        titleLabel.setFontScale(4);
+        table.add(titleLabel).colspan(2).height(50);
+
+        table.row().height(10);
+        Label emptyLabel = new Label("",skin);
+        table.add(emptyLabel).width(370);
+        table.add(emptyLabel).width(370);
+
+        table.row().height(30);
+        Label scoreTextLabel = new Label("You finished with a student satisfaction of: ", skin);
+        table.add(scoreTextLabel).right();
+        scoreNumberLabel = new Label("XX%", skin);
+        scoreNumberLabel.setFontScale(3);
+        table.add(scoreNumberLabel);
+
+        table.row().height(30);
+        scoreCommentLabel = new Label("You did something something-", skin);
+        table.add(scoreCommentLabel).colspan(2);
+
+        table.row().height(20);
+        table.add(emptyLabel);
+
+        table.row().height(50);
+        Label leaderboardTitleLabel = new Label("Leaderboard", skin);
+        leaderboardTitleLabel.setFontScale(3);
+        table.add(leaderboardTitleLabel);
+        Label achievementsTitleLabel = new Label("Achievements", skin);
+        achievementsTitleLabel.setFontScale(3);
+        table.add(achievementsTitleLabel);
+
+        table.row().height(220);
+        TextField leaderboardEmbed = new TextField("placeholder", skin);
+        table.add(leaderboardEmbed).fill().space(10);
+        TextField achievementsEmbed = new TextField("placeholder", skin);
+        table.add(achievementsEmbed).fill().space(10);
 
         ui.addActor(servicesDisplay);
         ui.addActor(buildSelect);
@@ -310,14 +317,14 @@ public class Main extends ApplicationAdapter {
         // when time is up, update contents of end screen and then draw
         if (gameTimer < 0) {
             scoreNumberLabel.setText(String.format("%d", Math.round(satisfactionBar.getScore())) + "%");
-            if (satisfactionBar.getScore() <= 30) {
-                scoreCommentLabel.setText("Everyone's quite upset...");
-            } else if (satisfactionBar.getScore() <= 60) {
-                scoreCommentLabel.setText("The university runs just fine!");
-            } else if (Math.round(satisfactionBar.getScore()) == 100) {
+            if (Math.round(satisfactionBar.getScore()) == 100) {
                 scoreCommentLabel.setText("THE BEST TO EVER DO IT!!!");
-            } else {
+            } else if (satisfactionBar.getScore() > 60) {
                 scoreCommentLabel.setText("The university runs excellently!!");
+            } else if (satisfactionBar.getScore() > 30) {
+                scoreCommentLabel.setText("The university runs just fine!");
+            } else {
+                scoreCommentLabel.setText("Everyone's quite upset...");
             }
             endScreen.draw();
         }
