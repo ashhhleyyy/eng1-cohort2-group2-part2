@@ -38,7 +38,7 @@ public class Main extends ApplicationAdapter {
     private float updateTimer;
     private final float updateTime = 1/30f; // 30 updates/second
     private boolean isPaused = true;
-    private float gameTimer = 3; // TEMP CHANGE FOR TESTING, YELL AT ME(Yawshi) IF I FORGET TO CHANGE BACK
+    private float gameTimer = 300;
     private HashMap<String, Event> currentEvents;
 
     private Stage stage, endScreen;
@@ -78,7 +78,7 @@ public class Main extends ApplicationAdapter {
             reqRec = 1;
             reqSel = 1;
             reqTea = 1;
-            previousSecond = 3; // TEMP CHANGE FOR TESTING, YELL AT ME (Yawshi) IF I FORGET TO CHANGE BACK
+            previousSecond = 300;
     
             Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
             batch = new SpriteBatch();
