@@ -36,7 +36,7 @@ public class Main extends ApplicationAdapter {
     private SatisfactionBar satisfactionBar;
     private float updateTimer;
     private boolean isPaused = true;
-    private float gameTimer = 300;
+    private float gameTimer = 5;
     private HashMap<String, Event> currentEvents;
 
     private Stage stage, endScreen;
@@ -242,7 +242,7 @@ public class Main extends ApplicationAdapter {
         table.add(achievementsTitleLabel);
 
         table.row().height(220);
-        TextField leaderboardEmbed = new TextField("placeholder", skin);
+        TextField leaderboardEmbed = new TextField(contentLoader.getLeaderboard().toString(), skin);
         table.add(leaderboardEmbed).fill().space(10);
         TextField achievementsEmbed = new TextField("placeholder", skin);
         table.add(achievementsEmbed).fill().space(10);

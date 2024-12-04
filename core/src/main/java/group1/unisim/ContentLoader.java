@@ -13,6 +13,7 @@ public class ContentLoader {
     public final AssetManager assetManager;
     private HashMap<String, Building> buildings;
     private HashMap<String, Thought> thoughts;
+    private Leaderboard leaderboard;
 
     public ContentLoader() {
         singleton = this;
@@ -40,6 +41,7 @@ public class ContentLoader {
         for (Building building : allBuildings()) {
             assetManager.load(building.getTexture(), Texture.class);
         }
+        leaderboard = json.fromJson(Leaderboard.class, Gdx.files.internal("leaderboard.json"));
 
         assetManager.finishLoading();
     }
@@ -50,6 +52,10 @@ public class ContentLoader {
 
     public Building getBuilding(String key) {
         return buildings.get(key);
+    }
+
+    public Leaderboard getLeaderboard() {
+        return  leaderboard;
     }
 
     public Collection<Building> allBuildings() {
