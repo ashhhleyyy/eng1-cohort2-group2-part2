@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -31,7 +32,7 @@ public class Main extends ApplicationAdapter {
 
     private SpriteBatch batch;
 
-    private Texture toolbar, mapTexture, settingsTexture, buildIconTexture, pauseTexture, playTexture;
+    private Texture toolbar, mapTexture, settingsTexture, buildIconTexture, pauseTexture, playTexture, endScreenTexture;
 
     private SatisfactionBar satisfactionBar;
     private float updateTimer;
@@ -40,12 +41,13 @@ public class Main extends ApplicationAdapter {
     private float gameTimer = 300;
     private HashMap<String, Event> currentEvents;
 
-    private Stage stage;
+    private Stage stage, endScreen;
 
     private boolean event1, event2, event3;
     private int reqAcc, reqTea, reqSel, reqFoo, reqRec;
     private int previousSecond;
 
+    private Label scoreNumberLabel, scoreCommentLabel;
 
     //UI
     private Stage ui;
@@ -60,7 +62,7 @@ public class Main extends ApplicationAdapter {
 
     private ImageButton pauseButton;
     private Image pauseImage;
-
+    
     @Override
     public void create() {
         contentLoader = new ContentLoader();
@@ -88,6 +90,8 @@ public class Main extends ApplicationAdapter {
         pauseTexture = new Texture(Assets.PAUSE);
         playTexture = new Texture(Assets.PLAY);
         ui = new Stage();
+
+        endScreenTexture = new Texture("endScreen.png");
 
         satisfactionBar = new SatisfactionBar(skin, ui);
 
@@ -191,6 +195,55 @@ public class Main extends ApplicationAdapter {
             }
         });
 
+        // creates and sets up background of end screen
+        endScreen = new Stage();
+        Image endScreenBackground = new Image(endScreenTexture);
+        endScreen.addActor(endScreenBackground);
+        endScreenBackground.setPosition(115,125);
+
+        // sets up the table to store contents of end screen
+        Table table = new Table();
+        table.defaults().center();
+        endScreen.addActor(table);
+        table.setPosition(500, 360);
+
+        Label titleLabel = new Label("TIME'S UP!!", skin);
+        titleLabel.setFontScale(4);
+        table.add(titleLabel).colspan(2).height(50);
+
+        table.row().height(10);
+        Label emptyLabel = new Label("",skin);
+        table.add(emptyLabel).width(370);
+        table.add(emptyLabel).width(370);
+
+        table.row().height(30);
+        Label scoreTextLabel = new Label("You finished with a student satisfaction of: ", skin);
+        table.add(scoreTextLabel).right();
+        scoreNumberLabel = new Label("XX%", skin);
+        scoreNumberLabel.setFontScale(3);
+        table.add(scoreNumberLabel);
+
+        table.row().height(30);
+        scoreCommentLabel = new Label("You did something something-", skin);
+        table.add(scoreCommentLabel).colspan(2);
+
+        table.row().height(20);
+        table.add(emptyLabel);
+
+        table.row().height(50);
+        Label leaderboardTitleLabel = new Label("Leaderboard", skin);
+        leaderboardTitleLabel.setFontScale(3);
+        table.add(leaderboardTitleLabel);
+        Label achievementsTitleLabel = new Label("Achievements", skin);
+        achievementsTitleLabel.setFontScale(3);
+        table.add(achievementsTitleLabel);
+
+        table.row().height(220);
+        TextField leaderboardEmbed = new TextField("placeholder", skin);
+        table.add(leaderboardEmbed).fill().space(10);
+        TextField achievementsEmbed = new TextField("placeholder", skin);
+        table.add(achievementsEmbed).fill().space(10);
+
         ui.addActor(servicesDisplay);
         ui.addActor(buildSelect);
         ui.addActor(buildButton);
@@ -260,6 +313,21 @@ public class Main extends ApplicationAdapter {
 
         stage.act(deltaTime);
         stage.draw();
+
+        // when time is up, update contents of end screen and then draw
+        if (gameTimer < 0) {
+            scoreNumberLabel.setText(String.format("%d", Math.round(satisfactionBar.getScore())) + "%");
+            if (Math.round(satisfactionBar.getScore()) == 100) {
+                scoreCommentLabel.setText("THE BEST TO EVER DO IT!!!");
+            } else if (satisfactionBar.getScore() > 60) {
+                scoreCommentLabel.setText("The university runs excellently!!");
+            } else if (satisfactionBar.getScore() > 30) {
+                scoreCommentLabel.setText("The university runs just fine!");
+            } else {
+                scoreCommentLabel.setText("Everyone's quite upset...");
+            }
+            endScreen.draw();
+        }
 
         ui.act(deltaTime);
         ui.draw();
