@@ -31,4 +31,4 @@ jobs:
         uses: actions/upload-artifact@v3.1.1
         with:
           name: jacoco-report
-          path: headless/lib/build/reports/jacoco/test/html/
+          path: headless/build/reports/jacoco/test/html/
