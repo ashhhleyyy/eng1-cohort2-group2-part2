@@ -1,12 +1,6 @@
 package group1.unisim;
 
 
-import static java.lang.Math.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -14,16 +8,22 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-public class SatisfactionBar extends ProgressBar {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-    private float satisfactionScore;
-    private float target;
+import static java.lang.Math.*;
+
+public class SatisfactionBar extends ProgressBar {
+    private static final float SPEED = 0.03f;
+
     private final float baseValue = 50;
-    private final float speed = 0.03f;
     private final Map<String, Thought> currentThoughts;
     private final Image targetMarker;
+    private float satisfactionScore;
+    private float target;
 
-    public SatisfactionBar(Skin skin, Stage stage){
+    public SatisfactionBar(Skin skin, Stage stage) {
         super(0.0f, 100.0f, 0.1f, false, skin);
         setSize(200, 50);
         resetScore();
@@ -36,48 +36,46 @@ public class SatisfactionBar extends ProgressBar {
         stage.addActor(targetMarker);
     }
 
-    private void resetScore(){
+    private void resetScore() {
         satisfactionScore = baseValue;
     }
 
-    public float getScore(){
+    public float getScore() {
         return satisfactionScore;
     }
 
-    public void updateScore(){
+    public void updateScore() {
         float difference = target - satisfactionScore;
-        if (abs(difference) < speed) satisfactionScore = target;
+        if (abs(difference) < SatisfactionBar.SPEED) satisfactionScore = target;
         else {
             float direction = (difference < 0) ? -1 : 1;
-            satisfactionScore += speed * direction;
+            satisfactionScore += SatisfactionBar.SPEED * direction;
         }
         setValue(satisfactionScore);
-        if (satisfactionScore < 31){
+        if (satisfactionScore < 31) {
             setColor(Color.RED);
-        }
-        else if (satisfactionScore < 61){
+        } else if (satisfactionScore < 61) {
             setColor(Color.YELLOW);
-        }
-        else{
+        } else {
             setColor(Color.GREEN);
         }
     }
 
-    public void setThought(String key, Thought thought){
+    public void setThought(String key, Thought thought) {
         currentThoughts.put(key, thought);
         calculateTarget();
     }
 
-    public Thought getThought(String key){
+    public Thought getThought(String key) {
         return currentThoughts.get(key);
     }
 
-    public void removeThought(String key){
+    public void removeThought(String key) {
         currentThoughts.remove(key);
         calculateTarget();
     }
 
-    private void calculateTarget(){
+    private void calculateTarget() {
         target = baseValue;
 
         for (String key : currentThoughts.keySet()) {
@@ -89,7 +87,7 @@ public class SatisfactionBar extends ProgressBar {
         targetMarker.setPosition(760 + target * 2, 730);
     }
 
-    public ArrayList<Thought> getAllThoughts(){
-        return new ArrayList(currentThoughts.values());
+    public ArrayList<Thought> getAllThoughts() {
+        return new ArrayList<>(currentThoughts.values());
     }
 }

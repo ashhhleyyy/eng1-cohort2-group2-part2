@@ -1,36 +1,33 @@
 package group1.unisim;
 
-import java.util.HashMap;
-
 import com.badlogic.gdx.Gdx;
 
+import java.util.HashMap;
+
 public class Event {
+    private final String associatedThought;
+    private final String index;
+    private final HashMap<String, Event> events;
     private float duration;
-    private String associatedThought;
-    private String index;
-    private HashMap<String, Event> events;
 
-    public Event(String _associatedThought, int _duration, String _index, HashMap<String, Event> _events){
-        duration = _duration;
-        associatedThought = _associatedThought;
-        index = _index;
-        events = _events;
+    public Event(String associatedThought, int duration, String index, HashMap<String, Event> events) {
+        this.associatedThought = associatedThought;
+        this.duration = duration;
+        this.index = index;
+        this.events = events;
     }
 
-    public void Update(){
-        if(duration > 0){
-            duration -= Gdx.graphics.getDeltaTime();
-            return;
-        }
-        this.End();
+    public void update(float deltaTime) {
+        if (duration <= 0) return;
+        duration -= deltaTime;
+        if (duration <= 0) this.end();
     }
 
-    public void End(){
+    public void end() {
         events.remove(index);
     }
 
-    public String getAssociatedThought(){
+    public String getAssociatedThought() {
         return associatedThought;
     }
-
 }

@@ -1,4 +1,5 @@
 package group1.unisim;
+
 public enum Service {
     Accommodation,
     TeachingSpace,

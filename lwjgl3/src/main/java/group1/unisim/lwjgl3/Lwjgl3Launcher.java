@@ -2,16 +2,18 @@ package group1.unisim.lwjgl3;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-
 import group1.unisim.Main;
 
-/** Launches the desktop (LWJGL3) application. */
+/**
+ * Launches the desktop (LWJGL3) application.
+ */
 public class Lwjgl3Launcher {
     public static void main(String[] args) {
         if (StartupHelper.startNewJvmIfRequired()) return; // This handles macOS support and helps on Windows.
         createApplication();
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     private static Lwjgl3Application createApplication() {
         return new Lwjgl3Application(new Main(), getDefaultConfiguration());
     }

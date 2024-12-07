@@ -10,31 +10,30 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class BuildingSlot {
+    private final Vector2 position;
+    private final int maxSize;
+    private final Image sprite;
     private int timeConstructing;
     private boolean isConstructingActive;
-    private Vector2 position;
-    private int maxSize;
     private Building building;
-    private Image sprite;
     private Building previewing;
-    private ImageButton button;
 
-    public BuildingSlot(Vector2 pos, int maxSiz, Stage stage) {
-        position = pos;
-        maxSize = maxSiz;
-        sprite = new Image(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture("accom.png"))));
-        sprite.setDrawable(null); // Image needs to be instantiated with a texture or setting it later won't work
-        sprite.setScale(2f);
-        sprite.setPosition(position.x, position.y);
-        button = new ImageButton(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture("accom.png"))));
+    public BuildingSlot(Vector2 position, int maxSize, Stage stage) {
+        this.position = position;
+        this.maxSize = maxSize;
+        this.sprite = new Image(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(Assets.ACCOMMODATION_TEXTURE))));
+        this.sprite.setDrawable(null); // Image needs to be instantiated with a texture or setting it later won't work
+        this.sprite.setScale(2f);
+        this.sprite.setPosition(this.position.x, this.position.y);
+        ImageButton button = new ImageButton(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(Assets.ACCOMMODATION_TEXTURE))));
         button.setColor(1, 1, 1, 0);
         button.setScale(2f);
-        button.setPosition(position.x, position.y);
+        button.setPosition(this.position.x, this.position.y);
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (previewing != null) {
-                    Build(previewing);
+                    build(previewing);
                 }
             }
         });
@@ -42,44 +41,36 @@ public class BuildingSlot {
         stage.addActor(button);
     }
 
-    public boolean isConstructing(){
+    public boolean isConstructing() {
         return isConstructingActive;
     }
 
-    public Vector2 getPosition(){
+    public Vector2 getPosition() {
         return position;
     }
 
-    public int getMaxSize(){
+    public int getMaxSize() {
         return maxSize;
     }
 
-    public Building getBuilding(){
+    public Building getBuilding() {
         return building;
     }
 
-    public void Update(){
-        if (timeConstructing > 0){
+    public void update() {
+        if (timeConstructing > 0) {
             timeConstructing--;
         } else if (timeConstructing == 0) {
             isConstructingActive = false;
         }
     }
 
-    public void Build(Building _building){
+    public void build(Building building) {
         clearPreview();
-        timeConstructing = _building.getConstructionTime();
-        building = _building;
-        sprite.setDrawable(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(building.getSpriteName()))));
-        isConstructingActive = true;
-    }
-
-    public void Upgrade(){
-
-    }
-
-    public void Demolish(){
-
+        this.timeConstructing = building.getConstructionTime();
+        this.building = building;
+        this.sprite.setDrawable(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(building.getTexture()))));
+        this.isConstructingActive = true;
     }
 
     public void setPreview(Building preview) {
@@ -88,7 +79,7 @@ public class BuildingSlot {
         if (preview.getSize() > maxSize) return;
 
         sprite.setColor(1, 1, 1, 0.6f);
-        sprite.setDrawable(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(preview.getSpriteName()))));
+        sprite.setDrawable(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(preview.getTexture()))));
         previewing = preview;
     }
 
@@ -100,4 +91,3 @@ public class BuildingSlot {
         previewing = null;
     }
 }
-
