@@ -5,12 +5,13 @@ public class Thought {
     private String description;
     private int modification;
 
-    public Thought() {}
+    public Thought() {
+    }
 
-    public Thought(String _title, String _description, int _modification) {
-        title = _title;
-        description  = _description;
-        modification = _modification;
+    public Thought(String title, String description, int modification) {
+        this.title = title;
+        this.description = description;
+        this.modification = modification;
     }
 
     public String getTitle() {

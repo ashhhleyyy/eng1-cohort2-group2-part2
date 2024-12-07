@@ -6,12 +6,6 @@ import java.util.List;
 
 public class Assets {
     private static final List<String> ALL_ASSETS = new ArrayList<>();
-
-    private static String asset(String asset) {
-        ALL_ASSETS.add(asset);
-        return asset;
-    }
-
     public static final String UI_SKIN = asset("ui/uiskin.json");
     public static final String TOOLBAR = asset("toolbar.png");
     public static final String MAP_TEXTURE = asset("mapTexture.png");
@@ -19,6 +13,13 @@ public class Assets {
     public static final String BUILD_ICON = asset("buildIcon.png");
     public static final String PAUSE = asset("pause.png");
     public static final String PLAY = asset("play.png");
+    public static final String END_SCREEN = asset("endScreen.png");
+    public static final String ACCOMMODATION_TEXTURE = asset("accom.png");
+
+    private static String asset(String asset) {
+        ALL_ASSETS.add(asset);
+        return asset;
+    }
 
     public static List<String> getAllAssets() {
         return Collections.unmodifiableList(ALL_ASSETS);

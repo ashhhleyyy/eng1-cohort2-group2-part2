@@ -6,16 +6,17 @@ public class Building {
     private Service[] servicesProvided;
     private int constructionTime;
     private int size;
-    private String sprite;
+    private String texture;
 
-    public Building() {}
+    public Building() {
+    }
 
-    public Building(String buildingName, Service[] services, int timeConstruction, int buildingSize, String buildingTexture){
-        name = buildingName;
-        servicesProvided = services;
-        constructionTime = timeConstruction;
-        size = buildingSize;
-        sprite = buildingTexture;
+    public Building(String name, Service[] servicesProvided, int constructionTime, int size, String sprite) {
+        this.name = name;
+        this.servicesProvided = servicesProvided;
+        this.constructionTime = constructionTime;
+        this.size = size;
+        this.texture = sprite;
     }
 
     public String getName() {
@@ -34,7 +35,7 @@ public class Building {
         return size;
     }
 
-    public String getSpriteName() {
-        return sprite;
+    public String getTexture() {
+        return texture;
     }
 }
