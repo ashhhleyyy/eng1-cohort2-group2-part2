@@ -5,10 +5,10 @@ import com.badlogic.gdx.Gdx;
 import java.util.HashMap;
 
 public class Event {
-    private String associatedThought;
+    private final String associatedThought;
+    private final String index;
+    private final HashMap<String, Event> events;
     private float duration;
-    private String index;
-    private HashMap<String, Event> events;
 
     public Event(String associatedThought, int duration, String index, HashMap<String, Event> events) {
         this.associatedThought = associatedThought;
@@ -18,14 +18,14 @@ public class Event {
     }
 
     public void update() {
-        if (duration > 0) {
-            duration -= Gdx.graphics.getDeltaTime();
+        if (duration <= 0) {
+            this.end();
             return;
         }
-        this.End();
+        duration -= Gdx.graphics.getDeltaTime();
     }
 
-    public void End() {
+    public void end() {
         events.remove(index);
     }
 

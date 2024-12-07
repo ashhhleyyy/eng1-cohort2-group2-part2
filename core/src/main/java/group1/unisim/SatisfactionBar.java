@@ -15,9 +15,9 @@ import java.util.Map;
 import static java.lang.Math.*;
 
 public class SatisfactionBar extends ProgressBar {
+    private static final float SPEED = 0.03f;
 
     private final float baseValue = 50;
-    private final float speed = 0.03f;
     private final Map<String, Thought> currentThoughts;
     private final Image targetMarker;
     private float satisfactionScore;
@@ -46,10 +46,10 @@ public class SatisfactionBar extends ProgressBar {
 
     public void updateScore() {
         float difference = target - satisfactionScore;
-        if (abs(difference) < speed) satisfactionScore = target;
+        if (abs(difference) < SatisfactionBar.SPEED) satisfactionScore = target;
         else {
             float direction = (difference < 0) ? -1 : 1;
-            satisfactionScore += speed * direction;
+            satisfactionScore += SatisfactionBar.SPEED * direction;
         }
         setValue(satisfactionScore);
         if (satisfactionScore < 31) {

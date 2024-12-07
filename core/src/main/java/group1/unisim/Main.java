@@ -23,10 +23,16 @@ import java.util.Objects;
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
  */
 public class Main extends ApplicationAdapter {
-    private final float updateTime = 1 / 30f; // 30 updates/second
+    private static final float UPDATE_TIME = 1 / 30f; // 30 updates/second
     private ContentLoader contentLoader;
     private SpriteBatch batch;
-    private Texture toolbar, mapTexture, settingsTexture, buildIconTexture, pauseTexture, playTexture, endScreenTexture;
+    private Texture toolbar;
+    private Texture mapTexture;
+    private Texture settingsTexture;
+    private Texture buildIconTexture;
+    private Texture pauseTexture;
+    private Texture playTexture;
+
     private SatisfactionBar satisfactionBar;
     private float updateTimer;
     private boolean isPaused = true;
@@ -35,24 +41,29 @@ public class Main extends ApplicationAdapter {
 
     private Stage stage, endScreen;
 
-    private boolean event1, event2, event3;
-    private int reqAcc, reqTea, reqSel, reqFoo, reqRec;
+    private boolean event1;
+    private boolean event2;
+    private boolean event3;
+    private int reqAcc;
+    private int reqTea;
+    private int reqSel;
+    private int reqFoo;
+    private int reqRec;
     private int previousSecond;
 
-    private Label scoreNumberLabel, scoreCommentLabel;
+    private Label scoreNumberLabel;
+    private Label scoreCommentLabel;
 
     //UI
     private Stage ui;
     private Label gameTimeText;
 
-    private ImageButton buildButton;
     private ScrollPane buildSelect;
     private ArrayList<BuildingSlot> buildingSlots;
     private Building buildingPreview = null;
 
     private HashMap<Service, Label> servicesText;
 
-    private ImageButton pauseButton;
     private Image pauseImage;
 
     @Override
@@ -83,7 +94,7 @@ public class Main extends ApplicationAdapter {
         playTexture = new Texture(Assets.PLAY);
         ui = new Stage();
 
-        endScreenTexture = new Texture(Assets.END_SCREEN);
+        Texture endScreenTexture = new Texture(Assets.END_SCREEN);
 
         satisfactionBar = new SatisfactionBar(skin, ui);
 
@@ -94,7 +105,7 @@ public class Main extends ApplicationAdapter {
         gameTimeText.setAlignment(1);
         ui.addActor(gameTimeText);
 
-        buildButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(buildIconTexture)));
+        ImageButton buildButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(buildIconTexture)));
         buildButton.setPosition(70, 728);
         buildButton.setTransform(true);
         buildButton.setScale(2.5f);
@@ -172,7 +183,7 @@ public class Main extends ApplicationAdapter {
         pauseImage = new Image(new TextureRegionDrawable(new TextureRegion(pauseTexture)));
         pauseImage.setPosition(570, 730);
         pauseImage.setScale(2f);
-        pauseButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(pauseTexture)));
+        ImageButton pauseButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(pauseTexture)));
         pauseButton.setPosition(570, 730);
         pauseButton.setScale(2f);
         pauseButton.setColor(1, 1, 1, 0);
@@ -263,17 +274,17 @@ public class Main extends ApplicationAdapter {
             }
 
             updateTimer += deltaTime;
-            while (updateTimer > updateTime) { // in case of a long freeze, able to do multiple updates
+            while (updateTimer > Main.UPDATE_TIME) { // in case of a long freeze, able to do multiple updates
                 update();
-                updateTimer -= updateTime;
+                updateTimer -= Main.UPDATE_TIME;
             }
         }
 
         if ((Math.round(gameTimer) % 2 == 0) && (previousSecond != Math.round(gameTimer))) {
             // Thought bubble
-            String thoughtBubble = "Current Student Thoughts:\n";
+            StringBuilder thoughtBubble = new StringBuilder("Current Student Thoughts:\n");
             for (Thought thought : satisfactionBar.getAllThoughts()) {
-                thoughtBubble += thought.getTitle() + ": " + thought.getDescription() + "\n";
+                thoughtBubble.append(thought.getTitle()).append(": ").append(thought.getDescription()).append("\n");
             }
             System.out.println(thoughtBubble);
             previousSecond = Math.round(gameTimer);

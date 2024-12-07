@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class ContentLoader {
     public static ContentLoader singleton;
-    public AssetManager assetManager;
+    public final AssetManager assetManager;
     private HashMap<String, Building> buildings;
     private HashMap<String, Thought> thoughts;
 
@@ -59,7 +59,7 @@ public class ContentLoader {
     }
 
     public Texture getTexture(String path) {
-        return (Texture) assetManager.get(path, Texture.class);
+        return assetManager.get(path, Texture.class);
     }
 
     public void dispose() {

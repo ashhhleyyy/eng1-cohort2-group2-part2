@@ -1,6 +1,6 @@
 {
   activeConstructions0: {
-    title: "No Construction is Occuring"
+    title: "No Construction is Occurring"
     description: "People are Liking the Quiet!"
     modification: 5
   }
@@ -20,13 +20,13 @@
     modification: -12
   }
   overCrowding: {
-    title: "Not Enough Accomodation"
-    description: "There are not enough accomodation buildings available, people are having to sleep in hallways!"
+    title: "Not Enough Accommodation"
+    description: "There are not enough accommodation buildings available, people are having to sleep in hallways!"
     modification: -20
   }
   underCrowding: {
     title: "Too Many Empty Rooms"
-    description: "There are too many accomodation buildings available, it feels like a ghost town!"
+    description: "There are too many accommodation buildings available, it feels like a ghost town!"
     modification: -10
   }
   neutralCrowding: {
