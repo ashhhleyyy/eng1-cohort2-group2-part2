@@ -17,12 +17,10 @@ public class Event {
         this.events = events;
     }
 
-    public void update() {
-        if (duration <= 0) {
-            this.end();
-            return;
-        }
-        duration -= Gdx.graphics.getDeltaTime();
+    public void update(float deltaTime) {
+        if (duration <= 0) return;
+        duration -= deltaTime;
+        if (duration <= 0) this.end();
     }
 
     public void end() {

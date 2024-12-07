@@ -21,10 +21,10 @@ public class BuildingSlot {
     public BuildingSlot(Vector2 position, int maxSize, Stage stage) {
         this.position = position;
         this.maxSize = maxSize;
-        sprite = new Image(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(Assets.ACCOMMODATION_TEXTURE))));
-        sprite.setDrawable(null); // Image needs to be instantiated with a texture or setting it later won't work
-        sprite.setScale(2f);
-        sprite.setPosition(this.position.x, this.position.y);
+        this.sprite = new Image(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(Assets.ACCOMMODATION_TEXTURE))));
+        this.sprite.setDrawable(null); // Image needs to be instantiated with a texture or setting it later won't work
+        this.sprite.setScale(2f);
+        this.sprite.setPosition(this.position.x, this.position.y);
         ImageButton button = new ImageButton(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(Assets.ACCOMMODATION_TEXTURE))));
         button.setColor(1, 1, 1, 0);
         button.setScale(2f);
@@ -67,10 +67,10 @@ public class BuildingSlot {
 
     public void build(Building building) {
         clearPreview();
-        timeConstructing = building.getConstructionTime();
+        this.timeConstructing = building.getConstructionTime();
         this.building = building;
-        sprite.setDrawable(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(building.getTexture()))));
-        isConstructingActive = true;
+        this.sprite.setDrawable(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(building.getTexture()))));
+        this.isConstructingActive = true;
     }
 
     public void setPreview(Building preview) {
@@ -91,4 +91,3 @@ public class BuildingSlot {
         previewing = null;
     }
 }
-

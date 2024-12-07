@@ -1,7 +1,6 @@
 package group1.unisim;
 
 public class Building {
-
     private String name;
     private Service[] servicesProvided;
     private int constructionTime;
@@ -11,12 +10,12 @@ public class Building {
     public Building() {
     }
 
-    public Building(String name, Service[] servicesProvided, int constructionTime, int size, String sprite) {
+    public Building(String name, Service[] servicesProvided, int constructionTime, int size, String texture) {
         this.name = name;
         this.servicesProvided = servicesProvided;
         this.constructionTime = constructionTime;
         this.size = size;
-        this.texture = sprite;
+        this.texture = texture;
     }
 
     public String getName() {

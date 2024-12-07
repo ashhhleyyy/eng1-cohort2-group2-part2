@@ -24,13 +24,13 @@ public class ContentLoader {
         Json json = new Json();
 
         try {
-            thoughts = (HashMap<String, Thought>) json.fromJson(HashMap.class, Thought.class, Gdx.files.internal("thoughts.json"));
+            this.thoughts = (HashMap<String, Thought>) json.fromJson(HashMap.class, Thought.class, Gdx.files.internal("thoughts.json"));
         } catch (Exception e) {
             Gdx.app.error("LoadThoughts", e.getMessage());
         }
 
         try {
-            buildings = (HashMap<String, Building>) json.fromJson(HashMap.class, Building.class, Gdx.files.internal("buildings.json"));
+            this.buildings = (HashMap<String, Building>) json.fromJson(HashMap.class, Building.class, Gdx.files.internal("buildings.json"));
         } catch (Exception e) {
             Gdx.app.error("LoadBuildings", e.toString());
         }
