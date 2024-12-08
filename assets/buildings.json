@@ -24,8 +24,7 @@
     ]
     constructionTime: 180
     size: 2
-    sprite: accomlvl1.png
-    // placeholder
+    sprite: lectureHall.png
   }
   library: {
     name: Library
@@ -43,7 +42,6 @@
     ]
     constructionTime: 180
     size: 2
-    sprite: accom.png
-    // placeholder
+    sprite: rec.png
   }
 }
