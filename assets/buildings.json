@@ -1,47 +1,47 @@
 {
-  accommodation: {
-    name: Accommodation
-    servicesProvided: [
-      Accommodation
-    ]
-    constructionTime: 180
-    size: 2
-    sprite: accom.png
-  }
-  cafe: {
-    name: Cafe
-    servicesProvided: [
-      FoodDrink
-    ]
-    constructionTime: 180
-    size: 1
-    sprite: cafe.png
-  }
-  lectureHall: {
-    name: LectureHall
-    servicesProvided: [
-      TeachingSpace
-    ]
-    constructionTime: 180
-    size: 2
-    sprite: lectureHall.png
-  }
-  library: {
-    name: Library
-    servicesProvided: [
-      SelfStudy
-    ]
-    constructionTime: 180
-    size: 2
-    sprite: library.png
-  }
-  rec: {
-    name: Rec
-    servicesProvided: [
-      Recreation
-    ]
-    constructionTime: 180
-    size: 2
-    sprite: rec.png
+  "accommodation": {
+    "name": "Accommodation",
+    "servicesProvided": [
+      "Accommodation"
+    ],
+    "constructionTime": 180,
+    "size": 2,
+    "texture": "accom.png"
+  },
+  "cafe": {
+    "name": "Cafe",
+    "servicesProvided": [
+      "FoodDrink"
+    ],
+    "constructionTime": 180,
+    "size": 1,
+    "texture": "cafe.png"
+  },
+  "lectureHall": {
+    "name": "LectureHall",
+    "servicesProvided": [
+      "TeachingSpace"
+    ],
+    "constructionTime": 180,
+    "size": 2,
+    "texture": "lectureHall.png"
+  },
+  "library": {
+    "name": "Library",
+    "servicesProvided": [
+      "SelfStudy"
+    ],
+    "constructionTime": 180,
+    "size": 2,
+    "texture": "library.png"
+  },
+  "rec": {
+    "name": "Rec",
+    "servicesProvided": [
+      "Recreation"
+    ],
+    "constructionTime": 180,
+    "size": 2,
+    "texture": "rec.png"
   }
 }
