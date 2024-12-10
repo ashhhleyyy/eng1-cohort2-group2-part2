@@ -16,4 +16,12 @@ public class Score {
     public String toString() {
         return String.format("%s: %s", name, score);
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getScore() {
+        return score;
+    }
 }
