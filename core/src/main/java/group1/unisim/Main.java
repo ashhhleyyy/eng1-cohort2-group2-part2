@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import java.util.ArrayList;
@@ -66,6 +67,9 @@ public class Main extends ApplicationAdapter {
 
     private Image pauseImage;
 
+    private Table thoughtDisplay, eventDisplay;
+    private Label thoughtDisplayLabel, eventDisplayLabel;
+
     @Override
     public void create() {
         contentLoader = new ContentLoader();
@@ -93,6 +97,8 @@ public class Main extends ApplicationAdapter {
         pauseTexture = new Texture(Assets.PAUSE);
         playTexture = new Texture(Assets.PLAY);
         ui = new Stage();
+
+        Texture thoughtBackgroundTexture = new Texture(Assets.THOUGHT_BACKGROUND);
 
         Texture endScreenTexture = new Texture(Assets.END_SCREEN);
 
@@ -198,6 +204,25 @@ public class Main extends ApplicationAdapter {
             }
         });
 
+        ui.addActor(servicesDisplay);
+        ui.addActor(buildSelect);
+        ui.addActor(buildButton);
+        ui.addActor(pauseImage);
+        ui.addActor(pauseButton);
+        Gdx.input.setInputProcessor(new InputMultiplexer(ui, stage));
+
+        // creates and sets up thoughts display
+        Image thoughtBackground = new Image(thoughtBackgroundTexture);
+        thoughtBackground.setPosition(700,420);
+        ui.addActor(thoughtBackground);
+
+        thoughtDisplay = new Table(skin);
+        thoughtDisplay.top().right().setPosition(1000, 720);
+        thoughtDisplayLabel = new Label("Unpause time to get feedback!", skin);
+        thoughtDisplayLabel.setWrap(true);
+        thoughtDisplay.add(thoughtDisplayLabel).height(300).width(295);
+        ui.addActor(thoughtDisplay);
+
         // creates and sets up background of end screen
         endScreen = new Stage();
         Image endScreenBackground = new Image(endScreenTexture);
@@ -247,13 +272,6 @@ public class Main extends ApplicationAdapter {
         TextField achievementsEmbed = new TextField("placeholder", skin);
         table.add(achievementsEmbed).fill().space(10);
 
-        ui.addActor(servicesDisplay);
-        ui.addActor(buildSelect);
-        ui.addActor(buildButton);
-        ui.addActor(pauseImage);
-        ui.addActor(pauseButton);
-        Gdx.input.setInputProcessor(new InputMultiplexer(ui, stage));
-
         satisfactionBar.updateScore();
     }
 
@@ -286,7 +304,7 @@ public class Main extends ApplicationAdapter {
             for (Thought thought : satisfactionBar.getAllThoughts()) {
                 thoughtBubble.append(thought.getTitle()).append(": ").append(thought.getDescription()).append("\n");
             }
-            System.out.println(thoughtBubble);
+            thoughtDisplayLabel.setText(thoughtBubble);
             previousSecond = Math.round(gameTimer);
         }
 
