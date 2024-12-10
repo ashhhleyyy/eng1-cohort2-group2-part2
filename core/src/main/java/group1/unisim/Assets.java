@@ -18,6 +18,7 @@ public class Assets {
     public static final String END_SCREEN = asset("endScreen.png");
     public static final String ACCOMMODATION_TEXTURE = asset("accom.png");
     public static final String THOUGHT_BACKGROUND = asset("thoughtBackground.png");
+    public static final String EVENT_BACKGROUND = asset("eventBackground.png");
 
     private static String asset(String asset) {
         ALL_ASSETS.add(asset);
