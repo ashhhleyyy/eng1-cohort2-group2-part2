@@ -334,8 +334,8 @@ public class Main extends ApplicationAdapter {
             } else {
                 scoreCommentLabel.setText("Everyone's quite upset...");
             }
-            if (!leaderboardUpdated){
-                leaderboardUpdated=true;
+            if (!leaderboardUpdated) {
+                leaderboardUpdated = true;
                 Leaderboard leaderboard = contentLoader.getLeaderboard();
                 String name = JOptionPane.showInputDialog("whats your username");
                 leaderboard.addScore(new Score(name, Math.round(satisfactionBar.getScore())));

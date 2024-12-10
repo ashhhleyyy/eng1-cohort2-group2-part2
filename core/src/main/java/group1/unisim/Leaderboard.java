@@ -17,7 +17,7 @@ public class Leaderboard {
 
     public String toString() {
         String res = "";
-        for (Score score : scores.reversed()){
+        for (Score score : scores.reversed()) {
             res += score.toString() + "\n";
         }
         return res;

@@ -44,7 +44,7 @@ public class ContentLoader {
         }
         try {
             leaderboard = json.fromJson(Leaderboard.class, Gdx.files.external(".leaderboard.json"));
-        } catch (SerializationException e){
+        } catch (SerializationException e) {
             leaderboard = new Leaderboard();
         }
 
@@ -60,7 +60,7 @@ public class ContentLoader {
     }
 
     public Leaderboard getLeaderboard() {
-        return  leaderboard;
+        return leaderboard;
     }
 
     public Collection<Building> allBuildings() {
@@ -78,10 +78,10 @@ public class ContentLoader {
 
     public void saveLeaderboard(Leaderboard leaderboard) {
         Json json = new Json();
-        json.toJson(leaderboard,Gdx.files.external(".leaderboard.json"));
+        json.toJson(leaderboard, Gdx.files.external(".leaderboard.json"));
     }
 
-    public void dispose(){
+    public void dispose() {
         singleton = null;
         assetManager.dispose();
     }
