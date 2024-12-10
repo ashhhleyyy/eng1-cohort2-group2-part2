@@ -1,7 +1,5 @@
 package group1.unisim;
 
-import com.badlogic.gdx.Gdx;
-
 import java.util.HashMap;
 
 public class Event {

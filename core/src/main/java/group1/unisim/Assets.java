@@ -6,6 +6,8 @@ import java.util.List;
 
 public class Assets {
     private static final List<String> ALL_ASSETS = new ArrayList<>();
+    public static final String BUILDINGS_JSON = asset("buildings.json");
+    public static final String THOUGHTS_JSON = asset("thoughts.json");
     public static final String UI_SKIN = asset("ui/uiskin.json");
     public static final String TOOLBAR = asset("toolbar.png");
     public static final String MAP_TEXTURE = asset("mapTexture.png");
