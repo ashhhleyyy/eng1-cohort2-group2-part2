@@ -8,7 +8,6 @@ public class Leaderboard {
     private List<Score> scores = new ArrayList<>();
 
     public Leaderboard() {
-
     }
 
     public Leaderboard(List<Score> scores) {
@@ -16,11 +15,11 @@ public class Leaderboard {
     }
 
     public String toString() {
-        String res = "";
+        StringBuilder res = new StringBuilder();
         for (Score score : scores.reversed()) {
-            res += score.toString() + "\n";
+            res.append(score.toString()).append("\n");
         }
-        return res;
+        return res.toString();
     }
 
     public void addScore(Score score) {
