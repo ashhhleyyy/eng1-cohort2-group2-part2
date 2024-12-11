@@ -37,7 +37,7 @@ public class Main extends ApplicationAdapter {
     private SatisfactionBar satisfactionBar;
     private float updateTimer;
     private boolean isPaused = true;
-    private boolean leaderboardUpdated = false;
+    private boolean statsUpdated = false;
     private float gameTimer = 300;
     private HashMap<String, Event> currentEvents;
 
@@ -79,12 +79,13 @@ public class Main extends ApplicationAdapter {
     private TextArea achievementsEmbed;
     private TextArea leaderboardEmbed;
 
-    private final AchievementsManager achievementsManager = new AchievementsManager(Collections.emptyList());
+    private AchievementsManager achievementsManager;
 
     @Override
     public void create() {
-        contentLoader = new ContentLoader();
-        contentLoader.load();
+        this.contentLoader = new ContentLoader();
+        this.contentLoader.load();
+        this.achievementsManager = new AchievementsManager();
 
         // events start at false and after being triggered are set to true.
         currentEvents = new HashMap<>();
@@ -407,20 +408,21 @@ public class Main extends ApplicationAdapter {
             } else {
                 scoreCommentLabel.setText("Everyone's quite upset...");
             }
-            if (!leaderboardUpdated) {
-                leaderboardUpdated = true;
+            if (!statsUpdated) {
+                statsUpdated = true;
                 Leaderboard leaderboard = contentLoader.getLeaderboard();
                 String name = JOptionPane.showInputDialog("whats your username");
                 leaderboard.addScore(new Score(name, Math.round(satisfactionBar.getScore())));
                 leaderboardEmbed.setText(leaderboard.toString());
                 contentLoader.saveLeaderboard(leaderboard);
-            }
 
-            StringBuilder builder = new StringBuilder();
-            for (Achievement achievement : achievementsManager.getComplete()) {
-                builder.append(achievement.getName()).append(": ").append(achievement.getDescription()).append("\n\n");
+                StringBuilder builder = new StringBuilder();
+                for (Achievement achievement : achievementsManager.getComplete()) {
+                    builder.append(achievement.getName()).append(": ").append(achievement.getDescription()).append("\n\n");
+                }
+                this.achievementsEmbed.setText(builder.toString());
+                this.achievementsManager.saveAchievements();
             }
-            this.achievementsEmbed.setText(builder.toString());
 
             endScreen.draw();
         }

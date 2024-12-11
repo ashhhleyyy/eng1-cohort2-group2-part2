@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class ContentLoader {
+    private static final String LEADERBOARD_JSON = ".-unisim-leaderboard.json";
     public static ContentLoader singleton;
     public final AssetManager assetManager;
     private HashMap<String, Building> buildings;
@@ -43,7 +44,7 @@ public class ContentLoader {
             assetManager.load(building.getTexture(), Texture.class);
         }
         try {
-            leaderboard = json.fromJson(Leaderboard.class, Gdx.files.external(".leaderboard.json"));
+            leaderboard = json.fromJson(Leaderboard.class, Gdx.files.external(LEADERBOARD_JSON));
         } catch (SerializationException e) {
             leaderboard = new Leaderboard();
         }
@@ -78,7 +79,7 @@ public class ContentLoader {
 
     public void saveLeaderboard(Leaderboard leaderboard) {
         Json json = new Json();
-        json.toJson(leaderboard, Gdx.files.external(".leaderboard.json"));
+        json.toJson(leaderboard, Gdx.files.external(LEADERBOARD_JSON));
     }
 
     public void dispose() {
