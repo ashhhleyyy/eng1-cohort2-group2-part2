@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -22,6 +23,7 @@ import java.util.Objects;
 /**
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
  */
+
 public class Main extends ApplicationAdapter {
     private static final float UPDATE_TIME = 1 / 30f; // 30 updates/second
     private ContentLoader contentLoader;
@@ -36,7 +38,8 @@ public class Main extends ApplicationAdapter {
     private SatisfactionBar satisfactionBar;
     private float updateTimer;
     private boolean isPaused = true;
-    private float gameTimer = 300;
+    private boolean leaderboardUpdated = false;
+    private float gameTimer = 5;
     private HashMap<String, Event> currentEvents;
 
     private Stage stage, endScreen;
@@ -69,6 +72,8 @@ public class Main extends ApplicationAdapter {
     private Table thoughtDisplay, eventDisplay;
     private Label thoughtDisplayLabel, eventDisplayLabel;
     private Image thoughtBackground, eventBackground;
+
+    private TextArea leaderboardEmbed;
 
     @Override
     public void create() {
@@ -280,7 +285,7 @@ public class Main extends ApplicationAdapter {
         table.add(achievementsTitleLabel);
 
         table.row().height(220);
-        TextField leaderboardEmbed = new TextField("placeholder", skin);
+        leaderboardEmbed = new TextArea("", skin);
         table.add(leaderboardEmbed).fill().space(10);
         TextField achievementsEmbed = new TextField("placeholder", skin);
         table.add(achievementsEmbed).fill().space(10);
@@ -386,6 +391,14 @@ public class Main extends ApplicationAdapter {
                 scoreCommentLabel.setText("The university runs just fine!");
             } else {
                 scoreCommentLabel.setText("Everyone's quite upset...");
+            }
+            if (!leaderboardUpdated) {
+                leaderboardUpdated = true;
+                Leaderboard leaderboard = contentLoader.getLeaderboard();
+                String name = JOptionPane.showInputDialog("whats your username");
+                leaderboard.addScore(new Score(name, Math.round(satisfactionBar.getScore())));
+                leaderboardEmbed.setText(leaderboard.toString());
+                contentLoader.saveLeaderboard(leaderboard);
             }
             endScreen.draw();
         }
