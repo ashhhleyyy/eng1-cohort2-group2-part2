@@ -17,7 +17,13 @@ public class AchievementsManager {
     private final List<Achievement> complete;
 
     public AchievementsManager() {
-        List<String> completedIds = this.loadAchievements();
+        this(true);
+    }
+
+    public AchievementsManager(boolean loadFromJson) {
+        List<String> completedIds = Collections.emptyList();
+        if (loadFromJson)
+            completedIds = this.loadAchievements();
         this.incomplete = new ArrayList<>();
         this.complete = new ArrayList<>();
         incomplete.addAll(Achievements.ALL_ACHIEVEMENTS.values());
