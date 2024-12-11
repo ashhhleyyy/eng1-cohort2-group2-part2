@@ -267,6 +267,10 @@ public class Main extends ApplicationAdapter {
         ui.addActor(buildButton);
         ui.addActor(pauseImage);
         ui.addActor(pauseButton);
+        for (BuildingSlot slot : buildingSlots){
+            ui.addActor(slot.constructionCountdownText);
+        }
+
         Gdx.input.setInputProcessor(new InputMultiplexer(ui, stage));
 
         satisfactionBar.updateScore();

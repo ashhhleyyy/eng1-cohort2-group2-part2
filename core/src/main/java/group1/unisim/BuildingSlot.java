@@ -1,11 +1,14 @@
 package group1.unisim;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
@@ -17,6 +20,8 @@ public class BuildingSlot {
     private boolean isConstructingActive;
     private Building building;
     private Building previewing;
+    public Label constructionCountdownText;
+    Skin skin = new Skin(Gdx.files.internal(Assets.UI_SKIN));
 
     public BuildingSlot(Vector2 position, int maxSize, Stage stage) {
         this.position = position;
@@ -39,6 +44,12 @@ public class BuildingSlot {
         });
         stage.addActor(sprite);
         stage.addActor(button);
+
+        constructionCountdownText = new Label(null, skin);
+        constructionCountdownText.setPosition(position.x, position.y);
+        constructionCountdownText.setSize(50, 50);
+        constructionCountdownText.setFontScale(2);
+        constructionCountdownText.setAlignment(1);
     }
 
     public boolean isConstructing() {
@@ -60,8 +71,12 @@ public class BuildingSlot {
     public void update() {
         if (timeConstructing > 0) {
             timeConstructing--;
+            // I KNOW THIS LINE OF CODE LOOKS DUMB BUT TRUST ME IT IS NEEDED
+            constructionCountdownText.setVisible(true);
+            constructionCountdownText.setText(Integer.toString(timeConstructing));
         } else if (timeConstructing == 0) {
             isConstructingActive = false;
+            constructionCountdownText.setVisible(false);
         }
     }
 
