@@ -1,6 +1,7 @@
 package group1.unisim;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -38,7 +39,9 @@ public class BuildingSlot {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (previewing != null) {
-                    build(previewing);
+                    if (event.getButton() == Input.Buttons.LEFT) {
+                        build(previewing);
+                    }
                 }
             }
         });
@@ -71,8 +74,7 @@ public class BuildingSlot {
     public void update() {
         if (timeConstructing > 0) {
             timeConstructing--;
-            // I KNOW THIS LINE OF CODE LOOKS DUMB BUT TRUST ME IT IS NEEDED
-            constructionCountdownText.setVisible(true);
+            constructionCountdownText.setVisible(true); // I KNOW THIS LINE OF CODE LOOKS DUMB BUT TRUST ME IT IS NEEDED
             constructionCountdownText.setText(Integer.toString(timeConstructing));
         } else if (timeConstructing == 0) {
             isConstructingActive = false;
@@ -104,5 +106,26 @@ public class BuildingSlot {
         sprite.setColor(1, 1, 1, 1);
         sprite.setDrawable(null);
         previewing = null;
+    }
+
+    public void clearSlot(BuildingSlot slot, Stage stage){
+        this.sprite.setDrawable(null); // Image needs to be instantiated with a texture or setting it later won't work
+        this.sprite.setScale(2f);
+        this.sprite.setPosition(this.position.x, this.position.y);
+        ImageButton button = new ImageButton(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(Assets.ACCOMMODATION_TEXTURE))));
+        button.setColor(1, 1, 1, 0);
+        button.setScale(2f);
+        button.setPosition(this.position.x, this.position.y);
+        button.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (previewing != null && event.getButton() == Input.Buttons.LEFT) {
+                    build(previewing);
+                }
+            }
+        });
+        stage.addActor(sprite);
+        stage.addActor(button);
+
     }
 }

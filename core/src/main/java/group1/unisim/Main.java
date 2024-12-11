@@ -280,9 +280,7 @@ public class Main extends ApplicationAdapter {
     public void render() {
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT) && buildingPreview != null) {
-            stopPreview();
-        }
+
 
         if (!isPaused && gameTimer > 0) {
             gameTimer -= deltaTime;
@@ -368,6 +366,10 @@ public class Main extends ApplicationAdapter {
 
         for (BuildingSlot slot : buildingSlots) {
             slot.update();
+        }
+
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT) && buildingPreview != null) {
+            stopPreview();
         }
 
         updateServiceCounts();
