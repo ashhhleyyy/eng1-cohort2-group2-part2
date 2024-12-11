@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.SerializationException;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ public class ContentLoader {
     public final AssetManager assetManager;
     private HashMap<String, Building> buildings;
     private HashMap<String, Thought> thoughts;
+    private Leaderboard leaderboard;
 
     public ContentLoader() {
         singleton = this;
@@ -40,6 +42,11 @@ public class ContentLoader {
         for (Building building : allBuildings()) {
             assetManager.load(building.getTexture(), Texture.class);
         }
+        try {
+            leaderboard = json.fromJson(Leaderboard.class, Gdx.files.external(".leaderboard.json"));
+        } catch (SerializationException e) {
+            leaderboard = new Leaderboard();
+        }
 
         assetManager.finishLoading();
     }
@@ -52,6 +59,10 @@ public class ContentLoader {
         return buildings.get(key);
     }
 
+    public Leaderboard getLeaderboard() {
+        return leaderboard;
+    }
+
     public Collection<Building> allBuildings() {
         return buildings.values();
     }
@@ -62,6 +73,12 @@ public class ContentLoader {
 
     public Texture getTexture(String path) {
         return assetManager.get(path, Texture.class);
+    }
+
+
+    public void saveLeaderboard(Leaderboard leaderboard) {
+        Json json = new Json();
+        json.toJson(leaderboard, Gdx.files.external(".leaderboard.json"));
     }
 
     public void dispose() {
