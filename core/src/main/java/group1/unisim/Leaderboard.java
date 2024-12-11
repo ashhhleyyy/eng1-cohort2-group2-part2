@@ -16,7 +16,7 @@ public class Leaderboard {
 
     public String toString() {
         StringBuilder res = new StringBuilder();
-        for (Score score : scores.reversed()) {
+        for (Score score : scores) {
             res.append(score.toString()).append("\n");
         }
         return res.toString();
@@ -24,9 +24,9 @@ public class Leaderboard {
 
     public void addScore(Score score) {
         this.scores.add(score);
-        this.scores.sort(Comparator.comparing(Score::getScore));
+        this.scores.sort(Comparator.comparing(Score::getScore).reversed());
         if (this.scores.size() > 10) {
-            this.scores.remove(0);
+            this.scores.remove(10);
         }
     }
 }
