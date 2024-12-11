@@ -15,7 +15,7 @@ import java.util.Map;
 import static java.lang.Math.*;
 
 public class SatisfactionBar extends ProgressBar {
-    private static final float SPEED = 0.03f;
+    private static final float SPEED = 0.15f;
 
     private final float baseValue = 50;
     private final Map<String, Thought> currentThoughts;

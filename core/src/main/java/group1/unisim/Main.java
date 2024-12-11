@@ -1,11 +1,5 @@
 package group1.unisim;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
-
-import javax.swing.JOptionPane;
-
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -17,23 +11,18 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
  */
-
 public class Main extends ApplicationAdapter {
     private static final float UPDATE_TIME = 1 / 30f; // 30 updates/second
     private ContentLoader contentLoader;
@@ -52,7 +41,8 @@ public class Main extends ApplicationAdapter {
     private float gameTimer = 300;
     private HashMap<String, Event> currentEvents;
 
-    private Stage stage, endScreen;
+    private Stage stage;
+    private Stage endScreen;
 
     private boolean event1;
     private boolean event2;
@@ -79,11 +69,17 @@ public class Main extends ApplicationAdapter {
 
     private Image pauseImage;
 
-    private Table thoughtDisplay, eventDisplay;
-    private Label thoughtDisplayLabel, eventDisplayLabel;
-    private Image thoughtBackground, eventBackground;
+    private Table thoughtDisplay;
+    private Table eventDisplay;
+    private Label thoughtDisplayLabel;
+    private Label eventDisplayLabel;
+    private Image thoughtBackground;
+    private Image eventBackground;
 
+    private TextArea achievementsEmbed;
     private TextArea leaderboardEmbed;
+
+    private final AchievementsManager achievementsManager = new AchievementsManager(Collections.emptyList());
 
     @Override
     public void create() {
@@ -297,7 +293,7 @@ public class Main extends ApplicationAdapter {
         table.row().height(220);
         leaderboardEmbed = new TextArea("", skin);
         table.add(leaderboardEmbed).fill().space(10);
-        TextField achievementsEmbed = new TextField("placeholder", skin);
+        this.achievementsEmbed = new TextArea("placeholder", skin);
         table.add(achievementsEmbed).fill().space(10);
 
         ui.addActor(servicesDisplay);
@@ -419,6 +415,13 @@ public class Main extends ApplicationAdapter {
                 leaderboardEmbed.setText(leaderboard.toString());
                 contentLoader.saveLeaderboard(leaderboard);
             }
+
+            StringBuilder builder = new StringBuilder();
+            for (Achievement achievement : achievementsManager.getComplete()) {
+                builder.append(achievement.getName()).append(": ").append(achievement.getDescription()).append("\n\n");
+            }
+            this.achievementsEmbed.setText(builder.toString());
+
             endScreen.draw();
         }
     }
@@ -542,6 +545,11 @@ public class Main extends ApplicationAdapter {
         } else {
             satisfactionBar.setThought("0", contentLoader.getThought("activeConstructions0"));
         }
+
+        for (var service : Service.values()) {
+            this.achievementsManager.onServiceValueChange(service, services.getOrDefault(service, 0));
+        }
+        this.achievementsManager.onSatisfactionChange(this.satisfactionBar.getScore());
     }
 
     private void preview(Building building) {
