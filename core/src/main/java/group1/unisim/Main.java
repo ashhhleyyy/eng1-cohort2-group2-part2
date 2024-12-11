@@ -49,7 +49,7 @@ public class Main extends ApplicationAdapter {
     private float updateTimer;
     private boolean isPaused = true;
     private boolean leaderboardUpdated = false;
-    private float gameTimer = 5;
+    private float gameTimer = 300;
     private HashMap<String, Event> currentEvents;
 
     private Stage stage, endScreen;
