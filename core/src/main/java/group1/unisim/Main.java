@@ -79,6 +79,10 @@ public class Main extends ApplicationAdapter {
 
     private Image pauseImage;
 
+    private Table thoughtDisplay, eventDisplay;
+    private Label thoughtDisplayLabel, eventDisplayLabel;
+    private Image thoughtBackground, eventBackground;
+
     private TextArea leaderboardEmbed;
 
     @Override
@@ -108,6 +112,9 @@ public class Main extends ApplicationAdapter {
         pauseTexture = new Texture(Assets.PAUSE);
         playTexture = new Texture(Assets.PLAY);
         ui = new Stage();
+
+        Texture thoughtBackgroundTexture = new Texture(Assets.THOUGHT_BACKGROUND);
+        Texture eventBackgroundTexture = new Texture(Assets.EVENT_BACKGROUND);
 
         Texture endScreenTexture = new Texture(Assets.END_SCREEN);
 
@@ -213,7 +220,38 @@ public class Main extends ApplicationAdapter {
             }
         });
 
-        // creates and sets up background of end screen
+        ui.addActor(servicesDisplay);
+        ui.addActor(buildSelect);
+        ui.addActor(buildButton);
+        ui.addActor(pauseImage);
+        ui.addActor(pauseButton);
+        Gdx.input.setInputProcessor(new InputMultiplexer(ui, stage));
+
+        // creates and sets up thoughts display, which is drawn immediately
+        thoughtBackground = new Image(thoughtBackgroundTexture);
+        thoughtBackground.setPosition(700,420);
+        ui.addActor(thoughtBackground);
+
+        thoughtDisplay = new Table(skin);
+        thoughtDisplay.top().right().setPosition(1000, 720);
+        thoughtDisplayLabel = new Label("Unpause time to get feedback!", skin);
+        thoughtDisplayLabel.setWrap(true);
+        thoughtDisplay.add(thoughtDisplayLabel).height(290).width(290).pad(5);
+        ui.addActor(thoughtDisplay);
+
+        // creates and sets up events display, which is drawn immediately and will be hidden when unpaused for the first time
+        eventBackground = new Image(eventBackgroundTexture);
+        eventBackground.setPosition(800, 320);
+        ui.addActor(eventBackground);
+
+        eventDisplay = new Table(skin);
+        eventDisplay.top().right().setPosition(1000, 420);
+        eventDisplayLabel = new Label("New events show up here, when they happen... \nReminder: these effects last for the whole game!", skin);
+        eventDisplayLabel.setWrap(true);
+        eventDisplay.add(eventDisplayLabel).height(90).width(190).pad(5);
+        ui.addActor(eventDisplay);
+
+        // creates and sets up background of end screen, will not be drawn until game over
         endScreen = new Stage();
         Image endScreenBackground = new Image(endScreenTexture);
         endScreen.addActor(endScreenBackground);
@@ -303,22 +341,46 @@ public class Main extends ApplicationAdapter {
             for (Thought thought : satisfactionBar.getAllThoughts()) {
                 thoughtBubble.append(thought.getTitle()).append(": ").append(thought.getDescription()).append("\n");
             }
-            System.out.println(thoughtBubble);
+            thoughtDisplayLabel.setText(thoughtBubble);
             previousSecond = Math.round(gameTimer);
         }
 
         // Event runner:
-        if (!isPaused && !event1 && gameTimer < 250) {
-            runEvent();
-            event1 = true;
-        }
-        if (!isPaused && !event2 && gameTimer < 150) {
-            runEvent();
-            event2 = true;
-        }
-        if (!isPaused && !event3 && gameTimer < 50) {
-            runEvent();
-            event3 = true;
+        if (!isPaused) {
+            if (!event1 && eventDisplayLabel.isVisible()) {
+                eventDisplayLabel.setVisible(false);
+                eventBackground.setVisible(false);
+            }
+            if (!event1 && gameTimer < 250) {
+                runEvent();
+                event1 = true;
+                eventDisplayLabel.setVisible(true);
+                eventBackground.setVisible(true);
+            }
+            if (!event2 && eventDisplayLabel.isVisible() && gameTimer < 220) {
+                eventDisplayLabel.setVisible(false);
+                eventBackground.setVisible(false);
+            }
+            if (!event2 && gameTimer < 150) {
+                runEvent();
+                event2 = true;
+                eventDisplayLabel.setVisible(true);
+                eventBackground.setVisible(true);
+            }
+            if (!event3 && eventDisplayLabel.isVisible() && gameTimer < 120) {
+                eventDisplayLabel.setVisible(false);
+                eventBackground.setVisible(false);
+            }
+            if (!event3 && gameTimer < 50) {
+                runEvent();
+                event3 = true;
+                eventDisplayLabel.setVisible(true);
+                eventBackground.setVisible(true);
+            }
+            if (event3 && eventDisplayLabel.isVisible() && gameTimer < 20) {
+                eventDisplayLabel.setVisible(false);
+                eventBackground.setVisible(false);
+            }
         }
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -333,6 +395,9 @@ public class Main extends ApplicationAdapter {
 
         stage.act(deltaTime);
         stage.draw();
+
+        ui.act(deltaTime);
+        ui.draw();
 
         // when time is up, update contents of end screen and then draw
         if (gameTimer < 0) {
@@ -356,9 +421,6 @@ public class Main extends ApplicationAdapter {
             }
             endScreen.draw();
         }
-
-        ui.act(deltaTime);
-        ui.draw();
     }
 
     private void update() {
@@ -500,27 +562,27 @@ public class Main extends ApplicationAdapter {
         int randNum = (int) (Math.random() * 5);
         switch (randNum) {
             case 0:
-                System.out.println("The university is receiving an unprecedented influx of new students, we may need more accomodation!");
+                eventDisplayLabel.setText("The university is receiving an unprecedented influx of new students, we may need more accomodation!");
                 currentEvents.put("1", new Event("overCrowding", 100, "1", currentEvents));
                 break;
             case 1:
-                System.out.println("The university is receiving far less new students than usual, we may need less accomodation!");
+                eventDisplayLabel.setText("The university is receiving far less new students than usual, we may need less accomodation!");
                 currentEvents.put("1", new Event("underCrowding", 100, "1", currentEvents));
                 break;
             case 2:
-                System.out.println("Students are sick of prerecorded mini-lectures and want to go in person, we may need more teaching spaces!");
+                eventDisplayLabel.setText("Students are sick of prerecorded mini-lectures and want to go in person, we may need more teaching spaces!");
                 currentEvents.put("2", new Event("underTeaching", 50, "2", currentEvents));
                 break;
             case 3:
-                System.out.println("Lecturers are on strike, we may need less teaching spaces!");
+                eventDisplayLabel.setText("Lecturers are on strike, we may need less teaching spaces!");
                 currentEvents.put("2", new Event("overTeaching", 50, "2", currentEvents));
                 break;
             case 4:
-                System.out.println("Students are bored, we may need more recreation spaces!");
+                eventDisplayLabel.setText("Students are bored, we may need more recreation spaces!");
                 currentEvents.put("3", new Event("underRecreation", 50, "3", currentEvents));
                 break;
             case 5:
-                System.out.println("Fresher's flu is getting around and people are staying in their dorms, we may need less recreation spaces!");
+                eventDisplayLabel.setText("Fresher's flu is getting around and people are staying in their dorms, we may need less recreation spaces!");
                 currentEvents.put("3", new Event("overRecreaction", 30, "3", currentEvents));
                 break;
         }
