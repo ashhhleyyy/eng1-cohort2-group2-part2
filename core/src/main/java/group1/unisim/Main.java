@@ -368,8 +368,10 @@ public class Main extends ApplicationAdapter {
             slot.update();
         }
 
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT) && buildingPreview != null) {
-            stopPreview();
+        if (buildingPreview != null) {
+            if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT) || Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)){
+                stopPreview();
+            }
         }
 
         updateServiceCounts();

@@ -35,13 +35,21 @@ public class BuildingSlot {
         button.setColor(1, 1, 1, 0);
         button.setScale(2f);
         button.setPosition(this.position.x, this.position.y);
-        button.addListener(new ClickListener() {
+        // left click on the preview to turn it into construction
+        button.addListener(new ClickListener(Input.Buttons.LEFT) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (previewing != null) {
-                    if (event.getButton() == Input.Buttons.LEFT) {
-                        build(previewing);
-                    }
+                    build(previewing);
+                }
+            }
+        });
+        // right click on a building to turn it into rubble
+        button.addListener(new ClickListener(Input.Buttons.RIGHT) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (building != null) {
+                    clearSlot(BuildingSlot.this);
                 }
             }
         });
@@ -108,24 +116,9 @@ public class BuildingSlot {
         previewing = null;
     }
 
-    public void clearSlot(BuildingSlot slot, Stage stage){
-        this.sprite.setDrawable(null); // Image needs to be instantiated with a texture or setting it later won't work
-        this.sprite.setScale(2f);
-        this.sprite.setPosition(this.position.x, this.position.y);
-        ImageButton button = new ImageButton(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(Assets.ACCOMMODATION_TEXTURE))));
-        button.setColor(1, 1, 1, 0);
-        button.setScale(2f);
-        button.setPosition(this.position.x, this.position.y);
-        button.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (previewing != null && event.getButton() == Input.Buttons.LEFT) {
-                    build(previewing);
-                }
-            }
-        });
-        stage.addActor(sprite);
-        stage.addActor(button);
-
+    public void clearSlot(BuildingSlot slot){
+        this.sprite.setDrawable(null);
+        this.previewing = null;
+        this.building = null;
     }
 }
