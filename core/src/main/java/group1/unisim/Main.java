@@ -1,5 +1,11 @@
 package group1.unisim;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
+
+import javax.swing.JOptionPane;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -11,14 +17,18 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
 
 /**
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
@@ -39,7 +49,7 @@ public class Main extends ApplicationAdapter {
     private float updateTimer;
     private boolean isPaused = true;
     private boolean leaderboardUpdated = false;
-    private float gameTimer = 5;
+    private float gameTimer = 300;
     private HashMap<String, Event> currentEvents;
 
     private Stage stage, endScreen;
@@ -290,6 +300,17 @@ public class Main extends ApplicationAdapter {
         TextField achievementsEmbed = new TextField("placeholder", skin);
         table.add(achievementsEmbed).fill().space(10);
 
+        ui.addActor(servicesDisplay);
+        ui.addActor(buildSelect);
+        ui.addActor(buildButton);
+        ui.addActor(pauseImage);
+        ui.addActor(pauseButton);
+        for (BuildingSlot slot : buildingSlots){
+            ui.addActor(slot.constructionCountdownText);
+        }
+
+        Gdx.input.setInputProcessor(new InputMultiplexer(ui, stage));
+
         satisfactionBar.updateScore();
     }
 
@@ -297,9 +318,7 @@ public class Main extends ApplicationAdapter {
     public void render() {
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT) && buildingPreview != null) {
-            stopPreview();
-        }
+
 
         if (!isPaused && gameTimer > 0) {
             gameTimer -= deltaTime;
@@ -409,6 +428,12 @@ public class Main extends ApplicationAdapter {
 
         for (BuildingSlot slot : buildingSlots) {
             slot.update();
+        }
+
+        if (buildingPreview != null) {
+            if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT) || Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)){
+                stopPreview();
+            }
         }
 
         updateServiceCounts();
