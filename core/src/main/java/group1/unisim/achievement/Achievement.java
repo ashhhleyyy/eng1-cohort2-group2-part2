@@ -41,4 +41,9 @@ public abstract class Achievement {
         }
         this.achieved = true;
     }
+
+    @Override
+    public String toString() {
+        return this.name + ": " + this.description;
+    }
 }

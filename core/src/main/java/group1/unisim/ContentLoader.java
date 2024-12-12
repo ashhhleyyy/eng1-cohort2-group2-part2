@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class ContentLoader {
-    private static final String LEADERBOARD_JSON = ".-unisim-leaderboard.json";
     public static ContentLoader singleton;
     public final AssetManager assetManager;
     private HashMap<String, Building> buildings;
@@ -27,14 +26,14 @@ public class ContentLoader {
         Json json = new Json();
 
         try {
-            this.thoughts = (HashMap<String, Thought>) json.fromJson(HashMap.class, Thought.class, Gdx.files.internal(Assets.THOUGHTS_JSON));
+            this.thoughts = (HashMap<String, Thought>) json.fromJson(HashMap.class, Thought.class, Gdx.files.internal(Paths.THOUGHTS_JSON));
         } catch (Exception e) {
             Gdx.app.error("LoadThoughts", e.getMessage());
             throw e;
         }
 
         try {
-            this.buildings = (HashMap<String, Building>) json.fromJson(HashMap.class, Building.class, Gdx.files.internal(Assets.BUILDINGS_JSON));
+            this.buildings = (HashMap<String, Building>) json.fromJson(HashMap.class, Building.class, Gdx.files.internal(Paths.BUILDINGS_JSON));
         } catch (Exception e) {
             Gdx.app.error("LoadBuildings", e.getMessage());
             throw e;
@@ -44,7 +43,7 @@ public class ContentLoader {
             assetManager.load(building.getTexture(), Texture.class);
         }
         try {
-            leaderboard = json.fromJson(Leaderboard.class, Gdx.files.external(LEADERBOARD_JSON));
+            leaderboard = json.fromJson(Leaderboard.class, Gdx.files.external(Paths.LEADERBOARD_JSON));
         } catch (SerializationException e) {
             leaderboard = new Leaderboard();
         }
@@ -79,7 +78,7 @@ public class ContentLoader {
 
     public void saveLeaderboard(Leaderboard leaderboard) {
         Json json = new Json();
-        json.toJson(leaderboard, Gdx.files.external(LEADERBOARD_JSON));
+        json.toJson(leaderboard, Gdx.files.external(Paths.LEADERBOARD_JSON));
     }
 
     public void dispose() {

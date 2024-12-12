@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import group1.unisim.achievement.AchievementsManager;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -99,21 +100,21 @@ public class Main extends ApplicationAdapter {
         reqTea = 1;
         previousSecond = 300;
 
-        Skin skin = new Skin(Gdx.files.internal(Assets.UI_SKIN));
+        Skin skin = new Skin(Gdx.files.internal(Paths.UI_SKIN));
         batch = new SpriteBatch();
 
-        toolbar = new Texture(Assets.TOOLBAR);
-        mapTexture = new Texture(Assets.MAP_TEXTURE);
-        settingsTexture = new Texture(Assets.SETTINGS_ICON);
-        buildIconTexture = new Texture(Assets.BUILD_ICON);
-        pauseTexture = new Texture(Assets.PAUSE);
-        playTexture = new Texture(Assets.PLAY);
+        toolbar = new Texture(Paths.TOOLBAR);
+        mapTexture = new Texture(Paths.MAP_TEXTURE);
+        settingsTexture = new Texture(Paths.SETTINGS_ICON);
+        buildIconTexture = new Texture(Paths.BUILD_ICON);
+        pauseTexture = new Texture(Paths.PAUSE);
+        playTexture = new Texture(Paths.PLAY);
         ui = new Stage();
 
-        Texture thoughtBackgroundTexture = new Texture(Assets.THOUGHT_BACKGROUND);
-        Texture eventBackgroundTexture = new Texture(Assets.EVENT_BACKGROUND);
+        Texture thoughtBackgroundTexture = new Texture(Paths.THOUGHT_BACKGROUND);
+        Texture eventBackgroundTexture = new Texture(Paths.EVENT_BACKGROUND);
 
-        Texture endScreenTexture = new Texture(Assets.END_SCREEN);
+        Texture endScreenTexture = new Texture(Paths.END_SCREEN);
 
         satisfactionBar = new SatisfactionBar(skin, ui);
 
@@ -315,8 +316,6 @@ public class Main extends ApplicationAdapter {
     public void render() {
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-
-
         if (!isPaused && gameTimer > 0) {
             gameTimer -= deltaTime;
             updateGameTimeText((int) gameTimer);
@@ -416,11 +415,7 @@ public class Main extends ApplicationAdapter {
                 leaderboardEmbed.setText(leaderboard.toString());
                 contentLoader.saveLeaderboard(leaderboard);
 
-                StringBuilder builder = new StringBuilder();
-                for (Achievement achievement : achievementsManager.getComplete()) {
-                    builder.append(achievement.getName()).append(": ").append(achievement.getDescription()).append("\n\n");
-                }
-                this.achievementsEmbed.setText(builder.toString());
+                this.achievementsEmbed.setText(achievementsManager.formatCompleted());
                 this.achievementsManager.saveAchievements();
             }
 
