@@ -62,7 +62,9 @@ public class Main extends ApplicationAdapter {
     private Stage ui;
     private Label gameTimeText;
 
+    private Image buildSelectBackground;
     private ScrollPane buildSelect;
+    private Table buildSelectText;
     private ArrayList<BuildingSlot> buildingSlots;
     private Building buildingPreview = null;
 
@@ -134,6 +136,8 @@ public class Main extends ApplicationAdapter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 buildSelect.setVisible(true);
+                buildSelectText.setVisible(true);
+                buildSelectBackground.setVisible(true);
             }
         });
 
@@ -159,6 +163,8 @@ public class Main extends ApplicationAdapter {
                 public void clicked(InputEvent event, float x, float y) {
                     preview(building);
                     buildSelect.setVisible(false);
+                    buildSelectText.setVisible(false);
+                    buildSelectBackground.setVisible(false);
                 }
             });
 
@@ -167,11 +173,37 @@ public class Main extends ApplicationAdapter {
 
         buttons.setWidth(10);
 
+        // background image for build select tool
+        buildSelectBackground = new Image(new Texture(Paths.BUILD_SELECT_BACKGROUND));
+        buildSelectBackground.setPosition(79, 523);
+        buildSelectBackground.setVisible(false);
+        ui.addActor(buildSelectBackground);
+
         buildSelect = new ScrollPane(buttons);
         buildSelect.setPosition(30, 480);
         buildSelect.setHeight(240);
         buildSelect.setVisible(false);
 
+        // text next to building options when opening build select tool
+        buildSelectText = new Table(skin);
+        buildSelectText.setPosition(180, 620);
+        buildSelectText.setVisible(false);
+        ui.addActor(buildSelectText);
+        Label buildingTextLectureHalls = new Label(" Lecture Halls", skin);
+        buildSelectText.add(buildingTextLectureHalls).left().height(45);
+        buildSelectText.row();
+        Label buildingTextRecreation = new Label("Recreation", skin);
+        buildSelectText.add(buildingTextRecreation).left().height(38);
+        buildSelectText.row();
+        Label buildingTextCafe = new Label("Cafe", skin);
+        buildSelectText.add(buildingTextCafe).left().height(28);
+        buildSelectText.row();
+        Label buildingTextLibrary = new Label("Library", skin);
+        buildSelectText.add(buildingTextLibrary).left().height(44);
+        buildSelectText.row();
+        Label buildingTextAccommodation = new Label("Accommodation", skin);
+        buildSelectText.add(buildingTextAccommodation).left().height(41);
+        
         servicesText = new HashMap<>();
 
         for (Service service : Service.values()) {
@@ -231,7 +263,7 @@ public class Main extends ApplicationAdapter {
         ui.addActor(thoughtBackground);
 
         thoughtDisplay = new Table(skin);
-        thoughtDisplay.top().right().setPosition(1000, 720);
+        thoughtDisplay.top().right().setPosition(1000, 717);
         thoughtDisplayLabel = new Label("Unpause time to get feedback!", skin);
         thoughtDisplayLabel.setWrap(true);
         thoughtDisplay.add(thoughtDisplayLabel).width(290).pad(5);
@@ -298,11 +330,6 @@ public class Main extends ApplicationAdapter {
         this.achievementsEmbed = new TextArea("placeholder", skin);
         table.add(achievementsEmbed).fill().space(10);
 
-        ui.addActor(servicesDisplay);
-        ui.addActor(buildSelect);
-        ui.addActor(buildButton);
-        ui.addActor(pauseImage);
-        ui.addActor(pauseButton);
         for (BuildingSlot slot : buildingSlots){
             ui.addActor(slot.constructionCountdownText);
         }

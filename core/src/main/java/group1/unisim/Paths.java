@@ -19,6 +19,7 @@ public class Paths {
     public static final String ACCOMMODATION_TEXTURE = asset("accom.png");
     public static final String THOUGHT_BACKGROUND = asset("thoughtBackground.png");
     public static final String EVENT_BACKGROUND = asset("eventBackground.png");
+    public static final String BUILD_SELECT_BACKGROUND = asset("buildSelectBackground.png");
 
     public static final String LEADERBOARD_JSON = ".unisim-leaderboards.json";
     public static final String ACHIEVEMENTS_JSON = ".unisim-achievements.json";
