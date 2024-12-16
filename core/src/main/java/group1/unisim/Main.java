@@ -227,23 +227,23 @@ public class Main extends ApplicationAdapter {
 
         // creates and sets up thoughts display, which is drawn immediately
         thoughtBackground = new Image(thoughtBackgroundTexture);
-        thoughtBackground.setPosition(700,420);
+        thoughtBackground.setPosition(700,350);
         ui.addActor(thoughtBackground);
 
         thoughtDisplay = new Table(skin);
         thoughtDisplay.top().right().setPosition(1000, 720);
         thoughtDisplayLabel = new Label("Unpause time to get feedback!", skin);
         thoughtDisplayLabel.setWrap(true);
-        thoughtDisplay.add(thoughtDisplayLabel).height(290).width(290).pad(5);
+        thoughtDisplay.add(thoughtDisplayLabel).width(290).pad(5);
         ui.addActor(thoughtDisplay);
 
         // creates and sets up events display, which is drawn immediately and will be hidden when unpaused for the first time
         eventBackground = new Image(eventBackgroundTexture);
-        eventBackground.setPosition(800, 320);
+        eventBackground.setPosition(800, 250);
         ui.addActor(eventBackground);
 
         eventDisplay = new Table(skin);
-        eventDisplay.top().right().setPosition(1000, 420);
+        eventDisplay.top().right().setPosition(1000, 350);
         eventDisplayLabel = new Label("New events show up here, when they happen... \nReminder: these effects last for the whole game!", skin);
         eventDisplayLabel.setWrap(true);
         eventDisplay.add(eventDisplayLabel).height(90).width(190).pad(5);
@@ -335,7 +335,7 @@ public class Main extends ApplicationAdapter {
             // Thought bubble
             StringBuilder thoughtBubble = new StringBuilder("Current Student Thoughts:\n");
             for (Thought thought : satisfactionBar.getAllThoughts()) {
-                thoughtBubble.append(thought.getTitle()).append(": ").append(thought.getDescription()).append("\n");
+                thoughtBubble.append(thought.getTitle()).append(": ").append(thought.getDescription()).append("\n\n");
             }
             thoughtDisplayLabel.setText(thoughtBubble);
             previousSecond = Math.round(gameTimer);
