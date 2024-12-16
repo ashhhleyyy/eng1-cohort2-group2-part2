@@ -113,6 +113,8 @@ public class Main extends ApplicationAdapter {
         playTexture = new Texture(Paths.PLAY);
         ui = new Stage();
 
+        Texture buildSelectBackgroundTexture = new Texture(Paths.BUILD_SELECT_BACKGROUND);
+
         Texture thoughtBackgroundTexture = new Texture(Paths.THOUGHT_BACKGROUND);
         Texture eventBackgroundTexture = new Texture(Paths.EVENT_BACKGROUND);
 
@@ -174,7 +176,7 @@ public class Main extends ApplicationAdapter {
         buttons.setWidth(10);
 
         // background image for build select tool
-        buildSelectBackground = new Image(new Texture(Paths.BUILD_SELECT_BACKGROUND));
+        buildSelectBackground = new Image(buildSelectBackgroundTexture);
         buildSelectBackground.setPosition(79, 523);
         buildSelectBackground.setVisible(false);
         ui.addActor(buildSelectBackground);
