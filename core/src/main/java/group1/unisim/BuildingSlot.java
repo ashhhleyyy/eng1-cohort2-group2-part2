@@ -22,16 +22,16 @@ public class BuildingSlot {
     private Building building;
     private Building previewing;
     public Label constructionCountdownText;
-    Skin skin = new Skin(Gdx.files.internal(Assets.UI_SKIN));
+    Skin skin = new Skin(Gdx.files.internal(Paths.UI_SKIN));
 
     public BuildingSlot(Vector2 position, int maxSize, Stage stage) {
         this.position = position;
         this.maxSize = maxSize;
-        this.sprite = new Image(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(Assets.ACCOMMODATION_TEXTURE))));
+        this.sprite = new Image(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(Paths.ACCOMMODATION_TEXTURE))));
         this.sprite.setDrawable(null); // Image needs to be instantiated with a texture or setting it later won't work
         this.sprite.setScale(2f);
         this.sprite.setPosition(this.position.x, this.position.y);
-        ImageButton button = new ImageButton(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(Assets.ACCOMMODATION_TEXTURE))));
+        ImageButton button = new ImageButton(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(Paths.ACCOMMODATION_TEXTURE))));
         button.setColor(1, 1, 1, 0);
         button.setScale(2f);
         button.setPosition(this.position.x, this.position.y);

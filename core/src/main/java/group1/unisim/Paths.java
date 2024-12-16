@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Assets {
+public class Paths {
     private static final List<String> ALL_ASSETS = new ArrayList<>();
     public static final String BUILDINGS_JSON = asset("buildings.json");
     public static final String THOUGHTS_JSON = asset("thoughts.json");
@@ -19,6 +19,9 @@ public class Assets {
     public static final String ACCOMMODATION_TEXTURE = asset("accom.png");
     public static final String THOUGHT_BACKGROUND = asset("thoughtBackground.png");
     public static final String EVENT_BACKGROUND = asset("eventBackground.png");
+
+    public static final String LEADERBOARD_JSON = ".unisim-leaderboards.json";
+    public static final String ACHIEVEMENTS_JSON = ".unisim-achievements.json";
 
     private static String asset(String asset) {
         ALL_ASSETS.add(asset);
