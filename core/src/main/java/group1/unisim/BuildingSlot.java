@@ -88,7 +88,7 @@ public class BuildingSlot {
             timeConstructing--;
             constructionCountdownText.setVisible(true); // I KNOW THIS LINE OF CODE LOOKS DUMB BUT TRUST ME IT IS NEEDED
             constructionCountdownText.setText(Integer.toString(timeConstructing));
-        } else if (timeConstructing == 0) {
+        } else {
             isConstructingActive = false;
             constructionCountdownText.setVisible(false);
         }

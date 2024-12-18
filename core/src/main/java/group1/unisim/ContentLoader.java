@@ -55,10 +55,6 @@ public class ContentLoader {
         return thoughts.get(key);
     }
 
-    public Building getBuilding(String key) {
-        return buildings.get(key);
-    }
-
     public Leaderboard getLeaderboard() {
         return leaderboard;
     }

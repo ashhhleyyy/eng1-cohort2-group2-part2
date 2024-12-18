@@ -3,13 +3,20 @@ package group1.unisim.test;
 import group1.unisim.Service;
 import group1.unisim.achievement.Achievement;
 import group1.unisim.achievement.AchievementsManager;
+import group1.unisim.achievement.SatisfactionAchievement;
 import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AchievementsTest extends HeadlessGdxTest {
+
     @Test
     public void testAchievementManager() {
+        ByteArrayOutputStream err_output = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(err_output));
         AchievementsManager achievementsManager = new AchievementsManager(false);
         achievementsManager.onServiceValueChange(Service.Accommodation, 7);
         assertEquals(1, achievementsManager.getComplete().size());
@@ -20,5 +27,13 @@ public class AchievementsTest extends HeadlessGdxTest {
 
         String formatted = achievementsManager.formatCompleted();
         assertFalse(formatted.isEmpty(), "formatted achievements is not empty");
+
+        SatisfactionAchievement satisfactionAchievement = new SatisfactionAchievement("test","test satisfaction achievemnt", "description",10,true);
+        satisfactionAchievement.onSatisfactionChange(11);
+        satisfactionAchievement.onSatisfactionChange(9);
+        assertFalse(err_output.size()>0);
+        satisfactionAchievement.onSatisfactionChange(11);
+        assertTrue(err_output.size()>0);
+
     }
 }

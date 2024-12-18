@@ -28,12 +28,18 @@ public class BuildingSlotTest extends HeadlessGdxTest {
         }
         assertFalse(slot.isConstructing());
         assertEquals(building, slot.getBuilding());
+        slot.setPreview(building);
+        assertNull(slot.getPreviewing());
         slot.clearSlot();
         assertNull(slot.getBuilding());
         slot.setPreview(building);
         assertEquals(building, slot.getPreviewing());
         slot.clearPreview();
         assertNull(slot.getPreviewing());
+
+        BuildingSlot slot2 = new BuildingSlot(new Vector2(0, 0), 1, stage);
+        slot2.setPreview(building);
+        assertNull(slot2.getPreviewing());
         ContentLoader.singleton.dispose();
     }
 }
