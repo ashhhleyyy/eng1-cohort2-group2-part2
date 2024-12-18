@@ -79,6 +79,10 @@ public class BuildingSlot {
         return building;
     }
 
+    public Building getPreviewing() {
+        return previewing;
+    }
+
     public void update() {
         if (timeConstructing > 0) {
             timeConstructing--;

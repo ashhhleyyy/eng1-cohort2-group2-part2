@@ -109,7 +109,7 @@ public class Main extends ApplicationAdapter {
         buildIconTexture = new Texture(Paths.BUILD_ICON);
         pauseTexture = new Texture(Paths.PAUSE);
         playTexture = new Texture(Paths.PLAY);
-        ui = new Stage();
+        this.ui = new Stage();
 
         Texture thoughtBackgroundTexture = new Texture(Paths.THOUGHT_BACKGROUND);
         Texture eventBackgroundTexture = new Texture(Paths.EVENT_BACKGROUND);

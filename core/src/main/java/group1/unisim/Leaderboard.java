@@ -14,6 +14,10 @@ public class Leaderboard {
         this.scores = scores;
     }
 
+    public List<Score> getScores() {
+        return scores;
+    }
+
     public String toString() {
         StringBuilder res = new StringBuilder();
         for (Score score : scores) {

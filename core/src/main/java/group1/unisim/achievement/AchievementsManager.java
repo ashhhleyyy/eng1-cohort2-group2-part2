@@ -6,10 +6,7 @@ import com.badlogic.gdx.utils.SerializationException;
 import group1.unisim.Paths;
 import group1.unisim.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class AchievementsManager {
     private final List<Achievement> incomplete;
@@ -84,6 +81,8 @@ public class AchievementsManager {
 
     public String formatCompleted() {
         StringBuilder builder = new StringBuilder();
+        // Ensure the ordering is deterministic
+        this.complete.sort(Comparator.comparing(Achievement::getId));
         for (var achievement : this.complete) {
             builder.append(achievement.toString()).append("\n\n");
         }
