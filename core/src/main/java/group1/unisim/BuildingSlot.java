@@ -49,7 +49,7 @@ public class BuildingSlot {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (building != null) {
-                    clearSlot(BuildingSlot.this);
+                    clearSlot();
                 }
             }
         });
@@ -116,7 +116,7 @@ public class BuildingSlot {
         previewing = null;
     }
 
-    public void clearSlot(BuildingSlot slot){
+    public void clearSlot() {
         this.sprite.setDrawable(null);
         this.previewing = null;
         this.building = null;
