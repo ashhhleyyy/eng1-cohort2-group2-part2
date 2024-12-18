@@ -32,8 +32,10 @@ public class SatisfactionBar extends ProgressBar {
         setPosition(775, 735);
         targetMarker.setPosition(760, 730);
         calculateTarget();
-        stage.addActor(this);
-        stage.addActor(targetMarker);
+        if (stage != null) {
+            stage.addActor(this);
+            stage.addActor(targetMarker);
+        }
     }
 
     private void resetScore() {

@@ -75,7 +75,6 @@ public class ContentLoader {
         return assetManager.get(path, Texture.class);
     }
 
-
     public void saveLeaderboard(Leaderboard leaderboard) {
         Json json = new Json();
         json.toJson(leaderboard, Gdx.files.external(Paths.LEADERBOARD_JSON));

@@ -44,6 +44,6 @@ public abstract class Achievement {
 
     @Override
     public String toString() {
-        return this.name + ": " + this.description;
+        return this.getName() + ": " + this.getDescription();
     }
 }
