@@ -3,6 +3,7 @@ package group1.unisim.test;
 import com.badlogic.gdx.Gdx;
 import group1.unisim.Building;
 import group1.unisim.ContentLoader;
+import group1.unisim.Thoughts;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -20,20 +21,10 @@ public class ContentLoaderTest extends HeadlessGdxTest {
         for (Building building : loader.allBuildings()) {
             Assertions.assertTrue(Gdx.files.internal(building.getTexture()).exists());
         }
-        assertNotNull(loader.getThought("underCrowding"));
-        assertNotNull(loader.getThought("overCrowding"));
-        assertNotNull(loader.getThought("neutralCrowding"));
-        assertNotNull(loader.getThought("underTeaching"));
-        assertNotNull(loader.getThought("overTeaching"));
-        assertNotNull(loader.getThought("underRecreation"));
-        assertNotNull(loader.getThought("overRecreation"));
-        assertNotNull(loader.getThought("perfectBuildingLevel"));
-        assertNotNull(loader.getThought("oneOfEachBuilding"));
-        assertNotNull(loader.getThought("buildingMissing"));
-        assertNotNull(loader.getThought("activeConstructions1"));
-        assertNotNull(loader.getThought("activeConstructions2"));
-        assertNotNull(loader.getThought("activeConstructions3"));
-        assertNotNull(loader.getThought("activeConstructions0"));
+
+        for (String thought : Thoughts.getAllThoughts()) {
+            Assertions.assertNotNull(loader.getThought(thought));
+        }
 
         assertNotNull(loader.getLeaderboard());
 
