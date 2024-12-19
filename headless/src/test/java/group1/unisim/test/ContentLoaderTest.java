@@ -6,17 +6,38 @@ import group1.unisim.ContentLoader;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 public class ContentLoaderTest extends HeadlessGdxTest {
     @Test
     public void testLoad() {
         ContentLoader loader = new ContentLoader();
         loader.load();
-        Assertions.assertNotEquals(0, loader.allBuildings().size());
-        Assertions.assertNotEquals(0, loader.allThoughts().size());
+        assertNotEquals(0, loader.allBuildings().size());
+        assertNotEquals(0, loader.allThoughts().size());
 
         for (Building building : loader.allBuildings()) {
             Assertions.assertTrue(Gdx.files.internal(building.getTexture()).exists());
         }
+        assertNotNull(loader.getThought("underCrowding"));
+        assertNotNull(loader.getThought("overCrowding"));
+        assertNotNull(loader.getThought("neutralCrowding"));
+        assertNotNull(loader.getThought("underTeaching"));
+        assertNotNull(loader.getThought("overTeaching"));
+        assertNotNull(loader.getThought("underRecreation"));
+        assertNotNull(loader.getThought("overRecreation"));
+        assertNotNull(loader.getThought("perfectBuildingLevel"));
+        assertNotNull(loader.getThought("oneOfEachBuilding"));
+        assertNotNull(loader.getThought("buildingMissing"));
+        assertNotNull(loader.getThought("activeConstructions1"));
+        assertNotNull(loader.getThought("activeConstructions2"));
+        assertNotNull(loader.getThought("activeConstructions3"));
+        assertNotNull(loader.getThought("activeConstructions0"));
+
+        assertNotNull(loader.getLeaderboard());
+
+        loader.saveLeaderboard(loader.getLeaderboard());
 
         loader.dispose();
     }

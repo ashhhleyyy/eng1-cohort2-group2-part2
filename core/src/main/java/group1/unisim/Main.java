@@ -205,7 +205,7 @@ public class Main extends ApplicationAdapter {
         buildSelectText.row();
         Label buildingTextAccommodation = new Label("Accommodation", skin);
         buildSelectText.add(buildingTextAccommodation).left().height(41);
-        
+
         servicesText = new HashMap<>();
 
         for (Service service : Service.values()) {
@@ -261,7 +261,7 @@ public class Main extends ApplicationAdapter {
 
         // creates and sets up thoughts display, which is drawn immediately
         thoughtBackground = new Image(thoughtBackgroundTexture);
-        thoughtBackground.setPosition(700,350);
+        thoughtBackground.setPosition(700, 350);
         ui.addActor(thoughtBackground);
 
         thoughtDisplay = new Table(skin);
@@ -332,7 +332,13 @@ public class Main extends ApplicationAdapter {
         this.achievementsEmbed = new TextArea("placeholder", skin);
         table.add(achievementsEmbed).fill().space(10);
 
-        for (BuildingSlot slot : buildingSlots){
+
+        ui.addActor(servicesDisplay);
+        ui.addActor(buildSelect);
+        ui.addActor(buildButton);
+        ui.addActor(pauseImage);
+        ui.addActor(pauseButton);
+        for (BuildingSlot slot : buildingSlots) {
             ui.addActor(slot.constructionCountdownText);
         }
 
@@ -460,7 +466,7 @@ public class Main extends ApplicationAdapter {
         }
 
         if (buildingPreview != null) {
-            if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT) || Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)){
+            if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT) || Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
                 stopPreview();
             }
         }

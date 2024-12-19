@@ -11,10 +11,11 @@ public class Achievements {
 
     public static final Achievement ALL_THE_ACCOMODATION = register(new ServiceAchievement("all_the_accomodation", "That's a whole lotta asbestos", "Fill all the slots with accomodation", Service.Accommodation, 7));
 
+    private Achievements() {
+    }
+
     public static Achievement register(Achievement achievement) {
         ALL_ACHIEVEMENTS.put(achievement.getId(), achievement);
         return achievement;
     }
-
-    private Achievements() {}
 }

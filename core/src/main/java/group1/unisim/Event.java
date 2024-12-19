@@ -8,6 +8,7 @@ public class Event {
     private final HashMap<String, Event> events;
     private float duration;
 
+
     public Event(String associatedThought, int duration, String index, HashMap<String, Event> events) {
         this.associatedThought = associatedThought;
         this.duration = duration;
@@ -27,5 +28,9 @@ public class Event {
 
     public String getAssociatedThought() {
         return associatedThought;
+    }
+
+    public float getDuration() {
+        return duration;
     }
 }

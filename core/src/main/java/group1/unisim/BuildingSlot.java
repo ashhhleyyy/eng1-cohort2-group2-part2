@@ -17,12 +17,11 @@ public class BuildingSlot {
     private final Vector2 position;
     private final int maxSize;
     private final Image sprite;
+    public Label constructionCountdownText;
     private int timeConstructing;
     private boolean isConstructingActive;
     private Building building;
     private Building previewing;
-    public Label constructionCountdownText;
-    Skin skin = new Skin(Gdx.files.internal(Paths.UI_SKIN));
 
     public BuildingSlot(Vector2 position, int maxSize, Stage stage) {
         this.position = position;
@@ -56,6 +55,7 @@ public class BuildingSlot {
         stage.addActor(sprite);
         stage.addActor(button);
 
+        Skin skin = new Skin(Gdx.files.internal(Paths.UI_SKIN));
         constructionCountdownText = new Label(null, skin);
         constructionCountdownText.setPosition(position.x, position.y);
         constructionCountdownText.setSize(50, 50);
@@ -88,7 +88,7 @@ public class BuildingSlot {
             timeConstructing--;
             constructionCountdownText.setVisible(true); // I KNOW THIS LINE OF CODE LOOKS DUMB BUT TRUST ME IT IS NEEDED
             constructionCountdownText.setText(Integer.toString(timeConstructing));
-        } else if (timeConstructing == 0) {
+        } else {
             isConstructingActive = false;
             constructionCountdownText.setVisible(false);
         }
