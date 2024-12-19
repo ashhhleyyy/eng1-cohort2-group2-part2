@@ -39,7 +39,6 @@ public class ContentLoaderTest extends HeadlessGdxTest {
 
         loader.saveLeaderboard(loader.getLeaderboard());
 
-
         loader.dispose();
     }
 }

@@ -70,7 +70,5 @@ public class SatisfactionBarTest extends HeadlessGdxTest {
 
         SatisfactionBar satisfactionBar2 = new SatisfactionBar(skin, null);
         assertEquals(50, satisfactionBar2.getScore(), 0.0001);
-
-
     }
 }

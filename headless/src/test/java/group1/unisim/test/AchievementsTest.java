@@ -14,8 +14,8 @@ public class AchievementsTest extends HeadlessGdxTest {
 
     @Test
     public void testAchievementManager() {
-        ByteArrayOutputStream err_output = new ByteArrayOutputStream();
-        System.setErr(new PrintStream(err_output));
+        ByteArrayOutputStream errOutput = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(errOutput));
         AchievementsManager achievementsManager = new AchievementsManager(false);
         achievementsManager.onServiceValueChange(Service.Accommodation, 7);
         assertEquals(1, achievementsManager.getComplete().size());
@@ -30,9 +30,8 @@ public class AchievementsTest extends HeadlessGdxTest {
         SatisfactionAchievement satisfactionAchievement = new SatisfactionAchievement("test", "test satisfaction achievemnt", "description", 10, true);
         satisfactionAchievement.onSatisfactionChange(11);
         satisfactionAchievement.onSatisfactionChange(9);
-        assertFalse(err_output.size() > 0);
+        assertFalse(errOutput.size() > 0);
         satisfactionAchievement.onSatisfactionChange(11);
-        assertTrue(err_output.size() > 0);
-
+        assertTrue(errOutput.size() > 0);
     }
 }

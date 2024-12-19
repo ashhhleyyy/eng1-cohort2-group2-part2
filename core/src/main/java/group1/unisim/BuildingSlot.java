@@ -18,7 +18,6 @@ public class BuildingSlot {
     private final int maxSize;
     private final Image sprite;
     public Label constructionCountdownText;
-    Skin skin = new Skin(Gdx.files.internal(Paths.UI_SKIN));
     private int timeConstructing;
     private boolean isConstructingActive;
     private Building building;
@@ -56,6 +55,7 @@ public class BuildingSlot {
         stage.addActor(sprite);
         stage.addActor(button);
 
+        Skin skin = new Skin(Gdx.files.internal(Paths.UI_SKIN));
         constructionCountdownText = new Label(null, skin);
         constructionCountdownText.setPosition(position.x, position.y);
         constructionCountdownText.setSize(50, 50);

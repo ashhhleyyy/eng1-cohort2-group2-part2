@@ -7,6 +7,7 @@ import java.util.List;
 public class Paths {
     public static final String LEADERBOARD_JSON = ".unisim-leaderboards.json";
     public static final String ACHIEVEMENTS_JSON = ".unisim-achievements.json";
+
     private static final List<String> ALL_ASSETS = new ArrayList<>();
     public static final String BUILDINGS_JSON = asset("buildings.json");
     public static final String THOUGHTS_JSON = asset("thoughts.json");
