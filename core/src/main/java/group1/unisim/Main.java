@@ -523,59 +523,59 @@ public class Main extends ApplicationAdapter {
         }
 
         if (reqAcc < services.get(Service.Accommodation)) {
-            satisfactionBar.setThought("1", contentLoader.getThought("underCrowding"));
+            satisfactionBar.setThought("1", contentLoader.getThought(Thoughts.UNDER_CROWDING));
         } else if (reqAcc > services.get(Service.Accommodation)) {
-            satisfactionBar.setThought("1", contentLoader.getThought("overCrowding"));
+            satisfactionBar.setThought("1", contentLoader.getThought(Thoughts.OVERCROWDING));
         } else {
-            satisfactionBar.setThought("1", contentLoader.getThought("neutralCrowding"));
+            satisfactionBar.setThought("1", contentLoader.getThought(Thoughts.NEUTRAL_CROWDING));
         }
 
         if (reqTea > services.get(Service.TeachingSpace)) {
-            satisfactionBar.setThought("2", contentLoader.getThought("underTeaching"));
+            satisfactionBar.setThought("2", contentLoader.getThought(Thoughts.UNDER_TEACHING));
         } else if (reqTea < services.get(Service.TeachingSpace)) {
-            satisfactionBar.setThought("2", contentLoader.getThought("overTeaching"));
+            satisfactionBar.setThought("2", contentLoader.getThought(Thoughts.OVER_TEACHING));
         } else {
             satisfactionBar.removeThought("2");
         }
 
         if (reqRec > services.get(Service.Recreation)) {
-            satisfactionBar.setThought("3", contentLoader.getThought("underRecreation"));
+            satisfactionBar.setThought("3", contentLoader.getThought(Thoughts.UNDER_RECREATION));
         } else if (reqRec < services.get(Service.Recreation)) {
-            satisfactionBar.setThought("3", contentLoader.getThought("overRecreation"));
+            satisfactionBar.setThought("3", contentLoader.getThought(Thoughts.OVER_RECREATION));
         } else {
             satisfactionBar.removeThought("3");
         }
 
         if (reqAcc == services.get(Service.Accommodation) && reqTea == services.get(Service.TeachingSpace) &&
             reqSel == services.get(Service.SelfStudy) && reqFoo == services.get(Service.FoodDrink) && reqRec == services.get(Service.Recreation)) {
-            satisfactionBar.setThought("4", contentLoader.getThought("perfectBuildingLevel"));
+            satisfactionBar.setThought("4", contentLoader.getThought(Thoughts.PERFECT_BUILDING_LEVEL));
         } else {
             satisfactionBar.removeThought("4");
         }
 
         if (1 <= services.get(Service.Accommodation) && 1 <= services.get(Service.TeachingSpace) &&
             1 <= services.get(Service.SelfStudy) && 1 <= services.get(Service.FoodDrink) && 1 <= services.get(Service.Recreation)) {
-            satisfactionBar.setThought("5", contentLoader.getThought("oneOfEachBuilding"));
+            satisfactionBar.setThought("5", contentLoader.getThought(Thoughts.ONE_OF_EACH_BUILDING));
         } else {
             satisfactionBar.removeThought("5");
         }
 
         if (0 == services.get(Service.Accommodation) || 0 == services.get(Service.TeachingSpace) ||
             0 == services.get(Service.SelfStudy) || 0 == services.get(Service.FoodDrink) || 0 == services.get(Service.Recreation)) {
-            satisfactionBar.setThought("6", contentLoader.getThought("buildingMissing"));
+            satisfactionBar.setThought("6", contentLoader.getThought(Thoughts.BUILDING_MISSING));
         } else {
             satisfactionBar.removeThought("6");
         }
 
         // Adding construction thought to satisfaction bar:
         if (constructionTotal == 1) {
-            satisfactionBar.setThought("0", contentLoader.getThought("activeConstructions1"));
+            satisfactionBar.setThought("0", contentLoader.getThought(Thoughts.ACTIVE_CONSTRUCTIONS1));
         } else if (constructionTotal == 2) {
-            satisfactionBar.setThought("0", contentLoader.getThought("activeConstructions2"));
+            satisfactionBar.setThought("0", contentLoader.getThought(Thoughts.ACTIVE_CONSTRUCTIONS2));
         } else if (constructionTotal > 2) {
-            satisfactionBar.setThought("0", contentLoader.getThought("activeConstructions3"));
+            satisfactionBar.setThought("0", contentLoader.getThought(Thoughts.ACTIVE_CONSTRUCTIONS3));
         } else {
-            satisfactionBar.setThought("0", contentLoader.getThought("activeConstructions0"));
+            satisfactionBar.setThought("0", contentLoader.getThought(Thoughts.ACTIVE_CONSTRUCTIONS0));
         }
 
         for (var service : Service.values()) {
