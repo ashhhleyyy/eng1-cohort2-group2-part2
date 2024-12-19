@@ -14,17 +14,17 @@ public class EventTest {
         Event event = new Event("test_thought", 10, "1", events);
         events.put("1", event);
         assertEquals("test_thought", event.getAssociatedThought());
-        assertEquals(10.0f,event.getDuration());
+        assertEquals(10.0f, event.getDuration());
 
         event.update(5.0f);
         assertTrue(events.containsValue(event), "event has not yet ended");
-        assertEquals(5.0f,event.getDuration());
+        assertEquals(5.0f, event.getDuration());
 
         event.update(5.0f);
         assertFalse(events.containsValue(event), "event has ended");
-        assertEquals(0.0f,event.getDuration());
+        assertEquals(0.0f, event.getDuration());
 
         event.update(5.0f);
-        assertEquals(0.0f,event.getDuration());
+        assertEquals(0.0f, event.getDuration());
     }
 }

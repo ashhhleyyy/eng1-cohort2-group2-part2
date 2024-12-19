@@ -17,12 +17,12 @@ public class BuildingSlot {
     private final Vector2 position;
     private final int maxSize;
     private final Image sprite;
+    public Label constructionCountdownText;
+    Skin skin = new Skin(Gdx.files.internal(Paths.UI_SKIN));
     private int timeConstructing;
     private boolean isConstructingActive;
     private Building building;
     private Building previewing;
-    public Label constructionCountdownText;
-    Skin skin = new Skin(Gdx.files.internal(Paths.UI_SKIN));
 
     public BuildingSlot(Vector2 position, int maxSize, Stage stage) {
         this.position = position;

@@ -1,7 +1,6 @@
 package group1.unisim.test;
 
 import group1.unisim.Service;
-import group1.unisim.achievement.Achievement;
 import group1.unisim.achievement.AchievementsManager;
 import group1.unisim.achievement.SatisfactionAchievement;
 import org.junit.jupiter.api.Test;
@@ -28,12 +27,12 @@ public class AchievementsTest extends HeadlessGdxTest {
         String formatted = achievementsManager.formatCompleted();
         assertFalse(formatted.isEmpty(), "formatted achievements is not empty");
 
-        SatisfactionAchievement satisfactionAchievement = new SatisfactionAchievement("test","test satisfaction achievemnt", "description",10,true);
+        SatisfactionAchievement satisfactionAchievement = new SatisfactionAchievement("test", "test satisfaction achievemnt", "description", 10, true);
         satisfactionAchievement.onSatisfactionChange(11);
         satisfactionAchievement.onSatisfactionChange(9);
-        assertFalse(err_output.size()>0);
+        assertFalse(err_output.size() > 0);
         satisfactionAchievement.onSatisfactionChange(11);
-        assertTrue(err_output.size()>0);
+        assertTrue(err_output.size() > 0);
 
     }
 }

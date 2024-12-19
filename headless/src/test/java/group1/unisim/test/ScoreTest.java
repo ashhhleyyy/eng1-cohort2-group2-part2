@@ -15,6 +15,6 @@ public class ScoreTest {
         assertEquals("test player: 50", score.toString());
         Score score2 = new Score();
         assertNull(score2.getName());
-        assertEquals(0,score2.getScore());
+        assertEquals(0, score2.getScore());
     }
 }

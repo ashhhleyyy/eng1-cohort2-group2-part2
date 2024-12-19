@@ -14,9 +14,11 @@ public abstract class Achievement {
         this.description = description;
     }
 
-    public void onServiceValueChange(Service service, int newValue) {}
+    public void onServiceValueChange(Service service, int newValue) {
+    }
 
-    public void onSatisfactionChange(float newSatisfaction) {}
+    public void onSatisfactionChange(float newSatisfaction) {
+    }
 
     public String getId() {
         return id;
