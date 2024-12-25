@@ -1,7 +1,7 @@
 package group1.unisim;
 
 public class Timer {
-    private static final float START_TIME = 5;
+    private static final float START_TIME = 300;
     private float timeRemaining;
     private boolean paused = true;
 

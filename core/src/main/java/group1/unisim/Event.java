@@ -33,4 +33,9 @@ public class Event {
     public float getDuration() {
         return duration;
     }
+
+    public boolean isActive() {
+        return duration > 0;
+    }
+
 }

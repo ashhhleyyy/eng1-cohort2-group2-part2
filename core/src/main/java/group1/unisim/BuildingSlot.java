@@ -34,7 +34,7 @@ public class BuildingSlot {
         button.setColor(1, 1, 1, 0);
         button.setScale(2f);
         button.setPosition(this.position.x, this.position.y);
-        // left click on the preview to turn it into construction
+        // left-click on the preview to turn it into construction
         button.addListener(new ClickListener(Input.Buttons.LEFT) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -43,7 +43,7 @@ public class BuildingSlot {
                 }
             }
         });
-        // right click on a building to turn it into rubble
+        // right-click on a building to turn it into rubble
         button.addListener(new ClickListener(Input.Buttons.RIGHT) {
             @Override
             public void clicked(InputEvent event, float x, float y) {

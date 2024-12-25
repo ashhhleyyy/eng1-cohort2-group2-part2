@@ -35,22 +35,21 @@ public class Main extends ApplicationAdapter {
     private Texture playTexture;
 
     private SatisfactionBar satisfactionBar;
-    private float updateTimer;
     private boolean endScreenGenerated = false;
     private HashMap<String, Event> currentEvents;
 
     private Stage stage;
     private Stage endScreen;
 
-    private boolean event1;
-    private boolean event2;
-    private boolean event3;
+
+    HashMap<Integer,Boolean> eventsRun = new HashMap<>();
+
     private int reqAcc;
     private int reqTea;
     private int reqSel;
     private int reqFoo;
     private int reqRec;
-    private int previousSecond;
+    private float lastThoughtUpdate;
 
     private Timer timer;
 
@@ -71,11 +70,8 @@ public class Main extends ApplicationAdapter {
 
     private Image pauseImage;
 
-    private Table thoughtDisplay;
-    private Table eventDisplay;
     private Label thoughtDisplayLabel;
     private Label eventDisplayLabel;
-    private Image thoughtBackground;
     private Image eventBackground;
 
     private TextArea achievementsEmbed;
@@ -90,17 +86,17 @@ public class Main extends ApplicationAdapter {
         this.contentLoader.load();
         this.achievementsManager = new AchievementsManager();
 
-        // events start at false and after being triggered are set to true.
+        eventsRun.put(250,false);
+        eventsRun.put(150,false);
+        eventsRun.put(50,false);
         currentEvents = new HashMap<>();
-        event1 = false;
-        event2 = false;
-        event3 = false;
+
         reqAcc = 1;
         reqFoo = 1;
         reqRec = 1;
         reqSel = 1;
         reqTea = 1;
-        previousSecond = 300;
+        lastThoughtUpdate = timer.getTimeRemaining();
 
         Skin skin = new Skin(Gdx.files.internal(Paths.UI_SKIN));
         batch = new SpriteBatch();
@@ -259,11 +255,11 @@ public class Main extends ApplicationAdapter {
         Gdx.input.setInputProcessor(new InputMultiplexer(ui, stage));
 
         // creates and sets up thoughts display, which is drawn immediately
-        thoughtBackground = new Image(thoughtBackgroundTexture);
+        Image thoughtBackground = new Image(thoughtBackgroundTexture);
         thoughtBackground.setPosition(700, 350);
         ui.addActor(thoughtBackground);
 
-        thoughtDisplay = new Table(skin);
+        Table thoughtDisplay = new Table(skin);
         thoughtDisplay.top().right().setPosition(1000, 717);
         thoughtDisplayLabel = new Label("Unpause time to get feedback!", skin);
         thoughtDisplayLabel.setWrap(true);
@@ -275,7 +271,7 @@ public class Main extends ApplicationAdapter {
         eventBackground.setPosition(800, 250);
         ui.addActor(eventBackground);
 
-        eventDisplay = new Table(skin);
+        Table eventDisplay = new Table(skin);
         eventDisplay.top().right().setPosition(1000, 350);
         eventDisplayLabel = new Label("New events show up here, when they happen... \nReminder: these effects last for the whole game!", skin);
         eventDisplayLabel.setWrap(true);
@@ -357,10 +353,17 @@ public class Main extends ApplicationAdapter {
             update(deltaTime);
         }
 
-        if ((Math.round(timer.getTimeRemaining()) % 2 == 0) && (previousSecond != Math.round(timer.getTimeRemaining()))) {
-
+        if (timer.getTimeRemaining() +2 < lastThoughtUpdate) {
+            lastThoughtUpdate = timer.getTimeRemaining();
             thoughtDisplayLabel.setText(satisfactionBar.getThoughtsString());
-            previousSecond = Math.round(timer.getTimeRemaining());
+        }
+
+        if (!currentEvents.isEmpty()) {
+            eventDisplayLabel.setVisible(true);
+            eventBackground.setVisible(true);
+        } else {
+            eventDisplayLabel.setVisible(false);
+            eventBackground.setVisible(false);
         }
 
 
@@ -414,39 +417,14 @@ public class Main extends ApplicationAdapter {
 
 
     private void checkEvents() {
-        if (!event1 && eventDisplayLabel.isVisible()) {
-            eventDisplayLabel.setVisible(false);
-            eventBackground.setVisible(false);
-        }
-        if (!event1 && timer.getTimeRemaining() < 250) {
-            runEvent();
-            event1 = true;
-            eventDisplayLabel.setVisible(true);
-            eventBackground.setVisible(true);
-        }
-        if (!event2 && eventDisplayLabel.isVisible() && timer.getTimeRemaining() < 220) {
-            eventDisplayLabel.setVisible(false);
-            eventBackground.setVisible(false);
-        }
-        if (!event2 && timer.getTimeRemaining() < 150) {
-            runEvent();
-            event2 = true;
-            eventDisplayLabel.setVisible(true);
-            eventBackground.setVisible(true);
-        }
-        if (!event3 && eventDisplayLabel.isVisible() && timer.getTimeRemaining() < 120) {
-            eventDisplayLabel.setVisible(false);
-            eventBackground.setVisible(false);
-        }
-        if (!event3 && timer.getTimeRemaining() < 50) {
-            runEvent();
-            event3 = true;
-            eventDisplayLabel.setVisible(true);
-            eventBackground.setVisible(true);
-        }
-        if (event3 && eventDisplayLabel.isVisible() && timer.getTimeRemaining() < 20) {
-            eventDisplayLabel.setVisible(false);
-            eventBackground.setVisible(false);
+        for (int time: eventsRun.keySet()) {
+            if (eventsRun.get(time)) {
+                continue;
+            }
+            if (timer.getTimeRemaining()< time){
+                runEvent();
+                eventsRun.put(time,true);
+            }
         }
     }
 
@@ -590,11 +568,11 @@ public class Main extends ApplicationAdapter {
         int randNum = (int) (Math.random() * 5);
         switch (randNum) {
             case 0:
-                eventDisplayLabel.setText("The university is receiving an unprecedented influx of new students, we may need more accomodation!");
+                eventDisplayLabel.setText("The university is receiving an unprecedented influx of new students, we may need more accommodation!");
                 currentEvents.put("1", new Event("overCrowding", 100, "1", currentEvents));
                 break;
             case 1:
-                eventDisplayLabel.setText("The university is receiving far less new students than usual, we may need less accomodation!");
+                eventDisplayLabel.setText("The university is receiving far less new students than usual, we may need less accommodation!");
                 currentEvents.put("1", new Event("underCrowding", 100, "1", currentEvents));
                 break;
             case 2:
@@ -611,7 +589,7 @@ public class Main extends ApplicationAdapter {
                 break;
             case 5:
                 eventDisplayLabel.setText("Fresher's flu is getting around and people are staying in their dorms, we may need less recreation spaces!");
-                currentEvents.put("3", new Event("overRecreaction", 30, "3", currentEvents));
+                currentEvents.put("3", new Event("overRecreation", 30, "3", currentEvents));
                 break;
         }
     }
