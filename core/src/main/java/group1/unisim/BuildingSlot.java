@@ -87,6 +87,7 @@ public class BuildingSlot {
         if (timeConstructing > 0) {
             timeConstructing -= delta;
             constructionCountdownText.setText(Integer.toString((int)timeConstructing));
+
         } else {
             isConstructingActive = false;
             constructionCountdownText.setVisible(false);

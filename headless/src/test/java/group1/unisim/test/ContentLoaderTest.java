@@ -3,6 +3,7 @@ package group1.unisim.test;
 import com.badlogic.gdx.Gdx;
 import group1.unisim.Building;
 import group1.unisim.ContentLoader;
+import group1.unisim.Thoughts;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -34,6 +35,14 @@ public class ContentLoaderTest extends HeadlessGdxTest {
         assertNotNull(loader.getThought("activeConstructions2"));
         assertNotNull(loader.getThought("activeConstructions3"));
         assertNotNull(loader.getThought("activeConstructions0"));
+
+        assertNotNull(loader.getLeaderboard());
+
+        loader.saveLeaderboard(loader.getLeaderboard());
+
+        for (String thought : Thoughts.getAllThoughts()) {
+            Assertions.assertNotNull(loader.getThought(thought));
+        }
 
         assertNotNull(loader.getLeaderboard());
 
