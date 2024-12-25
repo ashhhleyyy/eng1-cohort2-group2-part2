@@ -25,4 +25,9 @@ public class Thought {
     public int getModification() {
         return modification;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s: %s",title,description);
+    }
 }

@@ -18,7 +18,7 @@ public class BuildingSlot {
     private final int maxSize;
     private final Image sprite;
     public Label constructionCountdownText;
-    private int timeConstructing;
+    private float timeConstructing;
     private boolean isConstructingActive;
     private Building building;
     private Building previewing;
@@ -83,11 +83,10 @@ public class BuildingSlot {
         return previewing;
     }
 
-    public void update() {
+    public void update(float delta) {
         if (timeConstructing > 0) {
-            timeConstructing--;
-            constructionCountdownText.setVisible(true); // I KNOW THIS LINE OF CODE LOOKS DUMB BUT TRUST ME IT IS NEEDED
-            constructionCountdownText.setText(Integer.toString(timeConstructing));
+            timeConstructing -= delta;
+            constructionCountdownText.setText(Integer.toString((int)timeConstructing));
         } else {
             isConstructingActive = false;
             constructionCountdownText.setVisible(false);
@@ -97,6 +96,7 @@ public class BuildingSlot {
     public void build(Building building) {
         clearPreview();
         this.timeConstructing = building.getConstructionTime();
+        constructionCountdownText.setVisible(true);
         this.building = building;
         this.sprite.setDrawable(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(building.getTexture()))));
         this.isConstructingActive = true;

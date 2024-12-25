@@ -25,7 +25,6 @@ import java.util.Objects;
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
  */
 public class Main extends ApplicationAdapter {
-    private static final float UPDATE_TIME = 1 / 30f; // 30 updates/second
     private ContentLoader contentLoader;
     private SpriteBatch batch;
     private Texture toolbar;
@@ -37,9 +36,7 @@ public class Main extends ApplicationAdapter {
 
     private SatisfactionBar satisfactionBar;
     private float updateTimer;
-    private boolean isPaused = true;
-    private boolean statsUpdated = false;
-    private float gameTimer = 300;
+    private boolean endScreenGenerated = false;
     private HashMap<String, Event> currentEvents;
 
     private Stage stage;
@@ -54,6 +51,8 @@ public class Main extends ApplicationAdapter {
     private int reqFoo;
     private int reqRec;
     private int previousSecond;
+
+    private Timer timer;
 
     private Label scoreNumberLabel;
     private Label scoreCommentLabel;
@@ -86,6 +85,7 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void create() {
+        this.timer = new Timer();
         this.contentLoader = new ContentLoader();
         this.contentLoader.load();
         this.achievementsManager = new AchievementsManager();
@@ -122,7 +122,7 @@ public class Main extends ApplicationAdapter {
 
         satisfactionBar = new SatisfactionBar(skin, ui);
 
-        gameTimeText = new Label("5:00", skin);
+        gameTimeText = new Label(timer.toString(), skin);
         gameTimeText.setPosition(400, 735);
         gameTimeText.setSize(200, 50);
         gameTimeText.setFontScale(4);
@@ -245,9 +245,8 @@ public class Main extends ApplicationAdapter {
         pauseButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (gameTimer < 0) return;
-                isPaused = !isPaused;
-                if (isPaused) pauseImage.setDrawable(new TextureRegionDrawable(new TextureRegion(pauseTexture)));
+                timer.togglePause();
+                if (timer.isPaused()) pauseImage.setDrawable(new TextureRegionDrawable(new TextureRegion(pauseTexture)));
                 else pauseImage.setDrawable(new TextureRegionDrawable(new TextureRegion(playTexture)));
             }
         });
@@ -351,68 +350,19 @@ public class Main extends ApplicationAdapter {
     public void render() {
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        if (!isPaused && gameTimer > 0) {
-            gameTimer -= deltaTime;
-            updateGameTimeText((int) gameTimer);
-            if (gameTimer < 0) {
-                isPaused = true;
-                pauseImage.setDrawable(new TextureRegionDrawable(new TextureRegion(pauseTexture)));
-            }
+        if (timer.isTimePassing()) {
+            timer.update(deltaTime);
+            gameTimeText.setText(timer.toString());
 
-            updateTimer += deltaTime;
-            while (updateTimer > Main.UPDATE_TIME) { // in case of a long freeze, able to do multiple updates
-                update();
-                updateTimer -= Main.UPDATE_TIME;
-            }
+            update(deltaTime);
         }
 
-        if ((Math.round(gameTimer) % 2 == 0) && (previousSecond != Math.round(gameTimer))) {
-            // Thought bubble
-            StringBuilder thoughtBubble = new StringBuilder("Current Student Thoughts:\n");
-            for (Thought thought : satisfactionBar.getAllThoughts()) {
-                thoughtBubble.append(thought.getTitle()).append(": ").append(thought.getDescription()).append("\n\n");
-            }
-            thoughtDisplayLabel.setText(thoughtBubble);
-            previousSecond = Math.round(gameTimer);
+        if ((Math.round(timer.getTimeRemaining()) % 2 == 0) && (previousSecond != Math.round(timer.getTimeRemaining()))) {
+
+            thoughtDisplayLabel.setText(satisfactionBar.getThoughtsString());
+            previousSecond = Math.round(timer.getTimeRemaining());
         }
 
-        // Event runner:
-        if (!isPaused) {
-            if (!event1 && eventDisplayLabel.isVisible()) {
-                eventDisplayLabel.setVisible(false);
-                eventBackground.setVisible(false);
-            }
-            if (!event1 && gameTimer < 250) {
-                runEvent();
-                event1 = true;
-                eventDisplayLabel.setVisible(true);
-                eventBackground.setVisible(true);
-            }
-            if (!event2 && eventDisplayLabel.isVisible() && gameTimer < 220) {
-                eventDisplayLabel.setVisible(false);
-                eventBackground.setVisible(false);
-            }
-            if (!event2 && gameTimer < 150) {
-                runEvent();
-                event2 = true;
-                eventDisplayLabel.setVisible(true);
-                eventBackground.setVisible(true);
-            }
-            if (!event3 && eventDisplayLabel.isVisible() && gameTimer < 120) {
-                eventDisplayLabel.setVisible(false);
-                eventBackground.setVisible(false);
-            }
-            if (!event3 && gameTimer < 50) {
-                runEvent();
-                event3 = true;
-                eventDisplayLabel.setVisible(true);
-                eventBackground.setVisible(true);
-            }
-            if (event3 && eventDisplayLabel.isVisible() && gameTimer < 20) {
-                eventDisplayLabel.setVisible(false);
-                eventBackground.setVisible(false);
-            }
-        }
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -431,39 +381,80 @@ public class Main extends ApplicationAdapter {
         ui.draw();
 
         // when time is up, update contents of end screen and then draw
-        if (gameTimer < 0) {
-            scoreNumberLabel.setText(String.format("%d", Math.round(satisfactionBar.getScore())) + "%");
-            if (Math.round(satisfactionBar.getScore()) == 100) {
-                scoreCommentLabel.setText("THE BEST TO EVER DO IT!!!");
-            } else if (satisfactionBar.getScore() > 60) {
-                scoreCommentLabel.setText("The university runs excellently!!");
-            } else if (satisfactionBar.getScore() > 30) {
-                scoreCommentLabel.setText("The university runs just fine!");
-            } else {
-                scoreCommentLabel.setText("Everyone's quite upset...");
+        if (timer.isGameEnd()) {
+            if (!endScreenGenerated) {
+                generate_end_screen();
             }
-            if (!statsUpdated) {
-                statsUpdated = true;
-                Leaderboard leaderboard = contentLoader.getLeaderboard();
-                String name = JOptionPane.showInputDialog("whats your username");
-                leaderboard.addScore(new Score(name, Math.round(satisfactionBar.getScore())));
-                leaderboardEmbed.setText(leaderboard.toString());
-                contentLoader.saveLeaderboard(leaderboard);
-
-                this.achievementsEmbed.setText(achievementsManager.formatCompleted());
-                this.achievementsManager.saveAchievements();
-            }
-
             endScreen.draw();
         }
     }
 
-    private void update() {
-        if (isPaused) return;
+    private void generate_end_screen() {
+        endScreenGenerated = true;
 
-        for (BuildingSlot slot : buildingSlots) {
-            slot.update();
+        scoreNumberLabel.setText(String.format("%d", Math.round(satisfactionBar.getScore())) + "%");
+        if (Math.round(satisfactionBar.getScore()) == 100) {
+            scoreCommentLabel.setText("THE BEST TO EVER DO IT!!!");
+        } else if (satisfactionBar.getScore() > 60) {
+            scoreCommentLabel.setText("The university runs excellently!!");
+        } else if (satisfactionBar.getScore() > 30) {
+            scoreCommentLabel.setText("The university runs just fine!");
+        } else {
+            scoreCommentLabel.setText("Everyone's quite upset...");
         }
+            Leaderboard leaderboard = contentLoader.getLeaderboard();
+            String name = JOptionPane.showInputDialog("whats your username");
+            leaderboard.addScore(new Score(name, Math.round(satisfactionBar.getScore())));
+            leaderboardEmbed.setText(leaderboard.toString());
+            contentLoader.saveLeaderboard(leaderboard);
+
+            this.achievementsEmbed.setText(achievementsManager.formatCompleted());
+            this.achievementsManager.saveAchievements();
+    }
+
+
+    private void checkEvents() {
+        if (!event1 && eventDisplayLabel.isVisible()) {
+            eventDisplayLabel.setVisible(false);
+            eventBackground.setVisible(false);
+        }
+        if (!event1 && timer.getTimeRemaining() < 250) {
+            runEvent();
+            event1 = true;
+            eventDisplayLabel.setVisible(true);
+            eventBackground.setVisible(true);
+        }
+        if (!event2 && eventDisplayLabel.isVisible() && timer.getTimeRemaining() < 220) {
+            eventDisplayLabel.setVisible(false);
+            eventBackground.setVisible(false);
+        }
+        if (!event2 && timer.getTimeRemaining() < 150) {
+            runEvent();
+            event2 = true;
+            eventDisplayLabel.setVisible(true);
+            eventBackground.setVisible(true);
+        }
+        if (!event3 && eventDisplayLabel.isVisible() && timer.getTimeRemaining() < 120) {
+            eventDisplayLabel.setVisible(false);
+            eventBackground.setVisible(false);
+        }
+        if (!event3 && timer.getTimeRemaining() < 50) {
+            runEvent();
+            event3 = true;
+            eventDisplayLabel.setVisible(true);
+            eventBackground.setVisible(true);
+        }
+        if (event3 && eventDisplayLabel.isVisible() && timer.getTimeRemaining() < 20) {
+            eventDisplayLabel.setVisible(false);
+            eventBackground.setVisible(false);
+        }
+    }
+
+    private void update(float delta) {
+        for (BuildingSlot slot : buildingSlots) {
+            slot.update(delta);
+        }
+        checkEvents();
 
         if (buildingPreview != null) {
             if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT) || Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
@@ -476,9 +467,6 @@ public class Main extends ApplicationAdapter {
         satisfactionBar.updateScore();
     }
 
-    private void updateGameTimeText(int seconds) {
-        gameTimeText.setText(String.format("%d:%02d", (seconds / 60), (seconds % 60)));
-    }
 
     private void updateServiceCounts() {
         HashMap<Service, Integer> services = new HashMap<>();

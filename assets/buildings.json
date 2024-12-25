@@ -4,7 +4,7 @@
     "servicesProvided": [
       "Accommodation"
     ],
-    "constructionTime": 180,
+    "constructionTime": 6,
     "size": 2,
     "texture": "accom.png"
   },
@@ -13,7 +13,7 @@
     "servicesProvided": [
       "FoodDrink"
     ],
-    "constructionTime": 180,
+    "constructionTime": 6,
     "size": 1,
     "texture": "cafe.png"
   },
@@ -22,7 +22,7 @@
     "servicesProvided": [
       "TeachingSpace"
     ],
-    "constructionTime": 180,
+    "constructionTime": 6,
     "size": 2,
     "texture": "lectureHall.png"
   },
@@ -31,7 +31,7 @@
     "servicesProvided": [
       "SelfStudy"
     ],
-    "constructionTime": 180,
+    "constructionTime": 6,
     "size": 2,
     "texture": "library.png"
   },
@@ -40,7 +40,7 @@
     "servicesProvided": [
       "Recreation"
     ],
-    "constructionTime": 180,
+    "constructionTime": 6,
     "size": 2,
     "texture": "rec.png"
   }

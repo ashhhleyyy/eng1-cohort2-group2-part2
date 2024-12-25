@@ -26,7 +26,7 @@ public class BuildingSlotTest extends HeadlessGdxTest {
         assertTrue(slot.isConstructing());
         assertEquals(building, slot.getBuilding());
         for (int i = 0; i <= building.getConstructionTime(); i++) {
-            slot.update();
+            slot.update(1);
         }
         assertFalse(slot.isConstructing());
         assertEquals(building, slot.getBuilding());
