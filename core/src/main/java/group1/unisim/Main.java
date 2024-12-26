@@ -17,15 +17,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import group1.unisim.Building.Building;
 import group1.unisim.Building.BuildingSlot;
 import group1.unisim.Building.Service;
+import group1.unisim.Events.EventManager;
 import group1.unisim.Leaderboard.Leaderboard;
 import group1.unisim.Leaderboard.Score;
-import group1.unisim.Thought.Thoughts;
 import group1.unisim.achievement.AchievementsManager;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
@@ -42,14 +41,11 @@ public class Main extends ApplicationAdapter {
 
     private SatisfactionBar satisfactionBar;
     private boolean endScreenGenerated = false;
-    private ArrayList<Event> currentEvents;
-    private HashMap<Service, Integer> buildingRequirements;
 
     private Stage stage;
     private Stage endScreen;
 
-
-    HashMap<Integer,Boolean> eventsRun = new HashMap<>();
+    private EventManager eventManager;
 
     private float lastThoughtUpdate;
 
@@ -73,13 +69,12 @@ public class Main extends ApplicationAdapter {
     private Image pauseImage;
 
     private Label thoughtDisplayLabel;
-    private Label eventDisplayLabel;
-    private Image eventBackground;
 
     private TextArea achievementsEmbed;
     private TextArea leaderboardEmbed;
 
     private AchievementsManager achievementsManager;
+    private Skin skin;
 
     @Override
     public void create() {
@@ -88,21 +83,10 @@ public class Main extends ApplicationAdapter {
         this.contentLoader.load();
         this.achievementsManager = new AchievementsManager();
 
-
-        for (int i = 50; i < timer.getStartTime(); i+=100) {
-            eventsRun.put(i,false);
-        }
-        currentEvents = new ArrayList<>();
         lastThoughtUpdate = timer.getTimeRemaining();
 
+        skin = new Skin(Gdx.files.internal(Paths.UI_SKIN));
 
-        buildingRequirements = new HashMap<>();
-        for (Service service: Service.values()) {
-            buildingRequirements.put(service,1);
-        }
-
-
-        Skin skin = new Skin(Gdx.files.internal(Paths.UI_SKIN));
         batch = new SpriteBatch();
 
         toolbar = new Texture(Paths.TOOLBAR);
@@ -112,11 +96,12 @@ public class Main extends ApplicationAdapter {
         pauseTexture = new Texture(Paths.PAUSE);
         playTexture = new Texture(Paths.PLAY);
         this.ui = new Stage();
+        this.eventManager = new EventManager(this);
+
 
         Texture buildSelectBackgroundTexture = new Texture(Paths.BUILD_SELECT_BACKGROUND);
 
         Texture thoughtBackgroundTexture = new Texture(Paths.THOUGHT_BACKGROUND);
-        Texture eventBackgroundTexture = new Texture(Paths.EVENT_BACKGROUND);
 
         Texture endScreenTexture = new Texture(Paths.END_SCREEN);
 
@@ -270,17 +255,7 @@ public class Main extends ApplicationAdapter {
         thoughtDisplay.add(thoughtDisplayLabel).width(290).pad(5);
         ui.addActor(thoughtDisplay);
 
-        // creates and sets up events display, which is drawn immediately and will be hidden when unpaused for the first time
-        eventBackground = new Image(eventBackgroundTexture);
-        eventBackground.setPosition(800, 250);
-        ui.addActor(eventBackground);
 
-        Table eventDisplay = new Table(skin);
-        eventDisplay.top().right().setPosition(1000, 350);
-        eventDisplayLabel = new Label("New events show up here, when they happen... \nReminder: these effects last for the whole game!", skin);
-        eventDisplayLabel.setWrap(true);
-        eventDisplay.add(eventDisplayLabel).height(90).width(190).pad(5);
-        ui.addActor(eventDisplay);
 
         // creates and sets up background of end screen, will not be drawn until game over
         endScreen = new Stage();
@@ -346,6 +321,40 @@ public class Main extends ApplicationAdapter {
         satisfactionBar.updateScore();
     }
 
+
+
+    public ContentLoader getContentLoader() {
+        return contentLoader;
+    }
+
+    public SatisfactionBar getSatisfactionBar() {
+        return satisfactionBar;
+    }
+
+    public HashMap<Service, Label> getServicesText() {
+        return servicesText;
+    }
+
+    public ArrayList<BuildingSlot> getBuildingSlots() {
+        return buildingSlots;
+    }
+
+    public AchievementsManager getAchievementsManager() {
+        return achievementsManager;
+    }
+
+    public Skin getSkin() {
+        return skin;
+    }
+
+    public Stage getUi() {
+        return ui;
+    }
+
+    public Timer getTimer() {
+        return timer;
+    }
+
     @Override
     public void render() {
         float deltaTime = Gdx.graphics.getDeltaTime();
@@ -362,13 +371,7 @@ public class Main extends ApplicationAdapter {
             thoughtDisplayLabel.setText(satisfactionBar.getThoughtsString());
         }
 
-        if (!currentEvents.isEmpty()) {
-            eventDisplayLabel.setVisible(true);
-            eventBackground.setVisible(true);
-        } else {
-            eventDisplayLabel.setVisible(false);
-            eventBackground.setVisible(false);
-        }
+        eventManager.update();
 
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -420,23 +423,13 @@ public class Main extends ApplicationAdapter {
     }
 
 
-    private void checkEvents() {
-        for (int time: eventsRun.keySet()) {
-            if (eventsRun.get(time)) {
-                continue;
-            }
-            if (timer.getTimeRemaining()< time){
-                runEvent();
-                eventsRun.put(time,true);
-            }
-        }
-    }
+
 
     private void update(float delta) {
         for (BuildingSlot slot : buildingSlots) {
             slot.update(delta);
         }
-        checkEvents();
+        eventManager.checkEvents();
 
         if (buildingPreview != null) {
             if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT) || Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
@@ -444,93 +437,12 @@ public class Main extends ApplicationAdapter {
             }
         }
 
-        updateServices();
+        eventManager.updateServices();
 
         satisfactionBar.updateScore();
     }
 
-    private void updateServices() {
-        HashMap<Service, Integer> services = new HashMap<>();
-        HashMap<Service, Integer> servicesUnderConstruction = new HashMap<>();
-        int constructionTotal = 0;
-        for (BuildingSlot slot : buildingSlots) {
-            if (slot.getBuilding() == null) continue;
-            for (Service service : slot.getBuilding().getServicesProvided()) {
-                if (slot.isConstructing()) servicesUnderConstruction.merge(service, 1, Integer::sum);
-                else services.merge(service, 1, Integer::sum);
-            }
-        }
 
-
-        for (Service service : Service.values()) {
-            services.putIfAbsent(service, 0);
-            servicesUnderConstruction.putIfAbsent(service, 0);
-            servicesText.get(service).setText(String.format("%d (%d)", services.get(service), servicesUnderConstruction.get(service)));
-            constructionTotal += servicesUnderConstruction.get(service);
-        }
-
-        boolean perfect_buildings = true;
-        for (Map.Entry<Service, Integer> target: buildingRequirements.entrySet()) {
-            int comp = services.get(target.getKey()).compareTo(target.getValue());
-            if (comp != 0) {
-                perfect_buildings = false;
-            }
-            String thought = contentLoader.getServiceThought(target.getKey(), comp);
-            if (thought == null) {
-                satisfactionBar.removeThought(target.getKey().toString());
-                continue;
-            }
-            satisfactionBar.setThought(target.getKey().toString(), contentLoader.getThought(thought));
-
-        }
-
-        boolean found_zero = false;
-        boolean all_1s = true;
-        for (Integer value: services.values()) {
-            if (value == 0) {
-                found_zero = true;
-                all_1s = false;
-                break;
-            }
-            if (value != 1) {
-                all_1s = false;
-            }
-        }
-
-        if (perfect_buildings) {
-            satisfactionBar.setThought("building_count",contentLoader.getThought(Thoughts.PERFECT_BUILDING_LEVEL));
-        } else {
-            satisfactionBar.removeThought("building_count");
-        }
-        if (found_zero) {
-            satisfactionBar.setThought("missing_building",contentLoader.getThought(Thoughts.BUILDING_MISSING));
-        } else {
-            satisfactionBar.removeThought("missing_building");
-        }
-        if (all_1s) {
-            satisfactionBar.setThought("one_of_each",contentLoader.getThought(Thoughts.ONE_OF_EACH_BUILDING));
-        } else {
-            satisfactionBar.removeThought("one_of_each");
-        }
-
-
-
-        // Adding construction thought to satisfaction bar:
-        if (constructionTotal == 1) {
-            satisfactionBar.setThought("construction", contentLoader.getThought(Thoughts.ACTIVE_CONSTRUCTIONS1));
-        } else if (constructionTotal == 2) {
-            satisfactionBar.setThought("construction", contentLoader.getThought(Thoughts.ACTIVE_CONSTRUCTIONS2));
-        } else if (constructionTotal > 2) {
-            satisfactionBar.setThought("construction", contentLoader.getThought(Thoughts.ACTIVE_CONSTRUCTIONS3));
-        } else {
-            satisfactionBar.setThought("construction", contentLoader.getThought(Thoughts.ACTIVE_CONSTRUCTIONS0));
-        }
-
-        for (var service : Service.values()) {
-            this.achievementsManager.onServiceValueChange(service, services.getOrDefault(service, 0));
-        }
-        this.achievementsManager.onSatisfactionChange(this.satisfactionBar.getScore());
-    }
 
     private void preview(Building building) {
         buildingPreview = building;
@@ -546,47 +458,8 @@ public class Main extends ApplicationAdapter {
         }
     }
 
-    private void runEvent() {
-        int randNum = (int) (Math.random() * 5);
-        //todo move this to a file
-        switch (randNum) {
-            case 0:
-                addEvent(new Event("The university is receiving an unprecedented influx of new students, we may need more accommodation!", 100,  Service.Accommodation,2, this));
-                break;
-            case 1:
-                addEvent(new Event("The university is receiving far less new students than usual, we may need less accommodation!", 100,  Service.Accommodation,0, this));
-                break;
-            case 2:
-                addEvent(new Event("Students are sick of prerecorded mini-lectures and want to go in person, we may need more teaching spaces!", 50,   Service.TeachingSpace,2, this));
-                break;
-            case 3:
-                addEvent(new Event("Lecturers are on strike, we may need less teaching spaces!", 50,  Service.TeachingSpace, 0, this));
-                break;
-            case 4:
-                addEvent( new Event("Students are bored, we may need more recreation spaces!", 50,  Service.Recreation, 2, this));
-                break;
-            case 5:
-                addEvent( new Event("Fresher's flu is getting around and people are staying in their dorms, we may need less recreation spaces!", 30, Service.Recreation, 0, this));
-                break;
-        }
-    }
 
-    public void addEvent(Event toAdd) {
-        currentEvents.removeIf(event -> event.getService() == toAdd.getService());
-        buildingRequirements.put(toAdd.getService(),toAdd.getRequirement());
-        currentEvents.add(toAdd);
-        eventDisplayLabel.setText(toAdd.getDescription());
-    }
-    public void removeEvent(Event toRemove) {
-        buildingRequirements.put(toRemove.getService(),1);
-        currentEvents.remove(toRemove);
-        eventDisplayLabel.setText("");
 
-    }
-
-    public ArrayList<Event> getCurrentEvents() {
-        return currentEvents;
-    }
 
     @Override
     public void dispose() {

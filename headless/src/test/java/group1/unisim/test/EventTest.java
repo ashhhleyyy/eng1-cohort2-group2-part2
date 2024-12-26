@@ -1,11 +1,10 @@
 package group1.unisim.test;
 
 import group1.unisim.Building.Service;
-import group1.unisim.Event;
+import group1.unisim.Events.Event;
+import group1.unisim.Events.EventManager;
 import group1.unisim.Main;
 import org.junit.jupiter.api.Test;
-
-import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -13,10 +12,11 @@ import static org.mockito.Mockito.mock;
 public class EventTest extends HeadlessGdxTest{
     @Test
     public void testEvent() {
-        Main main = mock(Main.class);
-        Event event = new Event("test_thought", 10, Service.Recreation, 10,main );
-        main.addEvent(event);
-        System.out.println(main.getCurrentEvents());
+        EventManager eventManager = new EventManager(mock(Main.class));
+        Event event = new Event("test_thought", 10, Service.Recreation, 10,eventManager );
+        //TODO make this work
+        //eventManager.addEvent(event);
+        System.out.println(eventManager.getCurrentEvents());
 
         assertEquals("test_thought", event.getDescription());
         assertEquals(10.0f, event.getDuration());
@@ -24,7 +24,6 @@ public class EventTest extends HeadlessGdxTest{
         assertEquals(10,event.getRequirement());
 
         event.update(5.0f);
-        //TODO make this work
         //assertTrue(main.getCurrentEvents().contains(event), "event has not yet ended");
         assertEquals(5.0f, event.getDuration());
 

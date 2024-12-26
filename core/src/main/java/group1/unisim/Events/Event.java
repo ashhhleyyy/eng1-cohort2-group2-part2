@@ -1,21 +1,22 @@
-package group1.unisim;
+package group1.unisim.Events;
 
 import group1.unisim.Building.Service;
+import group1.unisim.Main;
 
 public class Event {
     private final String description;
     private float duration;
     private final Service service;
     private final int requirement;
-    private final Main main;
+    private final EventManager eventManager;
 
 
-    public Event(String description, int duration, Service service, int requirement, Main main) {
+    public Event(String description, int duration, Service service, int requirement, EventManager eventManager) {
         this.description = description;
         this.duration = duration;
         this.service = service;
         this.requirement = requirement;
-        this.main = main;
+        this.eventManager = eventManager;
     }
 
     public void update(float deltaTime) {
@@ -25,7 +26,7 @@ public class Event {
     }
 
     public void end() {
-        main.removeEvent(this);
+        eventManager.removeEvent(this);
     }
 
     public float getDuration() {
