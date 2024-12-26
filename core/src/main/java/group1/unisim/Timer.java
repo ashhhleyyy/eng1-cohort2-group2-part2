@@ -40,6 +40,9 @@ public class Timer {
         return timeRemaining;
     }
 
+    public static float getStartTime() {
+        return START_TIME;
+    }
 
     public void togglePause() {
         if (this.isGameEnd()) {

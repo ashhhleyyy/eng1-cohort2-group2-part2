@@ -1,4 +1,4 @@
-package group1.unisim;
+package group1.unisim.Building;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -12,6 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import group1.unisim.ContentLoader;
+import group1.unisim.Paths;
 
 public class BuildingSlot {
     private final Vector2 position;

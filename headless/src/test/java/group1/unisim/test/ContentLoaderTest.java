@@ -1,9 +1,9 @@
 package group1.unisim.test;
 
 import com.badlogic.gdx.Gdx;
-import group1.unisim.Building;
+import group1.unisim.Building.Building;
 import group1.unisim.ContentLoader;
-import group1.unisim.Thoughts;
+import group1.unisim.Thought.Thoughts;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

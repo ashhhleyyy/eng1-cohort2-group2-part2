@@ -1,7 +1,7 @@
 package group1.unisim.test;
 
-import group1.unisim.Leaderboard;
-import group1.unisim.Score;
+import group1.unisim.Leaderboard.Leaderboard;
+import group1.unisim.Leaderboard.Score;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

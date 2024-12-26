@@ -1,9 +1,13 @@
-package group1.unisim;
+package group1.unisim.Thought;
+
+import group1.unisim.Building.Service;
 
 public class Thought {
     private String title;
     private String description;
     private int modification;
+    private Service service;
+    private int diff;
 
     public Thought() {
     }
@@ -12,6 +16,13 @@ public class Thought {
         this.title = title;
         this.description = description;
         this.modification = modification;
+    }
+    public Thought(String title, String description, int modification, Service service, int diff) {
+        this.title = title;
+        this.description = description;
+        this.modification = modification;
+        this.service = service;
+        this.diff = diff;
     }
 
     public String getTitle() {
@@ -29,5 +40,13 @@ public class Thought {
     @Override
     public String toString() {
         return String.format("%s: %s",title,description);
+    }
+
+    public int getDiff() {
+        return diff;
+    }
+
+    public Service getService() {
+        return service;
     }
 }

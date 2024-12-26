@@ -1,19 +1,21 @@
 package group1.unisim;
 
-import java.util.HashMap;
+import group1.unisim.Building.Service;
 
 public class Event {
-    private final String associatedThought;
-    private final String index;
-    private final HashMap<String, Event> events;
+    private final String description;
     private float duration;
+    private final Service service;
+    private final int requirement;
+    private final Main main;
 
 
-    public Event(String associatedThought, int duration, String index, HashMap<String, Event> events) {
-        this.associatedThought = associatedThought;
+    public Event(String description, int duration, Service service, int requirement, Main main) {
+        this.description = description;
         this.duration = duration;
-        this.index = index;
-        this.events = events;
+        this.service = service;
+        this.requirement = requirement;
+        this.main = main;
     }
 
     public void update(float deltaTime) {
@@ -23,16 +25,25 @@ public class Event {
     }
 
     public void end() {
-        events.remove(index);
-    }
-
-    public String getAssociatedThought() {
-        return associatedThought;
+        main.removeEvent(this);
     }
 
     public float getDuration() {
         return duration;
     }
+
+    public Service getService() {
+        return service;
+    }
+
+    public int getRequirement() {
+        return requirement;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
 
     public boolean isActive() {
         return duration > 0;

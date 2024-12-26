@@ -1,4 +1,4 @@
-package group1.unisim;
+package group1.unisim.Leaderboard;
 
 public class Score {
     private String name;

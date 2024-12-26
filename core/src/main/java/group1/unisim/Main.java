@@ -14,12 +14,18 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import group1.unisim.Building.Building;
+import group1.unisim.Building.BuildingSlot;
+import group1.unisim.Building.Service;
+import group1.unisim.Leaderboard.Leaderboard;
+import group1.unisim.Leaderboard.Score;
+import group1.unisim.Thought.Thoughts;
 import group1.unisim.achievement.AchievementsManager;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
+import java.util.Map;
 
 /**
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
@@ -36,7 +42,8 @@ public class Main extends ApplicationAdapter {
 
     private SatisfactionBar satisfactionBar;
     private boolean endScreenGenerated = false;
-    private HashMap<String, Event> currentEvents;
+    private ArrayList<Event> currentEvents;
+    private HashMap<Service, Integer> buildingRequirements;
 
     private Stage stage;
     private Stage endScreen;
@@ -44,11 +51,6 @@ public class Main extends ApplicationAdapter {
 
     HashMap<Integer,Boolean> eventsRun = new HashMap<>();
 
-    private int reqAcc;
-    private int reqTea;
-    private int reqSel;
-    private int reqFoo;
-    private int reqRec;
     private float lastThoughtUpdate;
 
     private Timer timer;
@@ -86,17 +88,19 @@ public class Main extends ApplicationAdapter {
         this.contentLoader.load();
         this.achievementsManager = new AchievementsManager();
 
-        eventsRun.put(250,false);
-        eventsRun.put(150,false);
-        eventsRun.put(50,false);
-        currentEvents = new HashMap<>();
 
-        reqAcc = 1;
-        reqFoo = 1;
-        reqRec = 1;
-        reqSel = 1;
-        reqTea = 1;
+        for (int i = 50; i < timer.getStartTime(); i+=100) {
+            eventsRun.put(i,false);
+        }
+        currentEvents = new ArrayList<>();
         lastThoughtUpdate = timer.getTimeRemaining();
+
+
+        buildingRequirements = new HashMap<>();
+        for (Service service: Service.values()) {
+            buildingRequirements.put(service,1);
+        }
+
 
         Skin skin = new Skin(Gdx.files.internal(Paths.UI_SKIN));
         batch = new SpriteBatch();
@@ -440,13 +444,12 @@ public class Main extends ApplicationAdapter {
             }
         }
 
-        updateServiceCounts();
+        updateServices();
 
         satisfactionBar.updateScore();
     }
 
-
-    private void updateServiceCounts() {
+    private void updateServices() {
         HashMap<Service, Integer> services = new HashMap<>();
         HashMap<Service, Integer> servicesUnderConstruction = new HashMap<>();
         int constructionTotal = 0;
@@ -458,6 +461,7 @@ public class Main extends ApplicationAdapter {
             }
         }
 
+
         for (Service service : Service.values()) {
             services.putIfAbsent(service, 0);
             servicesUnderConstruction.putIfAbsent(service, 0);
@@ -465,83 +469,61 @@ public class Main extends ApplicationAdapter {
             constructionTotal += servicesUnderConstruction.get(service);
         }
 
-        // Calculate number of buildings needed + assign correct thoughts:
-        if (currentEvents.get("1") != null) {
-            if (Objects.equals(currentEvents.get("1").getAssociatedThought(), "underCrowding")) {
-                reqAcc = 0;
-            } else {
-                reqAcc = 2;
+        boolean perfect_buildings = true;
+        for (Map.Entry<Service, Integer> target: buildingRequirements.entrySet()) {
+            int comp = services.get(target.getKey()).compareTo(target.getValue());
+            if (comp != 0) {
+                perfect_buildings = false;
+            }
+            String thought = contentLoader.getServiceThought(target.getKey(), comp);
+            if (thought == null) {
+                satisfactionBar.removeThought(target.getKey().toString());
+                continue;
+            }
+            satisfactionBar.setThought(target.getKey().toString(), contentLoader.getThought(thought));
+
+        }
+
+        boolean found_zero = false;
+        boolean all_1s = true;
+        for (Integer value: services.values()) {
+            if (value == 0) {
+                found_zero = true;
+                all_1s = false;
+                break;
+            }
+            if (value != 1) {
+                all_1s = false;
             }
         }
-        if (currentEvents.get("2") != null) {
-            if (Objects.equals(currentEvents.get("2").getAssociatedThought(), "underTeaching")) {
-                reqTea = 2;
-            } else {
-                reqTea = 0;
-            }
+
+        if (perfect_buildings) {
+            satisfactionBar.setThought("building_count",contentLoader.getThought(Thoughts.PERFECT_BUILDING_LEVEL));
+        } else {
+            satisfactionBar.removeThought("building_count");
         }
-        if (currentEvents.get("3") != null) {
-            if (Objects.equals(currentEvents.get("3").getAssociatedThought(), "underRecreation")) {
-                reqRec = 2;
-            } else {
-                reqRec = 0;
-            }
+        if (found_zero) {
+            satisfactionBar.setThought("missing_building",contentLoader.getThought(Thoughts.BUILDING_MISSING));
+        } else {
+            satisfactionBar.removeThought("missing_building");
+        }
+        if (all_1s) {
+            satisfactionBar.setThought("one_of_each",contentLoader.getThought(Thoughts.ONE_OF_EACH_BUILDING));
+        } else {
+            satisfactionBar.removeThought("one_of_each");
         }
 
-        if (reqAcc < services.get(Service.Accommodation)) {
-            satisfactionBar.setThought("1", contentLoader.getThought(Thoughts.UNDER_CROWDING));
-        } else if (reqAcc > services.get(Service.Accommodation)) {
-            satisfactionBar.setThought("1", contentLoader.getThought(Thoughts.OVERCROWDING));
-        } else {
-            satisfactionBar.setThought("1", contentLoader.getThought(Thoughts.NEUTRAL_CROWDING));
-        }
 
-        if (reqTea > services.get(Service.TeachingSpace)) {
-            satisfactionBar.setThought("2", contentLoader.getThought(Thoughts.UNDER_TEACHING));
-        } else if (reqTea < services.get(Service.TeachingSpace)) {
-            satisfactionBar.setThought("2", contentLoader.getThought(Thoughts.OVER_TEACHING));
-        } else {
-            satisfactionBar.removeThought("2");
-        }
-
-        if (reqRec > services.get(Service.Recreation)) {
-            satisfactionBar.setThought("3", contentLoader.getThought(Thoughts.UNDER_RECREATION));
-        } else if (reqRec < services.get(Service.Recreation)) {
-            satisfactionBar.setThought("3", contentLoader.getThought(Thoughts.OVER_RECREATION));
-        } else {
-            satisfactionBar.removeThought("3");
-        }
-
-        if (reqAcc == services.get(Service.Accommodation) && reqTea == services.get(Service.TeachingSpace) &&
-            reqSel == services.get(Service.SelfStudy) && reqFoo == services.get(Service.FoodDrink) && reqRec == services.get(Service.Recreation)) {
-            satisfactionBar.setThought("4", contentLoader.getThought(Thoughts.PERFECT_BUILDING_LEVEL));
-        } else {
-            satisfactionBar.removeThought("4");
-        }
-
-        if (1 <= services.get(Service.Accommodation) && 1 <= services.get(Service.TeachingSpace) &&
-            1 <= services.get(Service.SelfStudy) && 1 <= services.get(Service.FoodDrink) && 1 <= services.get(Service.Recreation)) {
-            satisfactionBar.setThought("5", contentLoader.getThought(Thoughts.ONE_OF_EACH_BUILDING));
-        } else {
-            satisfactionBar.removeThought("5");
-        }
-
-        if (0 == services.get(Service.Accommodation) || 0 == services.get(Service.TeachingSpace) ||
-            0 == services.get(Service.SelfStudy) || 0 == services.get(Service.FoodDrink) || 0 == services.get(Service.Recreation)) {
-            satisfactionBar.setThought("6", contentLoader.getThought(Thoughts.BUILDING_MISSING));
-        } else {
-            satisfactionBar.removeThought("6");
-        }
 
         // Adding construction thought to satisfaction bar:
         if (constructionTotal == 1) {
-            satisfactionBar.setThought("0", contentLoader.getThought(Thoughts.ACTIVE_CONSTRUCTIONS1));
+            satisfactionBar.setThought("construction", contentLoader.getThought(Thoughts.ACTIVE_CONSTRUCTIONS1));
         } else if (constructionTotal == 2) {
-            satisfactionBar.setThought("0", contentLoader.getThought(Thoughts.ACTIVE_CONSTRUCTIONS2));
+            satisfactionBar.setThought("construction", contentLoader.getThought(Thoughts.ACTIVE_CONSTRUCTIONS2));
         } else if (constructionTotal > 2) {
-            satisfactionBar.setThought("0", contentLoader.getThought(Thoughts.ACTIVE_CONSTRUCTIONS3));
+            satisfactionBar.setThought("construction", contentLoader.getThought(Thoughts.ACTIVE_CONSTRUCTIONS3));
         } else {
-            satisfactionBar.setThought("0", contentLoader.getThought(Thoughts.ACTIVE_CONSTRUCTIONS0));
+            satisfactionBar.setThought("construction", contentLoader.getThought(Thoughts.ACTIVE_CONSTRUCTIONS0));
         }
 
         for (var service : Service.values()) {
@@ -566,33 +548,42 @@ public class Main extends ApplicationAdapter {
 
     private void runEvent() {
         int randNum = (int) (Math.random() * 5);
+        //todo move this to a file
         switch (randNum) {
             case 0:
-                eventDisplayLabel.setText("The university is receiving an unprecedented influx of new students, we may need more accommodation!");
-                currentEvents.put("1", new Event("overCrowding", 100, "1", currentEvents));
+                addEvent(new Event("The university is receiving an unprecedented influx of new students, we may need more accommodation!", 100,  Service.Accommodation,2, this));
                 break;
             case 1:
-                eventDisplayLabel.setText("The university is receiving far less new students than usual, we may need less accommodation!");
-                currentEvents.put("1", new Event("underCrowding", 100, "1", currentEvents));
+                addEvent(new Event("The university is receiving far less new students than usual, we may need less accommodation!", 100,  Service.Accommodation,0, this));
                 break;
             case 2:
-                eventDisplayLabel.setText("Students are sick of prerecorded mini-lectures and want to go in person, we may need more teaching spaces!");
-                currentEvents.put("2", new Event("underTeaching", 50, "2", currentEvents));
+                addEvent(new Event("Students are sick of prerecorded mini-lectures and want to go in person, we may need more teaching spaces!", 50,   Service.TeachingSpace,2, this));
                 break;
             case 3:
-                eventDisplayLabel.setText("Lecturers are on strike, we may need less teaching spaces!");
-                currentEvents.put("2", new Event("overTeaching", 50, "2", currentEvents));
+                addEvent(new Event("Lecturers are on strike, we may need less teaching spaces!", 50,  Service.TeachingSpace, 0, this));
                 break;
             case 4:
-                eventDisplayLabel.setText("Students are bored, we may need more recreation spaces!");
-                currentEvents.put("3", new Event("underRecreation", 50, "3", currentEvents));
+                addEvent( new Event("Students are bored, we may need more recreation spaces!", 50,  Service.Recreation, 2, this));
                 break;
             case 5:
-                eventDisplayLabel.setText("Fresher's flu is getting around and people are staying in their dorms, we may need less recreation spaces!");
-                currentEvents.put("3", new Event("overRecreation", 30, "3", currentEvents));
+                addEvent( new Event("Fresher's flu is getting around and people are staying in their dorms, we may need less recreation spaces!", 30, Service.Recreation, 0, this));
                 break;
         }
     }
+
+    private void addEvent(Event toAdd) {
+        currentEvents.removeIf(event -> event.getService() == toAdd.getService());
+        buildingRequirements.put(toAdd.getService(),toAdd.getRequirement());
+        currentEvents.add(toAdd);
+        eventDisplayLabel.setText(toAdd.getDescription());
+    }
+    public void removeEvent(Event toRemove) {
+        buildingRequirements.put(toRemove.getService(),1);
+        currentEvents.remove(toRemove);
+        eventDisplayLabel.setText("");
+
+    }
+
 
     @Override
     public void dispose() {

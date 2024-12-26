@@ -1,4 +1,4 @@
-package group1.unisim;
+package group1.unisim.Leaderboard;
 
 import java.util.ArrayList;
 import java.util.Comparator;

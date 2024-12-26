@@ -1,6 +1,6 @@
 package group1.unisim.achievement;
 
-import group1.unisim.Service;
+import group1.unisim.Building.Service;
 
 public abstract class Achievement {
     private final String id;

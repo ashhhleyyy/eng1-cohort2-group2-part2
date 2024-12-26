@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import group1.unisim.Paths;
 import group1.unisim.SatisfactionBar;
-import group1.unisim.Thought;
+import group1.unisim.Thought.Thought;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
