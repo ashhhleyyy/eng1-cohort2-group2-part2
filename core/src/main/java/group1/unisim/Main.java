@@ -571,7 +571,7 @@ public class Main extends ApplicationAdapter {
         }
     }
 
-    private void addEvent(Event toAdd) {
+    public void addEvent(Event toAdd) {
         currentEvents.removeIf(event -> event.getService() == toAdd.getService());
         buildingRequirements.put(toAdd.getService(),toAdd.getRequirement());
         currentEvents.add(toAdd);
@@ -584,6 +584,9 @@ public class Main extends ApplicationAdapter {
 
     }
 
+    public ArrayList<Event> getCurrentEvents() {
+        return currentEvents;
+    }
 
     @Override
     public void dispose() {

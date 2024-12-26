@@ -17,6 +17,9 @@ public class Thoughts {
 
     private Thoughts() {}
 
+    public static List<String> getAllThoughts() {
+        return ALL_THOUGHTS;
+    }
 
     private static String thought(String thought) {
         ALL_THOUGHTS.add(thought);

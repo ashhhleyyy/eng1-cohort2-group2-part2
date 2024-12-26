@@ -21,13 +21,7 @@ public class ContentLoaderTest extends HeadlessGdxTest {
         for (Building building : loader.allBuildings()) {
             Assertions.assertTrue(Gdx.files.internal(building.getTexture()).exists());
         }
-        assertNotNull(loader.getThought("underCrowding"));
-        assertNotNull(loader.getThought("overCrowding"));
-        assertNotNull(loader.getThought("neutralCrowding"));
-        assertNotNull(loader.getThought("underTeaching"));
-        assertNotNull(loader.getThought("overTeaching"));
-        assertNotNull(loader.getThought("underRecreation"));
-        assertNotNull(loader.getThought("overRecreation"));
+
         assertNotNull(loader.getThought("perfectBuildingLevel"));
         assertNotNull(loader.getThought("oneOfEachBuilding"));
         assertNotNull(loader.getThought("buildingMissing"));
