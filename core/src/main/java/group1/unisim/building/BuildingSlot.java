@@ -1,4 +1,4 @@
-package group1.unisim.Building;
+package group1.unisim.building;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -88,7 +88,7 @@ public class BuildingSlot {
     public void update(float delta) {
         if (timeConstructing > 0) {
             timeConstructing -= delta;
-            constructionCountdownText.setText(Integer.toString((int)timeConstructing));
+            constructionCountdownText.setText(Integer.toString((int) timeConstructing));
 
         } else {
             isConstructingActive = false;

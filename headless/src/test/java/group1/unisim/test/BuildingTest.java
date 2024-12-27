@@ -1,7 +1,7 @@
 package group1.unisim.test;
 
-import group1.unisim.Building.Building;
-import group1.unisim.Building.Service;
+import group1.unisim.building.Building;
+import group1.unisim.building.Service;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;

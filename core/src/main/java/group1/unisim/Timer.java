@@ -14,6 +14,10 @@ public class Timer {
 
     }
 
+    public static float getStartTime() {
+        return START_TIME;
+    }
+
     public void update(float delta) {
         if (isTimePassing()) {
             timeRemaining -= delta;
@@ -21,7 +25,7 @@ public class Timer {
     }
 
     public String toString() {
-        return String.format("%d:%02d", (((int)timeRemaining) / 60), (((int)timeRemaining) % 60));
+        return String.format("%d:%02d", (((int) timeRemaining) / 60), (((int) timeRemaining) % 60));
     }
 
     public boolean isGameEnd() {
@@ -38,10 +42,6 @@ public class Timer {
 
     public float getTimeRemaining() {
         return timeRemaining;
-    }
-
-    public static float getStartTime() {
-        return START_TIME;
     }
 
     public void togglePause() {

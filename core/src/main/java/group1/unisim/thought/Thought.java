@@ -1,6 +1,6 @@
-package group1.unisim.Thought;
+package group1.unisim.thought;
 
-import group1.unisim.Building.Service;
+import group1.unisim.building.Service;
 
 public class Thought {
     private String title;
@@ -17,6 +17,7 @@ public class Thought {
         this.description = description;
         this.modification = modification;
     }
+
     public Thought(String title, String description, int modification, Service service, int diff) {
         this.title = title;
         this.description = description;
@@ -39,7 +40,7 @@ public class Thought {
 
     @Override
     public String toString() {
-        return String.format("%s: %s",title,description);
+        return String.format("%s: %s", title, description);
     }
 
     public int getDiff() {

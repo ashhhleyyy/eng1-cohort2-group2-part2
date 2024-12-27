@@ -1,4 +1,4 @@
-package group1.unisim.Building;
+package group1.unisim.building;
 
 public class Building {
     private String name;

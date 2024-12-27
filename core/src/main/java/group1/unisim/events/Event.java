@@ -1,14 +1,13 @@
-package group1.unisim.Events;
+package group1.unisim.events;
 
-import group1.unisim.Building.Service;
-import group1.unisim.Main;
+import group1.unisim.building.Service;
 
 public class Event {
     private final String description;
-    private float duration;
     private final Service service;
     private final int requirement;
     private final EventManager eventManager;
+    private float duration;
 
 
     public Event(String description, int duration, Service service, int requirement, EventManager eventManager) {
@@ -49,5 +48,4 @@ public class Event {
     public boolean isActive() {
         return duration > 0;
     }
-
 }

@@ -14,17 +14,20 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import group1.unisim.Building.Building;
-import group1.unisim.Building.BuildingSlot;
-import group1.unisim.Building.Service;
-import group1.unisim.Events.EventManager;
-import group1.unisim.Leaderboard.Leaderboard;
-import group1.unisim.Leaderboard.Score;
 import group1.unisim.achievement.AchievementsManager;
+import group1.unisim.building.Building;
+import group1.unisim.building.BuildingSlot;
+import group1.unisim.building.Service;
+import group1.unisim.events.EventManager;
+import group1.unisim.leaderboard.Leaderboard;
+import group1.unisim.leaderboard.Score;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+
+import static group1.unisim.building.Service.values;
 
 /**
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
@@ -74,7 +77,6 @@ public class Main extends ApplicationAdapter {
     private TextArea leaderboardEmbed;
 
     private AchievementsManager achievementsManager;
-    private Skin skin;
 
     @Override
     public void create() {
@@ -85,7 +87,7 @@ public class Main extends ApplicationAdapter {
 
         lastThoughtUpdate = timer.getTimeRemaining();
 
-        skin = new Skin(Gdx.files.internal(Paths.UI_SKIN));
+        Skin skin = new Skin(Gdx.files.internal(Paths.UI_SKIN));
 
         batch = new SpriteBatch();
 
@@ -96,8 +98,8 @@ public class Main extends ApplicationAdapter {
         pauseTexture = new Texture(Paths.PAUSE);
         playTexture = new Texture(Paths.PLAY);
         this.ui = new Stage();
-        this.eventManager = new EventManager(this);
-
+        this.eventManager = new EventManager(this.timer, this.satisfactionBar, this.contentLoader, this.achievementsManager);
+        this.eventManager.initUi(this.ui, skin);
 
         Texture buildSelectBackgroundTexture = new Texture(Paths.BUILD_SELECT_BACKGROUND);
 
@@ -231,7 +233,8 @@ public class Main extends ApplicationAdapter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 timer.togglePause();
-                if (timer.isPaused()) pauseImage.setDrawable(new TextureRegionDrawable(new TextureRegion(pauseTexture)));
+                if (timer.isPaused())
+                    pauseImage.setDrawable(new TextureRegionDrawable(new TextureRegion(pauseTexture)));
                 else pauseImage.setDrawable(new TextureRegionDrawable(new TextureRegion(playTexture)));
             }
         });
@@ -254,7 +257,6 @@ public class Main extends ApplicationAdapter {
         thoughtDisplayLabel.setWrap(true);
         thoughtDisplay.add(thoughtDisplayLabel).width(290).pad(5);
         ui.addActor(thoughtDisplay);
-
 
 
         // creates and sets up background of end screen, will not be drawn until game over
@@ -321,40 +323,6 @@ public class Main extends ApplicationAdapter {
         satisfactionBar.updateScore();
     }
 
-
-
-    public ContentLoader getContentLoader() {
-        return contentLoader;
-    }
-
-    public SatisfactionBar getSatisfactionBar() {
-        return satisfactionBar;
-    }
-
-    public HashMap<Service, Label> getServicesText() {
-        return servicesText;
-    }
-
-    public ArrayList<BuildingSlot> getBuildingSlots() {
-        return buildingSlots;
-    }
-
-    public AchievementsManager getAchievementsManager() {
-        return achievementsManager;
-    }
-
-    public Skin getSkin() {
-        return skin;
-    }
-
-    public Stage getUi() {
-        return ui;
-    }
-
-    public Timer getTimer() {
-        return timer;
-    }
-
     @Override
     public void render() {
         float deltaTime = Gdx.graphics.getDeltaTime();
@@ -366,7 +334,7 @@ public class Main extends ApplicationAdapter {
             update(deltaTime);
         }
 
-        if (timer.getTimeRemaining() +2 < lastThoughtUpdate) {
+        if (timer.getTimeRemaining() + 2 < lastThoughtUpdate) {
             lastThoughtUpdate = timer.getTimeRemaining();
             thoughtDisplayLabel.setText(satisfactionBar.getThoughtsString());
         }
@@ -412,17 +380,15 @@ public class Main extends ApplicationAdapter {
         } else {
             scoreCommentLabel.setText("Everyone's quite upset...");
         }
-            Leaderboard leaderboard = contentLoader.getLeaderboard();
-            String name = JOptionPane.showInputDialog("whats your username");
-            leaderboard.addScore(new Score(name, Math.round(satisfactionBar.getScore())));
-            leaderboardEmbed.setText(leaderboard.toString());
-            contentLoader.saveLeaderboard(leaderboard);
+        Leaderboard leaderboard = contentLoader.getLeaderboard();
+        String name = JOptionPane.showInputDialog("whats your username");
+        leaderboard.addScore(new Score(name, Math.round(satisfactionBar.getScore())));
+        leaderboardEmbed.setText(leaderboard.toString());
+        contentLoader.saveLeaderboard(leaderboard);
 
-            this.achievementsEmbed.setText(achievementsManager.formatCompleted());
-            this.achievementsManager.saveAchievements();
+        this.achievementsEmbed.setText(achievementsManager.formatCompleted());
+        this.achievementsManager.saveAchievements();
     }
-
-
 
 
     private void update(float delta) {
@@ -437,12 +403,33 @@ public class Main extends ApplicationAdapter {
             }
         }
 
-        eventManager.updateServices();
-
+        Map<Service, Integer> services = new HashMap<>();
+        int buildingsUnderConstruction = this.updateServiceCounts(services);
+        eventManager.updateServices(services, buildingsUnderConstruction);
         satisfactionBar.updateScore();
     }
 
+    private int updateServiceCounts(Map<Service, Integer> services) {
+        HashMap<Service, Integer> servicesUnderConstruction = new HashMap<>();
 
+        int constructionTotal = 0;
+        for (BuildingSlot slot : buildingSlots) {
+            if (slot.getBuilding() == null) continue;
+            for (Service service : slot.getBuilding().getServicesProvided()) {
+                if (slot.isConstructing()) servicesUnderConstruction.merge(service, 1, Integer::sum);
+                else services.merge(service, 1, Integer::sum);
+            }
+        }
+
+        for (Service service : values()) {
+            services.putIfAbsent(service, 0);
+            servicesUnderConstruction.putIfAbsent(service, 0);
+            servicesText.get(service).setText(String.format("%d (%d)", services.get(service), servicesUnderConstruction.get(service)));
+            constructionTotal += servicesUnderConstruction.get(service);
+        }
+
+        return constructionTotal;
+    }
 
     private void preview(Building building) {
         buildingPreview = building;
@@ -457,8 +444,6 @@ public class Main extends ApplicationAdapter {
             slot.clearPreview();
         }
     }
-
-
 
 
     @Override

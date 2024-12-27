@@ -1,6 +1,6 @@
 package group1.unisim.achievement;
 
-import group1.unisim.Building.Service;
+import group1.unisim.building.Service;
 
 import java.util.HashMap;
 

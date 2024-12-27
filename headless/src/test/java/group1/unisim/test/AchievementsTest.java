@@ -1,8 +1,8 @@
 package group1.unisim.test;
 
-import group1.unisim.Building.Service;
 import group1.unisim.achievement.AchievementsManager;
 import group1.unisim.achievement.SatisfactionAchievement;
+import group1.unisim.building.Service;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;

@@ -2,9 +2,9 @@ package group1.unisim.test;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import group1.unisim.Building.Building;
-import group1.unisim.Building.BuildingSlot;
 import group1.unisim.ContentLoader;
+import group1.unisim.building.Building;
+import group1.unisim.building.BuildingSlot;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

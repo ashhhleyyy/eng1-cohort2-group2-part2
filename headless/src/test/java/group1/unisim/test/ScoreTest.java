@@ -1,6 +1,6 @@
 package group1.unisim.test;
 
-import group1.unisim.Leaderboard.Score;
+import group1.unisim.leaderboard.Score;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

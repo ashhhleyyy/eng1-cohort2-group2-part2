@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.SerializationException;
 import group1.unisim.Paths;
-import group1.unisim.Building.Service;
+import group1.unisim.building.Service;
 
 import java.util.*;
 

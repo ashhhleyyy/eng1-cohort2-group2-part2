@@ -1,6 +1,6 @@
 package group1.unisim.test;
 
-import group1.unisim.Thought.Thought;
+import group1.unisim.thought.Thought;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
