@@ -1,4 +1,4 @@
-package group1.unisim;
+package group1.unisim.building;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -12,13 +12,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import group1.unisim.ContentLoader;
+import group1.unisim.Paths;
 
 public class BuildingSlot {
     private final Vector2 position;
     private final int maxSize;
     private final Image sprite;
     public Label constructionCountdownText;
-    private int timeConstructing;
+    private float timeConstructing;
     private boolean isConstructingActive;
     private Building building;
     private Building previewing;
@@ -34,7 +36,7 @@ public class BuildingSlot {
         button.setColor(1, 1, 1, 0);
         button.setScale(2f);
         button.setPosition(this.position.x, this.position.y);
-        // left click on the preview to turn it into construction
+        // left-click on the preview to turn it into construction
         button.addListener(new ClickListener(Input.Buttons.LEFT) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -43,7 +45,7 @@ public class BuildingSlot {
                 }
             }
         });
-        // right click on a building to turn it into rubble
+        // right-click on a building to turn it into rubble
         button.addListener(new ClickListener(Input.Buttons.RIGHT) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -83,11 +85,11 @@ public class BuildingSlot {
         return previewing;
     }
 
-    public void update() {
+    public void update(float delta) {
         if (timeConstructing > 0) {
-            timeConstructing--;
-            constructionCountdownText.setVisible(true); // I KNOW THIS LINE OF CODE LOOKS DUMB BUT TRUST ME IT IS NEEDED
-            constructionCountdownText.setText(Integer.toString(timeConstructing));
+            timeConstructing -= delta;
+            constructionCountdownText.setText(Integer.toString((int) timeConstructing));
+
         } else {
             isConstructingActive = false;
             constructionCountdownText.setVisible(false);
@@ -97,6 +99,7 @@ public class BuildingSlot {
     public void build(Building building) {
         clearPreview();
         this.timeConstructing = building.getConstructionTime();
+        constructionCountdownText.setVisible(true);
         this.building = building;
         this.sprite.setDrawable(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(building.getTexture()))));
         this.isConstructingActive = true;

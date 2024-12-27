@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import group1.unisim.thought.Thought;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,5 +92,13 @@ public class SatisfactionBar extends ProgressBar {
 
     public ArrayList<Thought> getAllThoughts() {
         return new ArrayList<>(currentThoughts.values());
+    }
+
+    public String getThoughtsString() {
+        StringBuilder thoughtsString = new StringBuilder("Current Student Thoughts:\n");
+        for (Thought thought : currentThoughts.values()) {
+            thoughtsString.append(thought.toString()).append("\n\n");
+        }
+        return thoughtsString.toString();
     }
 }
