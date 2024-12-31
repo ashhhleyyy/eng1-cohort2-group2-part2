@@ -37,7 +37,7 @@ public class Timer {
     }
 
     public boolean isTimePassing() {
-        return (!isPaused()) && (!isGameEnd());
+        return !(isPaused() || isGameEnd());
     }
 
     public float getTimeRemaining() {
