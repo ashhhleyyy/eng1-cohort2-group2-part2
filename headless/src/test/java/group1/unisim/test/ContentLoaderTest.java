@@ -28,8 +28,8 @@ public class ContentLoaderTest extends HeadlessGdxTest {
             Assertions.assertNotNull(loader.getThought(thought));
         }
 
-        assertNotNull(loader.getServiceThought(Service.Accommodation,0));
-        assertNull(loader.getServiceThought(Service.Recreation,0));
+        assertNotNull(loader.getServiceThought(Service.Accommodation, 0));
+        assertNull(loader.getServiceThought(Service.Recreation, 0));
 
 
         loader.dispose();

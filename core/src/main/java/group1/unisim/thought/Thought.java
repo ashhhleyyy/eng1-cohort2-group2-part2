@@ -19,7 +19,7 @@ public class Thought {
     }
 
     public Thought(String title, String description, int modification, Service service, int diff) {
-        this(title,description,modification);
+        this(title, description, modification);
         this.service = service;
         this.diff = diff;
     }

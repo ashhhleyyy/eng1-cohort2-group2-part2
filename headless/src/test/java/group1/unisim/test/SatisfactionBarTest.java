@@ -129,7 +129,7 @@ public class SatisfactionBarTest extends HeadlessGdxTest {
             negative thought: description
 
             """;
-        assertEquals(result,satisfactionBar.getThoughtsString());
+        assertEquals(result, satisfactionBar.getThoughtsString());
     }
 
 

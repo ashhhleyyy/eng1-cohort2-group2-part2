@@ -14,18 +14,18 @@ public class ThoughtTest {
         assertEquals("test thought", thought.getTitle());
         assertEquals("test description", thought.getDescription());
         assertEquals(5, thought.getModification());
-        assertEquals("test thought: test description",thought.toString());
-        assertEquals(0,thought.getDiff());
+        assertEquals("test thought: test description", thought.toString());
+        assertEquals(0, thought.getDiff());
         assertNull(thought.getService());
     }
 
     @Test
     public void testServiceThought() {
-        Thought thought = new Thought("test thought", "test description", 5, Service.Recreation,5);
+        Thought thought = new Thought("test thought", "test description", 5, Service.Recreation, 5);
         assertEquals("test thought", thought.getTitle());
         assertEquals("test description", thought.getDescription());
         assertEquals(5, thought.getModification());
         assertEquals(5, thought.getDiff());
-        assertEquals(Service.Recreation,thought.getService());
+        assertEquals(Service.Recreation, thought.getService());
     }
 }

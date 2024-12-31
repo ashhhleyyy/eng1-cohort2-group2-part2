@@ -72,12 +72,12 @@ public class BuildingSlotTest extends HeadlessGdxTest {
         BuildingSlot slot = new BuildingSlot(new Vector2(0, 0), 1, stage);
         slot.setPreview(building);
         assertNull(slot.getPreviewing());
-        assertThrows(IllegalArgumentException.class, ()->slot.build(building));
+        assertThrows(IllegalArgumentException.class, () -> slot.build(building));
         ContentLoader.singleton.dispose();
     }
 
     @Test
-    public void testBuildingCollision(){
+    public void testBuildingCollision() {
         Stage stage = mock(Stage.class);
         new ContentLoader();
         ContentLoader.singleton.load();
@@ -85,11 +85,9 @@ public class BuildingSlotTest extends HeadlessGdxTest {
         Building building = ContentLoader.singleton.allBuildings().stream().findFirst().get();
         BuildingSlot slot = new BuildingSlot(new Vector2(0, 0), 100, stage);
         slot.build(building);
-        assertThrows(IllegalStateException.class,() ->slot.build(building));
+        assertThrows(IllegalStateException.class, () -> slot.build(building));
         ContentLoader.singleton.dispose();
     }
-
-
 
 
 }

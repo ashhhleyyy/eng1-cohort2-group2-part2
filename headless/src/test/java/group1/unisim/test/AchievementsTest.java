@@ -33,7 +33,7 @@ public class AchievementsTest extends HeadlessGdxTest {
     }
 
     @Test
-    public void testDoubleAchievement(){
+    public void testDoubleAchievement() {
         ByteArrayOutputStream errOutput = new ByteArrayOutputStream();
         System.setErr(new PrintStream(errOutput));
         SatisfactionAchievement satisfactionAchievement = new SatisfactionAchievement("test", "test satisfaction achievemnt", "description", 10, true);
@@ -45,7 +45,7 @@ public class AchievementsTest extends HeadlessGdxTest {
     }
 
     @Test
-    public void testLoadSave(){
+    public void testLoadSave() {
         AchievementsManager achievementsManager = new AchievementsManager();
         achievementsManager.saveAchievements();
     }

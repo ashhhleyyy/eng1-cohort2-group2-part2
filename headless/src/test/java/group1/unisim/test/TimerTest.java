@@ -35,20 +35,20 @@ public class TimerTest {
     @Test
     public void testTimerLength() {
         Timer timer = new Timer();
-        assertEquals(Timer.getStartTime(),timer.getTimeRemaining());
+        assertEquals(Timer.getStartTime(), timer.getTimeRemaining());
     }
 
     @Test
     public void testTimerDisplay() {
         Timer timer = new Timer(300);
-        assertEquals("5:00",timer.toString());
+        assertEquals("5:00", timer.toString());
         timer.togglePause();
         timer.update(10);
-        assertEquals("4:50",timer.toString());
+        assertEquals("4:50", timer.toString());
     }
 
     @Test
-    public void testEnd(){
+    public void testEnd() {
         float startAmount = 30.0f;
         Timer timer = new Timer(startAmount);
         assertFalse(timer.isGameEnd());

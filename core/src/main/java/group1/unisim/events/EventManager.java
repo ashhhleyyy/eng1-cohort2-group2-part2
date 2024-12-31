@@ -62,7 +62,7 @@ public class EventManager {
     }
 
     public void update(float delta) {
-        for (Event event: (ArrayList<Event>) currentEvents.clone()){
+        for (Event event : (ArrayList<Event>) currentEvents.clone()) {
             event.update(delta);
         }
         if (!currentEvents.isEmpty()) {
