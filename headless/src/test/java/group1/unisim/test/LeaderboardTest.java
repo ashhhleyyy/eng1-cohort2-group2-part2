@@ -35,6 +35,6 @@ public class LeaderboardTest {
         Leaderboard leaderboard = new Leaderboard(scores);
         leaderboard.addScore(new Score("player 11", 100));
         assertEquals(10, leaderboard.getScores().size());
-        assertEquals(20,leaderboard.getScores().getLast().getScore());
+        assertEquals(20,leaderboard.getScores().get(9).getScore());
     }
 }
