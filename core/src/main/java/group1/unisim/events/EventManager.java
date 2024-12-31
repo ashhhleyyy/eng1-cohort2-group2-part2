@@ -62,7 +62,7 @@ public class EventManager {
     }
 
     public void update(float delta) {
-        for (Event event: currentEvents){
+        for (Event event: (ArrayList<Event>) currentEvents.clone()){
             event.update(delta);
         }
         if (!currentEvents.isEmpty()) {
@@ -75,7 +75,7 @@ public class EventManager {
         checkEvents();
     }
 
-    public void checkEvents() {
+    private void checkEvents() {
         for (int time : eventsRun.keySet()) {
             if (eventsRun.get(time)) {
                 continue;
@@ -192,5 +192,9 @@ public class EventManager {
 
     public ArrayList<Event> getCurrentEvents() {
         return currentEvents;
+    }
+
+    public HashMap<Service, Integer> getBuildingRequirements() {
+        return buildingRequirements;
     }
 }

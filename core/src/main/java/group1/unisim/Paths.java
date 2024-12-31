@@ -32,4 +32,6 @@ public class Paths {
     public static List<String> getAllAssets() {
         return Collections.unmodifiableList(ALL_ASSETS);
     }
+
+    private Paths(){}
 }

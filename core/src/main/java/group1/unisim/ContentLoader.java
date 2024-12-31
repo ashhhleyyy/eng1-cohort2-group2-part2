@@ -74,9 +74,6 @@ public class ContentLoader {
 
     public String getServiceThought(Service service, int diff) {
         Map<Integer, String> serviceThought = serviceThoughts.get(service);
-        if (serviceThought == null) {
-            return null;
-        }
         return serviceThought.get(diff);
     }
 

@@ -15,10 +15,16 @@ public class AchievementsTest extends HeadlessGdxTest {
     @Test
     public void testAchievementManager() {
         AchievementsManager achievementsManager = new AchievementsManager(false);
+        achievementsManager.onServiceValueChange(Service.Recreation, 7);
+        assertEquals(0, achievementsManager.getComplete().size());
         achievementsManager.onServiceValueChange(Service.Accommodation, 7);
+        assertEquals(1, achievementsManager.getComplete().size());
+
+        achievementsManager.onSatisfactionChange(50.0f);
         assertEquals(1, achievementsManager.getComplete().size());
         achievementsManager.onSatisfactionChange(0.0f);
         assertEquals(2, achievementsManager.getComplete().size());
+
         achievementsManager.onSatisfactionChange(100.0f);
         assertEquals(3, achievementsManager.getComplete().size());
 

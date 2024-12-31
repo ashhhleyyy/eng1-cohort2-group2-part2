@@ -112,4 +112,25 @@ public class SatisfactionBarTest extends HeadlessGdxTest {
         assertEquals(50, satisfactionBar2.getScore(), 0.0001);
     }
 
+    @Test
+    public void testOutputString() {
+        Stage stage = mock(Stage.class);
+        Skin skin = new Skin(Gdx.files.internal(Paths.UI_SKIN));
+        SatisfactionBar satisfactionBar = new SatisfactionBar(skin, stage);
+
+        Thought positiveThought = new Thought("positive thought", "description", 10);
+        Thought negativeThought = new Thought("negative thought", "description", -10);
+        satisfactionBar.setThought("test thought", positiveThought);
+        satisfactionBar.setThought("test thought 2", negativeThought);
+        String result = """
+            Current Student Thoughts:
+            positive thought: description
+
+            negative thought: description
+
+            """;
+        assertEquals(result,satisfactionBar.getThoughtsString());
+    }
+
+
 }

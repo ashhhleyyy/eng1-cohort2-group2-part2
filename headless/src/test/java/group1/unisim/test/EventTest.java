@@ -33,10 +33,12 @@ public class EventTest extends HeadlessGdxTest {
 
         event.update(5.0f);
         assertTrue(eventManager.getCurrentEvents().contains(event), "event has not yet ended");
+        assertTrue(event.isActive());
         assertEquals(5.0f, event.getDuration());
 
         event.update(5.0f);
         assertFalse(eventManager.getCurrentEvents().contains(event), "event has ended");
+        assertFalse(event.isActive());
         assertEquals(0.0f, event.getDuration());
 
         event.update(5.0f);

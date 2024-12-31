@@ -3,12 +3,12 @@ package group1.unisim.test;
 import com.badlogic.gdx.Gdx;
 import group1.unisim.ContentLoader;
 import group1.unisim.building.Building;
+import group1.unisim.building.Service;
 import group1.unisim.thought.Thoughts;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ContentLoaderTest extends HeadlessGdxTest {
     @Test
@@ -27,6 +27,11 @@ public class ContentLoaderTest extends HeadlessGdxTest {
         for (String thought : Thoughts.getAllThoughts()) {
             Assertions.assertNotNull(loader.getThought(thought));
         }
+
+        assertNotNull(loader.getServiceThought(Service.Accommodation,0));
+        assertNull(loader.getServiceThought(Service.Recreation,0));
+
+
         loader.dispose();
     }
 
