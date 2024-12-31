@@ -22,4 +22,11 @@ public class TimerTest {
         timer.update(1.0f);
         assertEquals(29.0f, timer.getTimeRemaining());
     }
+
+    @Test
+    public void testTimerLength() {
+        Timer timer = new Timer();
+        assertEquals(Timer.getStartTime(),timer.getTimeRemaining());
+    }
+
 }

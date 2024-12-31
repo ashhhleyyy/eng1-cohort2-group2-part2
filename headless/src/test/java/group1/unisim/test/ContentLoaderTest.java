@@ -22,26 +22,20 @@ public class ContentLoaderTest extends HeadlessGdxTest {
             Assertions.assertTrue(Gdx.files.internal(building.getTexture()).exists());
         }
 
-        assertNotNull(loader.getThought("perfectBuildingLevel"));
-        assertNotNull(loader.getThought("oneOfEachBuilding"));
-        assertNotNull(loader.getThought("buildingMissing"));
-        assertNotNull(loader.getThought("activeConstructions1"));
-        assertNotNull(loader.getThought("activeConstructions2"));
-        assertNotNull(loader.getThought("activeConstructions3"));
-        assertNotNull(loader.getThought("activeConstructions0"));
-
         assertNotNull(loader.getLeaderboard());
-
-        loader.saveLeaderboard(loader.getLeaderboard());
 
         for (String thought : Thoughts.getAllThoughts()) {
             Assertions.assertNotNull(loader.getThought(thought));
         }
-
-        assertNotNull(loader.getLeaderboard());
-
-        loader.saveLeaderboard(loader.getLeaderboard());
-
         loader.dispose();
     }
+
+    @Test
+    public void testSave() {
+        ContentLoader loader = new ContentLoader();
+        loader.load();
+        loader.saveLeaderboard(loader.getLeaderboard());
+        loader.dispose();
+    }
+
 }

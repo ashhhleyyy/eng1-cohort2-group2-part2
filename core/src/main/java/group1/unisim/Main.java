@@ -339,7 +339,7 @@ public class Main extends ApplicationAdapter {
             thoughtDisplayLabel.setText(satisfactionBar.getThoughtsString());
         }
 
-        eventManager.update();
+        eventManager.update(deltaTime);
 
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -395,7 +395,6 @@ public class Main extends ApplicationAdapter {
         for (BuildingSlot slot : buildingSlots) {
             slot.update(delta);
         }
-        eventManager.checkEvents();
 
         if (buildingPreview != null) {
             if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT) || Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {

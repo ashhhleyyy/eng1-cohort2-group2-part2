@@ -29,11 +29,12 @@ public class LeaderboardTest {
     @Test
     public void testLeaderboardLimit() {
         List<Score> scores = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 1; i < 11; i++) {
             scores.add(new Score(String.format("player %d", i), i * 10));
         }
         Leaderboard leaderboard = new Leaderboard(scores);
         leaderboard.addScore(new Score("player 11", 100));
         assertEquals(10, leaderboard.getScores().size());
+        assertEquals(20,leaderboard.getScores().getLast().getScore());
     }
 }

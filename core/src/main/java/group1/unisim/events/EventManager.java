@@ -61,7 +61,10 @@ public class EventManager {
         stage.addActor(eventDisplay);
     }
 
-    public void update() {
+    public void update(float delta) {
+        for (Event event: currentEvents){
+            event.update(delta);
+        }
         if (!currentEvents.isEmpty()) {
             eventDisplayLabel.setVisible(true);
             eventBackground.setVisible(true);
@@ -69,6 +72,7 @@ public class EventManager {
             eventDisplayLabel.setVisible(false);
             eventBackground.setVisible(false);
         }
+        checkEvents();
     }
 
     public void checkEvents() {

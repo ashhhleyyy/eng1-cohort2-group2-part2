@@ -17,11 +17,21 @@ public class BuildingSlotTest extends HeadlessGdxTest {
         new ContentLoader();
         ContentLoader.singleton.load();
         @SuppressWarnings("OptionalGetWithoutIsPresent")
-        Building building = ContentLoader.singleton.allBuildings().stream().findFirst().get();
         BuildingSlot slot = new BuildingSlot(new Vector2(0, 0), 100, stage);
         assertEquals(new Vector2(0, 0), slot.getPosition());
-        assertNull(slot.getBuilding());
         assertEquals(100, slot.getMaxSize());
+        ContentLoader.singleton.dispose();
+    }
+
+    @Test
+    public void testBuildingPlacement() {
+        Stage stage = mock(Stage.class);
+        new ContentLoader();
+        ContentLoader.singleton.load();
+        @SuppressWarnings("OptionalGetWithoutIsPresent")
+        Building building = ContentLoader.singleton.allBuildings().stream().findFirst().get();
+        BuildingSlot slot = new BuildingSlot(new Vector2(0, 0), 100, stage);
+        assertNull(slot.getBuilding());
         slot.build(building);
         assertTrue(slot.isConstructing());
         assertEquals(building, slot.getBuilding());
@@ -34,14 +44,52 @@ public class BuildingSlotTest extends HeadlessGdxTest {
         assertNull(slot.getPreviewing());
         slot.clearSlot();
         assertNull(slot.getBuilding());
+        ContentLoader.singleton.dispose();
+    }
+
+    @Test
+    public void testBuildingPreview() {
+        Stage stage = mock(Stage.class);
+        new ContentLoader();
+        ContentLoader.singleton.load();
+        @SuppressWarnings("OptionalGetWithoutIsPresent")
+        Building building = ContentLoader.singleton.allBuildings().stream().findFirst().get();
+        BuildingSlot slot = new BuildingSlot(new Vector2(0, 0), 100, stage);
         slot.setPreview(building);
         assertEquals(building, slot.getPreviewing());
         slot.clearPreview();
         assertNull(slot.getPreviewing());
-
-        BuildingSlot slot2 = new BuildingSlot(new Vector2(0, 0), 1, stage);
-        slot2.setPreview(building);
-        assertNull(slot2.getPreviewing());
         ContentLoader.singleton.dispose();
     }
+
+    @Test
+    public void testBuildingFits() {
+        Stage stage = mock(Stage.class);
+        new ContentLoader();
+        ContentLoader.singleton.load();
+        @SuppressWarnings("OptionalGetWithoutIsPresent")
+        Building building = ContentLoader.singleton.allBuildings().stream().findFirst().get();
+        BuildingSlot slot = new BuildingSlot(new Vector2(0, 0), 1, stage);
+        slot.setPreview(building);
+        assertNull(slot.getPreviewing());
+        assertThrows(IllegalArgumentException.class, ()->slot.build(building));
+        ContentLoader.singleton.dispose();
+    }
+
+    @Test
+    public void testBuildingCollision(){
+        Stage stage = mock(Stage.class);
+        new ContentLoader();
+        ContentLoader.singleton.load();
+        @SuppressWarnings("OptionalGetWithoutIsPresent")
+        Building building = ContentLoader.singleton.allBuildings().stream().findFirst().get();
+        BuildingSlot slot = new BuildingSlot(new Vector2(0, 0), 100, stage);
+        slot.build(building);
+        assertThrows(IllegalStateException.class,() ->slot.build(building));
+        ContentLoader.singleton.dispose();
+    }
+
+
+
+
 }
