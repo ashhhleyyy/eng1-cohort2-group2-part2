@@ -42,6 +42,7 @@ public class TimerTest {
     public void testTimerDisplay() {
         Timer timer = new Timer(300);
         assertEquals("5:00",timer.toString());
+        timer.togglePause();
         timer.update(10);
         assertEquals("4:50",timer.toString());
     }
