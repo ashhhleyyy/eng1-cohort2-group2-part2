@@ -97,6 +97,12 @@ public class BuildingSlot {
     }
 
     public void build(Building building) {
+        if (this.building != null) {
+            throw new IllegalStateException("building already exists");
+        }
+        if (building.getSize() > maxSize) {
+            throw new IllegalArgumentException("building is too big");
+        }
         clearPreview();
         this.timeConstructing = building.getConstructionTime();
         constructionCountdownText.setVisible(true);

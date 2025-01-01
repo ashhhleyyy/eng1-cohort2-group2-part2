@@ -61,7 +61,10 @@ public class EventManager {
         stage.addActor(eventDisplay);
     }
 
-    public void update() {
+    public void update(float delta) {
+        for (Event event : (ArrayList<Event>) currentEvents.clone()) {
+            event.update(delta);
+        }
         if (!currentEvents.isEmpty()) {
             eventDisplayLabel.setVisible(true);
             eventBackground.setVisible(true);
@@ -69,9 +72,10 @@ public class EventManager {
             eventDisplayLabel.setVisible(false);
             eventBackground.setVisible(false);
         }
+        checkEvents();
     }
 
-    public void checkEvents() {
+    private void checkEvents() {
         for (int time : eventsRun.keySet()) {
             if (eventsRun.get(time)) {
                 continue;
@@ -188,5 +192,9 @@ public class EventManager {
 
     public ArrayList<Event> getCurrentEvents() {
         return currentEvents;
+    }
+
+    public HashMap<Service, Integer> getBuildingRequirements() {
+        return buildingRequirements;
     }
 }

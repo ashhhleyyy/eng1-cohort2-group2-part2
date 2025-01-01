@@ -24,6 +24,9 @@ public class Paths {
     public static final String EVENT_BACKGROUND = asset("eventBackground.png");
     public static final String BUILD_SELECT_BACKGROUND = asset("buildSelectBackground.png");
 
+    private Paths() {
+    }
+
     private static String asset(String asset) {
         ALL_ASSETS.add(asset);
         return asset;

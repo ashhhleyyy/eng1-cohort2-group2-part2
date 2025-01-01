@@ -14,27 +14,35 @@ import static org.mockito.Mockito.mock;
 
 public class EventTest extends HeadlessGdxTest {
     @Test
-    public void testEvent() {
+    public void testEventCreation() {
         EventManager eventManager = new EventManager(new Timer(), mock(SatisfactionBar.class), new ContentLoader(), new AchievementsManager(false));
         Event event = new Event("test_thought", 10, Service.Recreation, 10, eventManager);
-        //TODO make this work
         eventManager.addEvent(event);
-        System.out.println(eventManager.getCurrentEvents());
 
         assertEquals("test_thought", event.getDescription());
         assertEquals(10.0f, event.getDuration());
         assertEquals(Service.Recreation, event.getService());
         assertEquals(10, event.getRequirement());
+    }
+
+    @Test
+    public void testEventTiming() {
+        EventManager eventManager = new EventManager(new Timer(), mock(SatisfactionBar.class), new ContentLoader(), new AchievementsManager(false));
+        Event event = new Event("test_thought", 10, Service.Recreation, 10, eventManager);
+        eventManager.addEvent(event);
 
         event.update(5.0f);
         assertTrue(eventManager.getCurrentEvents().contains(event), "event has not yet ended");
+        assertTrue(event.isActive());
         assertEquals(5.0f, event.getDuration());
 
         event.update(5.0f);
         assertFalse(eventManager.getCurrentEvents().contains(event), "event has ended");
+        assertFalse(event.isActive());
         assertEquals(0.0f, event.getDuration());
 
         event.update(5.0f);
         assertEquals(0.0f, event.getDuration());
     }
+
 }

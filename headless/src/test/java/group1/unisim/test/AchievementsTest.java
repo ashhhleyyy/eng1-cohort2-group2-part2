@@ -14,19 +14,28 @@ public class AchievementsTest extends HeadlessGdxTest {
 
     @Test
     public void testAchievementManager() {
-        ByteArrayOutputStream errOutput = new ByteArrayOutputStream();
-        System.setErr(new PrintStream(errOutput));
         AchievementsManager achievementsManager = new AchievementsManager(false);
+        achievementsManager.onServiceValueChange(Service.Recreation, 7);
+        assertEquals(0, achievementsManager.getComplete().size());
         achievementsManager.onServiceValueChange(Service.Accommodation, 7);
+        assertEquals(1, achievementsManager.getComplete().size());
+
+        achievementsManager.onSatisfactionChange(50.0f);
         assertEquals(1, achievementsManager.getComplete().size());
         achievementsManager.onSatisfactionChange(0.0f);
         assertEquals(2, achievementsManager.getComplete().size());
+
         achievementsManager.onSatisfactionChange(100.0f);
         assertEquals(3, achievementsManager.getComplete().size());
 
         String formatted = achievementsManager.formatCompleted();
         assertFalse(formatted.isEmpty(), "formatted achievements is not empty");
+    }
 
+    @Test
+    public void testDoubleAchievement() {
+        ByteArrayOutputStream errOutput = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(errOutput));
         SatisfactionAchievement satisfactionAchievement = new SatisfactionAchievement("test", "test satisfaction achievemnt", "description", 10, true);
         satisfactionAchievement.onSatisfactionChange(11);
         satisfactionAchievement.onSatisfactionChange(9);
@@ -34,4 +43,11 @@ public class AchievementsTest extends HeadlessGdxTest {
         satisfactionAchievement.onSatisfactionChange(11);
         assertTrue(errOutput.size() > 0);
     }
+
+    @Test
+    public void testLoadSave() {
+        AchievementsManager achievementsManager = new AchievementsManager();
+        achievementsManager.saveAchievements();
+    }
+
 }
