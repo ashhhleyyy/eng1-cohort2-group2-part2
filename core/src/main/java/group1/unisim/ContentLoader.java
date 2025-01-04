@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ContentLoader {
+    // ADDED: serviceThoughts and leaderboard
     public static ContentLoader singleton;
     public final AssetManager assetManager;
     private final Map<Service, Map<Integer, String>> serviceThoughts = new HashMap<>();
@@ -29,6 +30,7 @@ public class ContentLoader {
     }
 
     @SuppressWarnings("unchecked")
+    // CHANGED: added better error handling for cases where files fail to load (crashing rather than logging + carrying on)
     public void load() {
         Json json = new Json();
 
@@ -38,6 +40,8 @@ public class ContentLoader {
             Gdx.app.error("LoadThoughts", e.getMessage());
             throw e;
         }
+
+        // ADD: code to sort serviceThoughts
         for (Service service : Service.values()) {
             serviceThoughts.put(service, new HashMap<>());
         }
@@ -59,6 +63,8 @@ public class ContentLoader {
         for (Building building : allBuildings()) {
             assetManager.load(building.getTexture(), Texture.class);
         }
+
+        // ADDED: Load leaderboard from user
         try {
             leaderboard = json.fromJson(Leaderboard.class, Gdx.files.external(Paths.LEADERBOARD_JSON));
         } catch (SerializationException e) {
@@ -93,6 +99,7 @@ public class ContentLoader {
         return assetManager.get(path, Texture.class);
     }
 
+    // ADDED: leaderboard saving
     public void saveLeaderboard(Leaderboard leaderboard) {
         Json json = new Json();
         json.toJson(leaderboard, Gdx.files.external(Paths.LEADERBOARD_JSON));

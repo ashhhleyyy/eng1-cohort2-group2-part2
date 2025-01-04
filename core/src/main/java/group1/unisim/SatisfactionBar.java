@@ -16,6 +16,7 @@ import java.util.Map;
 import static java.lang.Math.*;
 
 public class SatisfactionBar extends ProgressBar {
+    // CHANGED: switched to a constant
     private static final float SPEED = 0.15f;
 
     private final float baseValue = 50;
@@ -33,6 +34,7 @@ public class SatisfactionBar extends ProgressBar {
         setPosition(775, 735);
         targetMarker.setPosition(760, 730);
         calculateTarget();
+        // CHANGED: allow null stage for testing
         if (stage != null) {
             stage.addActor(this);
             stage.addActor(targetMarker);
@@ -90,6 +92,7 @@ public class SatisfactionBar extends ProgressBar {
         targetMarker.setPosition(760 + target * 2, 730);
     }
 
+    // ADDED: functions for display of current thoughts in the UI
     public ArrayList<Thought> getAllThoughts() {
         return new ArrayList<>(currentThoughts.values());
     }
