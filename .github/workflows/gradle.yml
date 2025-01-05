@@ -32,3 +32,8 @@ jobs:
         with:
           name: jacoco-report
           path: headless/build/reports/jacoco/test/html/
+      - name: Upload JUnit test report
+        uses: actions/upload-artifact@v3.1.1
+        with:
+          name: junit-report
+          path: headless/build/reports/tests/test/
