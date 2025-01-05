@@ -98,6 +98,8 @@ public class Main extends ApplicationAdapter {
         pauseTexture = new Texture(Paths.PAUSE);
         playTexture = new Texture(Paths.PLAY);
         this.ui = new Stage();
+        satisfactionBar = new SatisfactionBar(skin, ui);
+
         this.eventManager = new EventManager(this.timer, this.satisfactionBar, this.contentLoader, this.achievementsManager);
         this.eventManager.initUi(this.ui, skin);
 
@@ -106,8 +108,6 @@ public class Main extends ApplicationAdapter {
         Texture thoughtBackgroundTexture = new Texture(Paths.THOUGHT_BACKGROUND);
 
         Texture endScreenTexture = new Texture(Paths.END_SCREEN);
-
-        satisfactionBar = new SatisfactionBar(skin, ui);
 
         gameTimeText = new Label(timer.toString(), skin);
         gameTimeText.setPosition(400, 735);
