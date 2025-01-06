@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+// added leaderboard class
 public class Leaderboard {
     private List<Score> scores = new ArrayList<>();
 

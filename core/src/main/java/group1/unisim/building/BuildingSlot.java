@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import group1.unisim.ContentLoader;
 import group1.unisim.Paths;
 
+// CHANGED: renamed and cleaned up some methods, but no functional differences
 public class BuildingSlot {
     private final Vector2 position;
     private final int maxSize;

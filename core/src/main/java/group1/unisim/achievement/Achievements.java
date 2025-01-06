@@ -4,6 +4,7 @@ import group1.unisim.building.Service;
 
 import java.util.HashMap;
 
+// ADDED: implement achievements
 public class Achievements {
     public static final HashMap<String, Achievement> ALL_ACHIEVEMENTS = new HashMap<>();
     public static final Achievement ZERO_SATISFACTION = register(new SatisfactionAchievement("zero_satisfaction", "Oops", "Wow you're faster than Russel Group unis at losing money", 5f, false));

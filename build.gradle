@@ -14,6 +14,12 @@ buildscript {
   }
 }
 
+// ADDED: Plugin to generate list of library licenses
+plugins {
+  // Don't apply here, we only want to apply it in the subprojects (but want to specify the version centrally)
+  id "com.github.hierynomus.license-report" version "0.16.1" apply false
+}
+
 allprojects {
   apply plugin: 'eclipse'
   apply plugin: 'idea'
@@ -29,6 +35,9 @@ allprojects {
 
 configure(subprojects) {
   apply plugin: 'java-library'
+  // ADDED: Apply the license report plugin
+  apply plugin: 'com.github.hierynomus.license-report'
+
   sourceCompatibility = 17
 
   // From https://lyze.dev/2021/04/29/libGDX-Internal-Assets-List/
@@ -54,10 +63,19 @@ configure(subprojects) {
   compileJava {
     options.incremental = true
   }
+
+  // ADDED: Configure the license report plugin
+  downloadLicenses {
+    includeProjectDependencies = true
+    dependencyConfiguration = 'runtimeClasspath'
+    excludeDependencies = [
+    ]
+//    licenses = []
+  }
 }
 
 subprojects {
-  version = '$projectVersion'
+  version = "$projectVersion"
   ext.appName = 'UniSim-Group1'
   repositories {
     mavenCentral()

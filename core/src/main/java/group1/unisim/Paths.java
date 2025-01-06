@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+// ADDED: to add testing of assets
 public class Paths {
     public static final String LEADERBOARD_JSON = ".unisim-leaderboards.json";
     public static final String ACHIEVEMENTS_JSON = ".unisim-achievements.json";

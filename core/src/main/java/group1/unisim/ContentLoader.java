@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ContentLoader {
+    // ADDED: serviceThoughts and leaderboard
     public static ContentLoader singleton;
     public final AssetManager assetManager;
     private final Map<Service, Map<Integer, String>> serviceThoughts = new HashMap<>();
@@ -22,13 +23,14 @@ public class ContentLoader {
     private HashMap<String, Thought> thoughts;
     private Leaderboard leaderboard;
 
-
     public ContentLoader() {
         singleton = this;
         assetManager = new AssetManager();
     }
 
     @SuppressWarnings("unchecked")
+    // CHANGED: added better error handling throughout method for cases where files fail to load
+    // (actually crashing rather than logging + carrying on)
     public void load() {
         Json json = new Json();
 
@@ -38,6 +40,8 @@ public class ContentLoader {
             Gdx.app.error("LoadThoughts", e.getMessage());
             throw e;
         }
+
+        // ADD: code to sort serviceThoughts
         for (Service service : Service.values()) {
             serviceThoughts.put(service, new HashMap<>());
         }
@@ -59,6 +63,8 @@ public class ContentLoader {
         for (Building building : allBuildings()) {
             assetManager.load(building.getTexture(), Texture.class);
         }
+
+        // ADDED: Load leaderboard from user
         try {
             leaderboard = json.fromJson(Leaderboard.class, Gdx.files.external(Paths.LEADERBOARD_JSON));
         } catch (SerializationException e) {
@@ -72,11 +78,13 @@ public class ContentLoader {
         return thoughts.get(key);
     }
 
+    // ADDED: getters for thoughts
     public String getServiceThought(Service service, int diff) {
         Map<Integer, String> serviceThought = serviceThoughts.get(service);
         return serviceThought.get(diff);
     }
 
+    // ADDED: getter for leaderboard
     public Leaderboard getLeaderboard() {
         return leaderboard;
     }
@@ -85,14 +93,17 @@ public class ContentLoader {
         return buildings.values();
     }
 
+    // ADDED: getter for thoughts
     public Collection<Thought> allThoughts() {
         return thoughts.values();
     }
 
     public Texture getTexture(String path) {
+        // CHANGED: unnecessary cast removed during cleanup
         return assetManager.get(path, Texture.class);
     }
 
+    // ADDED: leaderboard saving
     public void saveLeaderboard(Leaderboard leaderboard) {
         Json json = new Json();
         json.toJson(leaderboard, Gdx.files.external(Paths.LEADERBOARD_JSON));

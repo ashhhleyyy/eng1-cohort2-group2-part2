@@ -1,5 +1,6 @@
 package group1.unisim;
 
+// ADDED/CHANGED: moved timer logic into separate class to improve testability
 public class Timer {
     private static final float START_TIME = 300;
     private float timeRemaining;
@@ -11,7 +12,6 @@ public class Timer {
 
     public Timer(float time) {
         timeRemaining = time;
-
     }
 
     public static float getStartTime() {

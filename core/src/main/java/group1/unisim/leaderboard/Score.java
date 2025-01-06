@@ -1,5 +1,6 @@
 package group1.unisim.leaderboard;
 
+// added score class
 public class Score {
     private String name;
     private int score;

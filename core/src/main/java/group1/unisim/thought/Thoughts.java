@@ -3,6 +3,7 @@ package group1.unisim.thought;
 import java.util.ArrayList;
 import java.util.List;
 
+// ADDED thoughts class
 public class Thoughts {
     private static final List<String> ALL_THOUGHTS = new ArrayList<>();
 
