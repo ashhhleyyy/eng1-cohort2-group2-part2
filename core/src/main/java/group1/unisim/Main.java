@@ -85,7 +85,7 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void create() {
-        // added timer and achivements manager initiation.
+        // added: timer and achivements manager initiation.
         this.timer = new Timer();
         this.contentLoader = new ContentLoader();
         this.contentLoader.load();
@@ -98,7 +98,7 @@ public class Main extends ApplicationAdapter {
 
         batch = new SpriteBatch();
 
-        //moved the paths for textures to Paths class
+        // added: moved the paths for textures to Paths class
         toolbar = new Texture(Paths.TOOLBAR);
         mapTexture = new Texture(Paths.MAP_TEXTURE);
         settingsTexture = new Texture(Paths.SETTINGS_ICON);
@@ -108,18 +108,18 @@ public class Main extends ApplicationAdapter {
         this.ui = new Stage();
         satisfactionBar = new SatisfactionBar(skin, ui);
 
-        //added event manage initiation
+        // added: event manage initiation
         this.eventManager = new EventManager(this.timer, this.satisfactionBar, this.contentLoader, this.achievementsManager);
         this.eventManager.initUi(this.ui, skin);
 
-        //added: new texture creations
+        // added: new texture creations
         Texture buildSelectBackgroundTexture = new Texture(Paths.BUILD_SELECT_BACKGROUND);
 
         Texture thoughtBackgroundTexture = new Texture(Paths.THOUGHT_BACKGROUND);
 
         Texture endScreenTexture = new Texture(Paths.END_SCREEN);
 
-        //made gameTimeText get the time from the timer.
+        // added: made gameTimeText get the time from the timer.
         gameTimeText = new Label(timer.toString(), skin);
         gameTimeText.setPosition(400, 735);
         gameTimeText.setSize(200, 50);
@@ -136,7 +136,7 @@ public class Main extends ApplicationAdapter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 buildSelect.setVisible(true);
-                //added: make buildSelectText and buildSelectBackground visible
+                // added: make buildSelectText and buildSelectBackground visible
                 buildSelectText.setVisible(true);
                 buildSelectBackground.setVisible(true);
             }
@@ -164,7 +164,7 @@ public class Main extends ApplicationAdapter {
                 public void clicked(InputEvent event, float x, float y) {
                     preview(building);
                     buildSelect.setVisible(false);
-                    //added: hide buildSelectText and buildSelectBackground
+                    // added: hide buildSelectText and buildSelectBackground
                     buildSelectText.setVisible(false);
                     buildSelectBackground.setVisible(false);
                 }
@@ -187,7 +187,7 @@ public class Main extends ApplicationAdapter {
         buildSelect.setHeight(240);
         buildSelect.setVisible(false);
 
-        // text next to building options when opening build select tool
+        // added: text next to building options when opening build select tool
         buildSelectText = new Table(skin);
         buildSelectText.setPosition(180, 620);
         buildSelectText.setVisible(false);
