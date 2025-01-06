@@ -361,13 +361,13 @@ public class Main extends ApplicationAdapter {
         // when time is up, update contents of end screen and then draw
         if (timer.isGameEnd()) {
             if (!endScreenGenerated) {
-                generate_end_screen();
+                generateEndScreen();
             }
             endScreen.draw();
         }
     }
 
-    private void generate_end_screen() {
+    private void generateEndScreen() {
         endScreenGenerated = true;
 
         scoreNumberLabel.setText(String.format("%d", Math.round(satisfactionBar.getScore())) + "%");
