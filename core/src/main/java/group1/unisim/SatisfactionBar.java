@@ -67,6 +67,7 @@ public class SatisfactionBar extends ProgressBar {
     }
 
     public void setThought(String key, Thought thought) {
+        // ADDED: keep track of current thoughts
         currentThoughts.put(key, thought);
         calculateTarget();
     }
@@ -76,6 +77,7 @@ public class SatisfactionBar extends ProgressBar {
     }
 
     public void removeThought(String key) {
+        // ADDED: keep track of current thoughts
         currentThoughts.remove(key);
         calculateTarget();
     }

@@ -5,6 +5,7 @@ public class Building {
     private Service[] servicesProvided;
     private int constructionTime;
     private int size;
+    // CHANGED: rename sprite to texture
     private String texture;
 
     public Building() {

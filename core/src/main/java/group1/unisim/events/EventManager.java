@@ -20,6 +20,7 @@ import java.util.Map;
 
 import static group1.unisim.building.Service.*;
 
+// ADDED: new class to manage state relating to in-game events
 public class EventManager {
     private final Timer timer;
     private final SatisfactionBar satisfactionBar;

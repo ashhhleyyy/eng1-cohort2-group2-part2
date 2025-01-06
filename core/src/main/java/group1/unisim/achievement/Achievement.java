@@ -2,6 +2,7 @@ package group1.unisim.achievement;
 
 import group1.unisim.building.Service;
 
+// ADDED: implement achievements
 public abstract class Achievement {
     private final String id;
     private final String name;

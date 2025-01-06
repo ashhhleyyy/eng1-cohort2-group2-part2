@@ -1,5 +1,6 @@
 package group1.unisim.achievement;
 
+// ADDED: implement achievements
 public class SatisfactionAchievement extends Achievement {
     private final float satisfactionRequirement;
     private final boolean greater;

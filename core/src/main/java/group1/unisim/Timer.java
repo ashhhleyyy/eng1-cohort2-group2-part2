@@ -12,7 +12,6 @@ public class Timer {
 
     public Timer(float time) {
         timeRemaining = time;
-
     }
 
     public static float getStartTime() {

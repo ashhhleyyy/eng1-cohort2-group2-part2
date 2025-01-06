@@ -2,6 +2,7 @@ package group1.unisim.events;
 
 import group1.unisim.building.Service;
 
+// ADDED: empty methods implemented, along with new getters/fields
 public class Event {
     private final String description;
     private final Service service;
@@ -43,7 +44,6 @@ public class Event {
     public String getDescription() {
         return description;
     }
-
 
     public boolean isActive() {
         return duration > 0;

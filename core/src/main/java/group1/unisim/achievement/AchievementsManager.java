@@ -8,6 +8,7 @@ import group1.unisim.building.Service;
 
 import java.util.*;
 
+// ADDED: implement achievements
 public class AchievementsManager {
     private final List<Achievement> incomplete;
     private final List<Achievement> complete;

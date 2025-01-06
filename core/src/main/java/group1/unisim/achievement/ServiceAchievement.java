@@ -2,6 +2,7 @@ package group1.unisim.achievement;
 
 import group1.unisim.building.Service;
 
+// ADDED: implement achievements
 public class ServiceAchievement extends Achievement {
     private final Service service;
     private final int amountRequired;
