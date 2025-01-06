@@ -33,6 +33,11 @@ import static group1.unisim.building.Service.values;
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
  */
 public class Main extends ApplicationAdapter {
+    // ADDED FIELDS: endScreenGenerated, lastThoughtUpdate
+    // ADDED FIELDS(new classes): eventManager, timer, achievementsManager
+    // ADDED FIELDS(new ui elements): endScreen,scoreNumberLabel, scoreCommentLabel, buildSelectText, thoughtDisplayLabel, achievementsEmbed, leaderboardEmbed,
+    // REMOVED FIELDS(moved timer logic to Timer class): updateTimer,updateTime, isPaused, gameTimer, pauseButton
+    // RENAMED FIELDS: buildButton -> buildSelectButton
     private ContentLoader contentLoader;
     private SpriteBatch batch;
     private Texture toolbar;
@@ -80,17 +85,20 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void create() {
+        // added timer and achivements manager initiation.
         this.timer = new Timer();
         this.contentLoader = new ContentLoader();
         this.contentLoader.load();
         this.achievementsManager = new AchievementsManager();
 
+        // added: set last thought update
         lastThoughtUpdate = timer.getTimeRemaining();
 
         Skin skin = new Skin(Gdx.files.internal(Paths.UI_SKIN));
 
         batch = new SpriteBatch();
 
+        //moved the paths for textures to Paths class
         toolbar = new Texture(Paths.TOOLBAR);
         mapTexture = new Texture(Paths.MAP_TEXTURE);
         settingsTexture = new Texture(Paths.SETTINGS_ICON);
@@ -100,15 +108,18 @@ public class Main extends ApplicationAdapter {
         this.ui = new Stage();
         satisfactionBar = new SatisfactionBar(skin, ui);
 
+        //added event manage initiation
         this.eventManager = new EventManager(this.timer, this.satisfactionBar, this.contentLoader, this.achievementsManager);
         this.eventManager.initUi(this.ui, skin);
 
+        //added: new texture creations
         Texture buildSelectBackgroundTexture = new Texture(Paths.BUILD_SELECT_BACKGROUND);
 
         Texture thoughtBackgroundTexture = new Texture(Paths.THOUGHT_BACKGROUND);
 
         Texture endScreenTexture = new Texture(Paths.END_SCREEN);
 
+        //made gameTimeText get the time from the timer.
         gameTimeText = new Label(timer.toString(), skin);
         gameTimeText.setPosition(400, 735);
         gameTimeText.setSize(200, 50);
@@ -125,6 +136,7 @@ public class Main extends ApplicationAdapter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 buildSelect.setVisible(true);
+                //added: make buildSelectText and buildSelectBackground visible
                 buildSelectText.setVisible(true);
                 buildSelectBackground.setVisible(true);
             }
@@ -152,6 +164,7 @@ public class Main extends ApplicationAdapter {
                 public void clicked(InputEvent event, float x, float y) {
                     preview(building);
                     buildSelect.setVisible(false);
+                    //added: hide buildSelectText and buildSelectBackground
                     buildSelectText.setVisible(false);
                     buildSelectBackground.setVisible(false);
                 }
@@ -162,6 +175,7 @@ public class Main extends ApplicationAdapter {
 
         buttons.setWidth(10);
 
+        // ADDED: buildSelectBackground and buildSelectText setup
         // background image for build select tool
         buildSelectBackground = new Image(buildSelectBackgroundTexture);
         buildSelectBackground.setPosition(79, 523);
@@ -232,6 +246,7 @@ public class Main extends ApplicationAdapter {
         pauseButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                //refactor: use timer class
                 timer.togglePause();
                 if (timer.isPaused())
                     pauseImage.setDrawable(new TextureRegionDrawable(new TextureRegion(pauseTexture)));
@@ -246,6 +261,7 @@ public class Main extends ApplicationAdapter {
         ui.addActor(pauseButton);
         Gdx.input.setInputProcessor(new InputMultiplexer(ui, stage));
 
+        // ADDED: thoughts and end screen setup
         // creates and sets up thoughts display, which is drawn immediately
         Image thoughtBackground = new Image(thoughtBackgroundTexture);
         thoughtBackground.setPosition(700, 350);
@@ -308,7 +324,7 @@ public class Main extends ApplicationAdapter {
         this.achievementsEmbed = new TextArea("placeholder", skin);
         table.add(achievementsEmbed).fill().space(10);
 
-
+        // ADDED: add all the new actors to the ui
         ui.addActor(servicesDisplay);
         ui.addActor(buildSelect);
         ui.addActor(buildButton);
@@ -325,6 +341,7 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render() {
+        //REFACTOR: move all timing logic to timer. move all update logic to the update functions
         float deltaTime = Gdx.graphics.getDeltaTime();
 
         if (timer.isTimePassing()) {
@@ -367,6 +384,7 @@ public class Main extends ApplicationAdapter {
         }
     }
 
+    // ADDED: new function
     private void generateEndScreen() {
         endScreenGenerated = true;
 
@@ -392,6 +410,7 @@ public class Main extends ApplicationAdapter {
 
 
     private void update(float delta) {
+        // CHANGE: make update take a delta, instead of happening 30 times  a second. move building preview logic here from render()
         for (BuildingSlot slot : buildingSlots) {
             slot.update(delta);
         }
@@ -408,6 +427,7 @@ public class Main extends ApplicationAdapter {
         satisfactionBar.updateScore();
     }
 
+    // CHANGE: made this take a services count map, and return the buildings under construction
     private int updateServiceCounts(Map<Service, Integer> services) {
         HashMap<Service, Integer> servicesUnderConstruction = new HashMap<>();
 
