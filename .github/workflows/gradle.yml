@@ -27,13 +27,18 @@ jobs:
         uses: gradle/gradle-build-action@3fbe033aaae657f011f88f29be9e65ed26bd29ef
         with:
           arguments: build jacocoTestReport
+      - name: Upload desktop JAR file
+        uses: actions/upload-artifact@v4
+        with:
+          name: unisim
+          path: lwjgl3/:
       - name: Upload JaCoCo coverage report as a workflow artifact
-        uses: actions/upload-artifact@v3.1.1
+        uses: actions/upload-artifact@v4
         with:
           name: jacoco-report
           path: headless/build/reports/jacoco/test/html/
       - name: Upload JUnit test report
-        uses: actions/upload-artifact@v3.1.1
+        uses: actions/upload-artifact@v4
         with:
           name: junit-report
           path: headless/build/reports/tests/test/
