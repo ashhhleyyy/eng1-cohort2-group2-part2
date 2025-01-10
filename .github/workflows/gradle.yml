@@ -31,7 +31,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: unisim
-          path: lwjgl3/:
+          path: lwjgl3/
       - name: Upload JaCoCo coverage report as a workflow artifact
         uses: actions/upload-artifact@v4
         with:
