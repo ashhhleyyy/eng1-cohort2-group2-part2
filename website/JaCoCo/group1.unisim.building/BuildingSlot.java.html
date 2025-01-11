@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BuildingSlot.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">headless</a> &gt; <a href="index.source.html" class="el_package">group1.unisim.building</a> &gt; <span class="el_source">BuildingSlot.java</span></div><h1>BuildingSlot.java</h1><pre class="source lang-java linenums">package group1.unisim.building;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import group1.unisim.ContentLoader;
+import group1.unisim.Paths;
+
+// CHANGED: renamed and cleaned up some methods, but no functional differences
+public class BuildingSlot {
+    private final Vector2 position;
+    private final int maxSize;
+    private final Image sprite;
+    public Label constructionCountdownText;
+    private float timeConstructing;
+    private boolean isConstructingActive;
+    private Building building;
+    private Building previewing;
+
+<span class="fc" id="L29">    public BuildingSlot(Vector2 position, int maxSize, Stage stage) {</span>
+<span class="fc" id="L30">        this.position = position;</span>
+<span class="fc" id="L31">        this.maxSize = maxSize;</span>
+<span class="fc" id="L32">        this.sprite = new Image(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(Paths.ACCOMMODATION_TEXTURE))));</span>
+<span class="fc" id="L33">        this.sprite.setDrawable(null); // Image needs to be instantiated with a texture or setting it later won't work</span>
+<span class="fc" id="L34">        this.sprite.setScale(2f);</span>
+<span class="fc" id="L35">        this.sprite.setPosition(this.position.x, this.position.y);</span>
+<span class="fc" id="L36">        ImageButton button = new ImageButton(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(Paths.ACCOMMODATION_TEXTURE))));</span>
+<span class="fc" id="L37">        button.setColor(1, 1, 1, 0);</span>
+<span class="fc" id="L38">        button.setScale(2f);</span>
+<span class="fc" id="L39">        button.setPosition(this.position.x, this.position.y);</span>
+        // left-click on the preview to turn it into construction
+<span class="fc" id="L41">        button.addListener(new ClickListener(Input.Buttons.LEFT) {</span>
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+<span class="nc bnc" id="L44" title="All 2 branches missed.">                if (previewing != null) {</span>
+<span class="nc" id="L45">                    build(previewing);</span>
+                }
+<span class="nc" id="L47">            }</span>
+        });
+        // right-click on a building to turn it into rubble
+<span class="fc" id="L50">        button.addListener(new ClickListener(Input.Buttons.RIGHT) {</span>
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+<span class="nc bnc" id="L53" title="All 2 branches missed.">                if (building != null) {</span>
+<span class="nc" id="L54">                    clearSlot();</span>
+                }
+<span class="nc" id="L56">            }</span>
+        });
+<span class="fc" id="L58">        stage.addActor(sprite);</span>
+<span class="fc" id="L59">        stage.addActor(button);</span>
+
+<span class="fc" id="L61">        Skin skin = new Skin(Gdx.files.internal(Paths.UI_SKIN));</span>
+<span class="fc" id="L62">        constructionCountdownText = new Label(null, skin);</span>
+<span class="fc" id="L63">        constructionCountdownText.setPosition(position.x, position.y);</span>
+<span class="fc" id="L64">        constructionCountdownText.setSize(50, 50);</span>
+<span class="fc" id="L65">        constructionCountdownText.setFontScale(2);</span>
+<span class="fc" id="L66">        constructionCountdownText.setAlignment(1);</span>
+<span class="fc" id="L67">    }</span>
+
+    public boolean isConstructing() {
+<span class="fc" id="L70">        return isConstructingActive;</span>
+    }
+
+    public Vector2 getPosition() {
+<span class="fc" id="L74">        return position;</span>
+    }
+
+    public int getMaxSize() {
+<span class="fc" id="L78">        return maxSize;</span>
+    }
+
+    public Building getBuilding() {
+<span class="fc" id="L82">        return building;</span>
+    }
+
+    public Building getPreviewing() {
+<span class="fc" id="L86">        return previewing;</span>
+    }
+
+    public void update(float delta) {
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (timeConstructing &gt; 0) {</span>
+<span class="fc" id="L91">            timeConstructing -= delta;</span>
+<span class="fc" id="L92">            constructionCountdownText.setText(Integer.toString((int) timeConstructing));</span>
+
+        } else {
+<span class="fc" id="L95">            isConstructingActive = false;</span>
+<span class="fc" id="L96">            constructionCountdownText.setVisible(false);</span>
+        }
+<span class="fc" id="L98">    }</span>
+
+    public void build(Building building) {
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        if (this.building != null) {</span>
+<span class="fc" id="L102">            throw new IllegalStateException(&quot;building already exists&quot;);</span>
+        }
+<span class="fc bfc" id="L104" title="All 2 branches covered.">        if (building.getSize() &gt; maxSize) {</span>
+<span class="fc" id="L105">            throw new IllegalArgumentException(&quot;building is too big&quot;);</span>
+        }
+<span class="fc" id="L107">        clearPreview();</span>
+<span class="fc" id="L108">        this.timeConstructing = building.getConstructionTime();</span>
+<span class="fc" id="L109">        constructionCountdownText.setVisible(true);</span>
+<span class="fc" id="L110">        this.building = building;</span>
+<span class="fc" id="L111">        this.sprite.setDrawable(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(building.getTexture()))));</span>
+<span class="fc" id="L112">        this.isConstructingActive = true;</span>
+<span class="fc" id="L113">    }</span>
+
+    public void setPreview(Building preview) {
+<span class="fc" id="L116">        clearPreview();</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">        if (building != null) return;</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">        if (preview.getSize() &gt; maxSize) return;</span>
+
+<span class="fc" id="L120">        sprite.setColor(1, 1, 1, 0.6f);</span>
+<span class="fc" id="L121">        sprite.setDrawable(new TextureRegionDrawable(new TextureRegion(ContentLoader.singleton.getTexture(preview.getTexture()))));</span>
+<span class="fc" id="L122">        previewing = preview;</span>
+<span class="fc" id="L123">    }</span>
+
+    public void clearPreview() {
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        if (previewing == null) return;</span>
+
+<span class="fc" id="L128">        sprite.setColor(1, 1, 1, 1);</span>
+<span class="fc" id="L129">        sprite.setDrawable(null);</span>
+<span class="fc" id="L130">        previewing = null;</span>
+<span class="fc" id="L131">    }</span>
+
+    public void clearSlot() {
+<span class="fc" id="L134">        this.sprite.setDrawable(null);</span>
+<span class="fc" id="L135">        this.previewing = null;</span>
+<span class="fc" id="L136">        this.building = null;</span>
+<span class="fc" id="L137">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

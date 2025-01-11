@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ContentLoader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">headless</a> &gt; <a href="index.source.html" class="el_package">group1.unisim</a> &gt; <span class="el_source">ContentLoader.java</span></div><h1>ContentLoader.java</h1><pre class="source lang-java linenums">package group1.unisim;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.SerializationException;
+import group1.unisim.building.Building;
+import group1.unisim.building.Service;
+import group1.unisim.leaderboard.Leaderboard;
+import group1.unisim.thought.Thought;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+public class ContentLoader {
+    // ADDED: serviceThoughts and leaderboard
+    public static ContentLoader singleton;
+    public final AssetManager assetManager;
+<span class="fc" id="L21">    private final Map&lt;Service, Map&lt;Integer, String&gt;&gt; serviceThoughts = new HashMap&lt;&gt;();</span>
+    private HashMap&lt;String, Building&gt; buildings;
+    private HashMap&lt;String, Thought&gt; thoughts;
+    private Leaderboard leaderboard;
+
+<span class="fc" id="L26">    public ContentLoader() {</span>
+<span class="fc" id="L27">        singleton = this;</span>
+<span class="fc" id="L28">        assetManager = new AssetManager();</span>
+<span class="fc" id="L29">    }</span>
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    // CHANGED: added better error handling throughout method for cases where files fail to load
+    // (actually crashing rather than logging + carrying on)
+    public void load() {
+<span class="fc" id="L35">        Json json = new Json();</span>
+
+        try {
+<span class="fc" id="L38">            this.thoughts = (HashMap&lt;String, Thought&gt;) json.fromJson(HashMap.class, Thought.class, Gdx.files.internal(Paths.THOUGHTS_JSON));</span>
+<span class="nc" id="L39">        } catch (Exception e) {</span>
+<span class="nc" id="L40">            Gdx.app.error(&quot;LoadThoughts&quot;, e.getMessage());</span>
+<span class="nc" id="L41">            throw e;</span>
+<span class="fc" id="L42">        }</span>
+
+        // ADD: code to sort serviceThoughts
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        for (Service service : Service.values()) {</span>
+<span class="fc" id="L46">            serviceThoughts.put(service, new HashMap&lt;&gt;());</span>
+        }
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        for (Map.Entry&lt;String, Thought&gt; entry : this.thoughts.entrySet()) {</span>
+<span class="fc" id="L49">            Thought thought = entry.getValue();</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">            if (thought.getService() == null) {</span>
+<span class="fc" id="L51">                continue;</span>
+            }
+<span class="fc" id="L53">            serviceThoughts.get(thought.getService()).put(thought.getDiff(), entry.getKey());</span>
+<span class="fc" id="L54">        }</span>
+
+        try {
+<span class="fc" id="L57">            this.buildings = (HashMap&lt;String, Building&gt;) json.fromJson(HashMap.class, Building.class, Gdx.files.internal(Paths.BUILDINGS_JSON));</span>
+<span class="nc" id="L58">        } catch (Exception e) {</span>
+<span class="nc" id="L59">            Gdx.app.error(&quot;LoadBuildings&quot;, e.getMessage());</span>
+<span class="nc" id="L60">            throw e;</span>
+<span class="fc" id="L61">        }</span>
+
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        for (Building building : allBuildings()) {</span>
+<span class="fc" id="L64">            assetManager.load(building.getTexture(), Texture.class);</span>
+<span class="fc" id="L65">        }</span>
+
+        // ADDED: Load leaderboard from user
+        try {
+<span class="fc" id="L69">            leaderboard = json.fromJson(Leaderboard.class, Gdx.files.external(Paths.LEADERBOARD_JSON));</span>
+<span class="nc" id="L70">        } catch (SerializationException e) {</span>
+<span class="nc" id="L71">            leaderboard = new Leaderboard();</span>
+<span class="fc" id="L72">        }</span>
+
+<span class="fc" id="L74">        assetManager.finishLoading();</span>
+<span class="fc" id="L75">    }</span>
+
+    public Thought getThought(String key) {
+<span class="fc" id="L78">        return thoughts.get(key);</span>
+    }
+
+    // ADDED: getters for thoughts
+    public String getServiceThought(Service service, int diff) {
+<span class="fc" id="L83">        Map&lt;Integer, String&gt; serviceThought = serviceThoughts.get(service);</span>
+<span class="fc" id="L84">        return serviceThought.get(diff);</span>
+    }
+
+    // ADDED: getter for leaderboard
+    public Leaderboard getLeaderboard() {
+<span class="fc" id="L89">        return leaderboard;</span>
+    }
+
+    public Collection&lt;Building&gt; allBuildings() {
+<span class="fc" id="L93">        return buildings.values();</span>
+    }
+
+    // ADDED: getter for thoughts
+    public Collection&lt;Thought&gt; allThoughts() {
+<span class="fc" id="L98">        return thoughts.values();</span>
+    }
+
+    public Texture getTexture(String path) {
+        // CHANGED: unnecessary cast removed during cleanup
+<span class="fc" id="L103">        return assetManager.get(path, Texture.class);</span>
+    }
+
+    // ADDED: leaderboard saving
+    public void saveLeaderboard(Leaderboard leaderboard) {
+<span class="fc" id="L108">        Json json = new Json();</span>
+<span class="fc" id="L109">        json.toJson(leaderboard, Gdx.files.external(Paths.LEADERBOARD_JSON));</span>
+<span class="fc" id="L110">    }</span>
+
+    public void dispose() {
+<span class="fc" id="L113">        singleton = null;</span>
+<span class="fc" id="L114">        assetManager.dispose();</span>
+<span class="fc" id="L115">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

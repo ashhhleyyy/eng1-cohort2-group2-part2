@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Timer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">headless</a> &gt; <a href="index.source.html" class="el_package">group1.unisim</a> &gt; <span class="el_source">Timer.java</span></div><h1>Timer.java</h1><pre class="source lang-java linenums">package group1.unisim;
+
+// ADDED/CHANGED: moved timer logic into separate class to improve testability
+public class Timer {
+    private static final float START_TIME = 300;
+    private float timeRemaining;
+<span class="fc" id="L7">    private boolean paused = true;</span>
+
+    public Timer() {
+<span class="fc" id="L10">        this(START_TIME);</span>
+<span class="fc" id="L11">    }</span>
+
+<span class="fc" id="L13">    public Timer(float time) {</span>
+<span class="fc" id="L14">        timeRemaining = time;</span>
+<span class="fc" id="L15">    }</span>
+
+    public static float getStartTime() {
+<span class="fc" id="L18">        return START_TIME;</span>
+    }
+
+    public void update(float delta) {
+<span class="fc bfc" id="L22" title="All 2 branches covered.">        if (isTimePassing()) {</span>
+<span class="fc" id="L23">            timeRemaining -= delta;</span>
+        }
+<span class="fc" id="L25">    }</span>
+
+    public String toString() {
+<span class="fc" id="L28">        return String.format(&quot;%d:%02d&quot;, (((int) timeRemaining) / 60), (((int) timeRemaining) % 60));</span>
+    }
+
+    public boolean isGameEnd() {
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        return this.timeRemaining &lt; 0;</span>
+    }
+
+    public boolean isPaused() {
+<span class="fc" id="L36">        return paused;</span>
+    }
+
+    public boolean isTimePassing() {
+<span class="pc bpc" id="L40" title="1 of 4 branches missed.">        return !(isPaused() || isGameEnd());</span>
+    }
+
+    public float getTimeRemaining() {
+<span class="fc" id="L44">        return timeRemaining;</span>
+    }
+
+    public void togglePause() {
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        if (this.isGameEnd()) {</span>
+<span class="fc" id="L49">            return;</span>
+        }
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        paused = !paused;</span>
+<span class="fc" id="L52">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
