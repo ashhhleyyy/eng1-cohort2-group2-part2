@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EventManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">headless</a> &gt; <a href="index.source.html" class="el_package">group1.unisim.events</a> &gt; <span class="el_source">EventManager.java</span></div><h1>EventManager.java</h1><pre class="source lang-java linenums">package group1.unisim.events;
+
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import group1.unisim.ContentLoader;
+import group1.unisim.Paths;
+import group1.unisim.SatisfactionBar;
+import group1.unisim.Timer;
+import group1.unisim.achievement.AchievementsManager;
+import group1.unisim.building.Service;
+import group1.unisim.thought.Thoughts;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import static group1.unisim.building.Service.*;
+
+// ADDED: new class to manage state relating to in-game events
+public class EventManager {
+    private final Timer timer;
+    private final SatisfactionBar satisfactionBar;
+    private final ContentLoader contentLoader;
+    private final AchievementsManager achievementsManager;
+
+    private final ArrayList&lt;Event&gt; currentEvents;
+    private final HashMap&lt;Service, Integer&gt; buildingRequirements;
+<span class="fc" id="L32">    HashMap&lt;Integer, Boolean&gt; eventsRun = new HashMap&lt;&gt;();</span>
+    private Label eventDisplayLabel;
+    private Image eventBackground;
+
+<span class="fc" id="L36">    public EventManager(Timer timer, SatisfactionBar satisfactionBar, ContentLoader contentLoader, AchievementsManager achievementsManager) {</span>
+<span class="fc" id="L37">        this.timer = timer;</span>
+<span class="fc" id="L38">        this.satisfactionBar = satisfactionBar;</span>
+<span class="fc" id="L39">        this.contentLoader = contentLoader;</span>
+<span class="fc" id="L40">        this.achievementsManager = achievementsManager;</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        for (int i = 50; i &lt; Timer.getStartTime(); i += 100) {</span>
+<span class="fc" id="L42">            eventsRun.put(i, false);</span>
+        }
+<span class="fc" id="L44">        buildingRequirements = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        for (Service service : values()) {</span>
+<span class="fc" id="L46">            buildingRequirements.put(service, 1);</span>
+        }
+<span class="fc" id="L48">        currentEvents = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L49">    }</span>
+
+    public void initUi(Stage stage, Skin skin) {
+<span class="fc" id="L52">        Table eventDisplay = new Table(skin);</span>
+<span class="fc" id="L53">        eventDisplay.top().right().setPosition(1000, 350);</span>
+<span class="fc" id="L54">        Texture eventBackgroundTexture = new Texture(Paths.EVENT_BACKGROUND);</span>
+<span class="fc" id="L55">        eventBackground = new Image(eventBackgroundTexture);</span>
+<span class="fc" id="L56">        eventBackground.setPosition(800, 250);</span>
+<span class="fc" id="L57">        eventDisplayLabel = new Label(&quot;New events show up here, when they happen... \nReminder: these effects last for the whole game!&quot;, skin);</span>
+<span class="fc" id="L58">        eventDisplayLabel.setWrap(true);</span>
+<span class="fc" id="L59">        eventDisplay.add(eventDisplayLabel).height(90).width(190).pad(5);</span>
+
+<span class="fc" id="L61">        stage.addActor(eventBackground);</span>
+<span class="fc" id="L62">        stage.addActor(eventDisplay);</span>
+<span class="fc" id="L63">    }</span>
+
+    public void update(float delta) {
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        for (Event event : (ArrayList&lt;Event&gt;) currentEvents.clone()) {</span>
+<span class="fc" id="L67">            event.update(delta);</span>
+<span class="fc" id="L68">        }</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (!currentEvents.isEmpty()) {</span>
+<span class="fc" id="L70">            eventDisplayLabel.setVisible(true);</span>
+<span class="fc" id="L71">            eventBackground.setVisible(true);</span>
+        } else {
+<span class="fc" id="L73">            eventDisplayLabel.setVisible(false);</span>
+<span class="fc" id="L74">            eventBackground.setVisible(false);</span>
+        }
+<span class="fc" id="L76">        checkEvents();</span>
+<span class="fc" id="L77">    }</span>
+
+    private void checkEvents() {
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        for (int time : eventsRun.keySet()) {</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">            if (eventsRun.get(time)) {</span>
+<span class="fc" id="L82">                continue;</span>
+            }
+<span class="fc bfc" id="L84" title="All 2 branches covered.">            if (this.timer.getTimeRemaining() &lt; time) {</span>
+<span class="fc" id="L85">                runEvent();</span>
+<span class="fc" id="L86">                eventsRun.put(time, true);</span>
+            }
+<span class="fc" id="L88">        }</span>
+<span class="fc" id="L89">    }</span>
+
+    private void runEvent() {
+<span class="fc" id="L92">        int randNum = (int) (Math.random() * 5);</span>
+        //todo move this to a file
+<span class="pc bpc" id="L94" title="5 of 7 branches missed.">        switch (randNum) {</span>
+            case 0:
+<span class="nc" id="L96">                addEvent(new Event(&quot;The university is receiving an unprecedented influx of new students, we may need more accommodation!&quot;, 100, Accommodation, 2, this));</span>
+<span class="nc" id="L97">                break;</span>
+            case 1:
+<span class="fc" id="L99">                addEvent(new Event(&quot;The university is receiving far less new students than usual, we may need less accommodation!&quot;, 100, Accommodation, 0, this));</span>
+<span class="fc" id="L100">                break;</span>
+            case 2:
+<span class="fc" id="L102">                addEvent(new Event(&quot;Students are sick of prerecorded mini-lectures and want to go in person, we may need more teaching spaces!&quot;, 50, TeachingSpace, 2, this));</span>
+<span class="fc" id="L103">                break;</span>
+            case 3:
+<span class="nc" id="L105">                addEvent(new Event(&quot;Lecturers are on strike, we may need less teaching spaces!&quot;, 50, TeachingSpace, 0, this));</span>
+<span class="nc" id="L106">                break;</span>
+            case 4:
+<span class="nc" id="L108">                addEvent(new Event(&quot;Students are bored, we may need more recreation spaces!&quot;, 50, Recreation, 2, this));</span>
+<span class="nc" id="L109">                break;</span>
+            case 5:
+<span class="nc" id="L111">                addEvent(new Event(&quot;Fresher's flu is getting around and people are staying in their dorms, we may need less recreation spaces!&quot;, 30, Recreation, 0, this));</span>
+                break;
+        }
+<span class="fc" id="L114">    }</span>
+
+    public void addEvent(Event toAdd) {
+<span class="fc bfc" id="L117" title="All 2 branches covered.">        currentEvents.removeIf(event -&gt; event.getService() == toAdd.getService());</span>
+<span class="fc" id="L118">        buildingRequirements.put(toAdd.getService(), toAdd.getRequirement());</span>
+<span class="fc" id="L119">        currentEvents.add(toAdd);</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">        if (eventDisplayLabel != null) {</span>
+<span class="fc" id="L121">            eventDisplayLabel.setText(toAdd.getDescription());</span>
+        }
+<span class="fc" id="L123">    }</span>
+
+    public void removeEvent(Event toRemove) {
+<span class="fc" id="L126">        buildingRequirements.put(toRemove.getService(), 1);</span>
+<span class="fc" id="L127">        currentEvents.remove(toRemove);</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">        if (eventDisplayLabel != null) {</span>
+<span class="fc" id="L129">            eventDisplayLabel.setText(&quot;&quot;);</span>
+        }
+<span class="fc" id="L131">    }</span>
+
+    public void updateServices(Map&lt;Service, Integer&gt; services, int buildingsUnderConstruction) {
+<span class="fc" id="L134">        boolean perfect_buildings = true;</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">        for (Map.Entry&lt;Service, Integer&gt; target : buildingRequirements.entrySet()) {</span>
+<span class="fc" id="L136">            int comp = services.get(target.getKey()).compareTo(target.getValue());</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">            if (comp != 0) {</span>
+<span class="fc" id="L138">                perfect_buildings = false;</span>
+            }
+<span class="fc" id="L140">            String thought = contentLoader.getServiceThought(target.getKey(), comp);</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">            if (thought == null) {</span>
+<span class="fc" id="L142">                satisfactionBar.removeThought(target.getKey().toString());</span>
+<span class="fc" id="L143">                continue;</span>
+            }
+<span class="fc" id="L145">            satisfactionBar.setThought(target.getKey().toString(), contentLoader.getThought(thought));</span>
+<span class="fc" id="L146">        }</span>
+
+<span class="fc" id="L148">        boolean found_zero = false;</span>
+<span class="fc" id="L149">        boolean all_1s = true;</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">        for (Integer value : services.values()) {</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">            if (value == 0) {</span>
+<span class="fc" id="L152">                found_zero = true;</span>
+<span class="fc" id="L153">                all_1s = false;</span>
+<span class="fc" id="L154">                break;</span>
+            }
+<span class="fc bfc" id="L156" title="All 2 branches covered.">            if (value != 1) {</span>
+<span class="fc" id="L157">                all_1s = false;</span>
+            }
+<span class="fc" id="L159">        }</span>
+
+<span class="fc bfc" id="L161" title="All 2 branches covered.">        if (perfect_buildings) {</span>
+<span class="fc" id="L162">            satisfactionBar.setThought(&quot;building_count&quot;, contentLoader.getThought(Thoughts.PERFECT_BUILDING_LEVEL));</span>
+        } else {
+<span class="fc" id="L164">            satisfactionBar.removeThought(&quot;building_count&quot;);</span>
+        }
+<span class="fc bfc" id="L166" title="All 2 branches covered.">        if (found_zero) {</span>
+<span class="fc" id="L167">            satisfactionBar.setThought(&quot;missing_building&quot;, contentLoader.getThought(Thoughts.BUILDING_MISSING));</span>
+        } else {
+<span class="fc" id="L169">            satisfactionBar.removeThought(&quot;missing_building&quot;);</span>
+        }
+<span class="fc bfc" id="L171" title="All 2 branches covered.">        if (all_1s) {</span>
+<span class="fc" id="L172">            satisfactionBar.setThought(&quot;one_of_each&quot;, contentLoader.getThought(Thoughts.ONE_OF_EACH_BUILDING));</span>
+        } else {
+<span class="fc" id="L174">            satisfactionBar.removeThought(&quot;one_of_each&quot;);</span>
+        }
+
+        // Adding construction thought to satisfaction bar:
+<span class="fc bfc" id="L178" title="All 2 branches covered.">        if (buildingsUnderConstruction == 1) {</span>
+<span class="fc" id="L179">            satisfactionBar.setThought(&quot;construction&quot;, contentLoader.getThought(Thoughts.ACTIVE_CONSTRUCTIONS1));</span>
+<span class="fc bfc" id="L180" title="All 2 branches covered.">        } else if (buildingsUnderConstruction == 2) {</span>
+<span class="fc" id="L181">            satisfactionBar.setThought(&quot;construction&quot;, contentLoader.getThought(Thoughts.ACTIVE_CONSTRUCTIONS2));</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">        } else if (buildingsUnderConstruction &gt; 2) {</span>
+<span class="fc" id="L183">            satisfactionBar.setThought(&quot;construction&quot;, contentLoader.getThought(Thoughts.ACTIVE_CONSTRUCTIONS3));</span>
+        } else {
+<span class="fc" id="L185">            satisfactionBar.setThought(&quot;construction&quot;, contentLoader.getThought(Thoughts.ACTIVE_CONSTRUCTIONS0));</span>
+        }
+
+<span class="fc bfc" id="L188" title="All 2 branches covered.">        for (var service : values()) {</span>
+<span class="fc" id="L189">            achievementsManager.onServiceValueChange(service, services.getOrDefault(service, 0));</span>
+        }
+<span class="fc" id="L191">        achievementsManager.onSatisfactionChange(satisfactionBar.getScore());</span>
+<span class="fc" id="L192">    }</span>
+
+    public ArrayList&lt;Event&gt; getCurrentEvents() {
+<span class="fc" id="L195">        return currentEvents;</span>
+    }
+
+    public HashMap&lt;Service, Integer&gt; getBuildingRequirements() {
+<span class="fc" id="L199">        return buildingRequirements;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

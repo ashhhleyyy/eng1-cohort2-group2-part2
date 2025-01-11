@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Paths.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">headless</a> &gt; <a href="index.source.html" class="el_package">group1.unisim</a> &gt; <span class="el_source">Paths.java</span></div><h1>Paths.java</h1><pre class="source lang-java linenums">package group1.unisim;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+// ADDED: to add testing of assets
+public class Paths {
+    public static final String LEADERBOARD_JSON = &quot;.unisim-leaderboards.json&quot;;
+    public static final String ACHIEVEMENTS_JSON = &quot;.unisim-achievements.json&quot;;
+
+<span class="fc" id="L12">    private static final List&lt;String&gt; ALL_ASSETS = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L13">    public static final String BUILDINGS_JSON = asset(&quot;buildings.json&quot;);</span>
+<span class="fc" id="L14">    public static final String THOUGHTS_JSON = asset(&quot;thoughts.json&quot;);</span>
+<span class="fc" id="L15">    public static final String UI_SKIN = asset(&quot;ui/uiskin.json&quot;);</span>
+<span class="fc" id="L16">    public static final String TOOLBAR = asset(&quot;toolbar.png&quot;);</span>
+<span class="fc" id="L17">    public static final String MAP_TEXTURE = asset(&quot;mapTexture.png&quot;);</span>
+<span class="fc" id="L18">    public static final String SETTINGS_ICON = asset(&quot;settingsIcon.png&quot;);</span>
+<span class="fc" id="L19">    public static final String BUILD_ICON = asset(&quot;buildIcon.png&quot;);</span>
+<span class="fc" id="L20">    public static final String PAUSE = asset(&quot;pause.png&quot;);</span>
+<span class="fc" id="L21">    public static final String PLAY = asset(&quot;play.png&quot;);</span>
+<span class="fc" id="L22">    public static final String END_SCREEN = asset(&quot;endScreen.png&quot;);</span>
+<span class="fc" id="L23">    public static final String ACCOMMODATION_TEXTURE = asset(&quot;accom.png&quot;);</span>
+<span class="fc" id="L24">    public static final String THOUGHT_BACKGROUND = asset(&quot;thoughtBackground.png&quot;);</span>
+<span class="fc" id="L25">    public static final String EVENT_BACKGROUND = asset(&quot;eventBackground.png&quot;);</span>
+<span class="fc" id="L26">    public static final String BUILD_SELECT_BACKGROUND = asset(&quot;buildSelectBackground.png&quot;);</span>
+
+    private Paths() {
+    }
+
+    private static String asset(String asset) {
+<span class="fc" id="L32">        ALL_ASSETS.add(asset);</span>
+<span class="fc" id="L33">        return asset;</span>
+    }
+
+    public static List&lt;String&gt; getAllAssets() {
+<span class="fc" id="L37">        return Collections.unmodifiableList(ALL_ASSETS);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
